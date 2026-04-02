@@ -1,42 +1,26 @@
 // 首页
-const app = getApp();
-
-// 避免使用辅助函数，直接定义在代码中
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
 
 // AI助手类型配置
 const AI_BOTS = {
   writer: {
     botId: "7481212266399449139", // agent1
-    title: "AI智能写手",
-    prompt: "我是智能写手，可以帮您创作高质量的文章、报告、故事等各类文本内容。请告诉我您需要什么类型的文本？"
+    title: "脚本生成器",
+    prompt: "我是脚本生成器，可以帮你把一个模糊想法整理成可直接拍摄或发布的内容脚本。告诉我主题、受众和风格要求。"
   },
   content: {
     botId: "7481213430658433034", // agent2
-    title: "AI文案工坊",
-    prompt: "我是文案工坊，专门为您生成广告文案、产品描述、社交媒体内容等营销文案。请描述您需要的文案类型和目标受众。"
+    title: "选题策划师",
+    prompt: "我是选题策划师，可以围绕你的账号定位、近期趋势和目标用户，生成一组可执行的内容选题。"
   },
   imagine: {
     botId: "7481213488808099874", // agent3
-    title: "AI创意图匠",
-    prompt: "我是创意图匠，可以根据您的描述生成图文内容。请告诉我您想要创作什么样的图像？"
+    title: "对标账号分析",
+    prompt: "我是对标账号分析助手，可以帮你拆解参考账号的定位、内容结构、更新策略和商业动作。"
   },
   expert: {
     botId: "7481213361658036235", // agent4
-    title: "AI智能专家",
-    prompt: "我是智能专家，可以回答您在各个领域的专业问题。无论是科技、商业、教育还是其他领域，请随时向我提问。"
+    title: "经营顾问",
+    prompt: "我是你的经营顾问，可以帮你规划一人公司的内容、增长、商业化和每日行动优先级。"
   }
 };
 
@@ -49,11 +33,38 @@ Page({
     isLoading: true,
     isEmergency: false,        // 默认不显示应急页面
     isAdmin: false,            // 添加管理员状态标记
-    aiTools: [
-      { id: 'writer', name: '智能写手', icon: '/images/ai-tools/writer.png', emoji: '' },
-      { id: 'content', name: '文案工坊', icon: '/images/ai-tools/content.png', emoji: '' },
-      { id: 'imagine', name: '创意图匠', icon: '/images/ai-tools/imagine.png', emoji: '' },
-      { id: 'expert', name: '智能专家', icon: '/images/ai-tools/expert.png', emoji: '' }
+    points: 18,
+    streakDays: 6,
+    growthLevel: '个人厂牌启动中',
+    dailyInsight: {
+      title: '今天优先做一条高信号内容',
+      description: '先做调研，再产出一条脚本，把灵感消耗在最可能增长的选题上。'
+    },
+    workflowGroups: [
+      {
+        title: '今日高价值工作流',
+        workflows: [
+          { id: 'imagine', name: '对标账号分析', cost: 6, duration: '3 min', summary: '快速拆出参考账号的定位、形式和增长动作', badge: '增长' },
+          { id: 'content', name: '爆款选题生成', cost: 4, duration: '2 min', summary: '基于你的赛道生成今天值得做的内容方向', badge: '内容' }
+        ]
+      },
+      {
+        title: '创作与经营',
+        workflows: [
+          { id: 'writer', name: '脚本生成器', cost: 5, duration: '4 min', summary: '把一个想法展开成可拍摄、可发布的脚本结构', badge: '产出' },
+          { id: 'expert', name: '一人公司顾问', cost: 3, duration: '不限', summary: '用于每日规划、商业动作和账号经营判断', badge: '决策' }
+        ]
+      }
+    ],
+    dailyTasks: [
+      { title: '登录打卡', reward: '+2 积分', status: 'done' },
+      { title: '完成一次对标分析', reward: '+3 积分', status: 'pending' },
+      { title: '生成一条内容脚本', reward: '+5 积分', status: 'pending' }
+    ],
+    personaTags: [
+      '个人品牌',
+      '内容创业',
+      'AI工作流'
     ],
     recentChats: [],           // 最近会话列表
     systemInfo: {},            // 系统信息
@@ -115,14 +126,14 @@ Page({
   
   onShareAppMessage: function() {
     return {
-      title: 'AI智能助手 - 让人工智能为您服务',
+      title: 'AI一人公司工作台',
       path: '/pages/index/index'
     };
   },
   
   onShareTimeline: function() {
     return {
-      title: 'AI智能助手 - 智能写作、文案创作、图像生成、专家咨询',
+      title: '用 AI 把个人品牌经营成一人公司',
       query: ''
     };
   },
@@ -135,19 +146,14 @@ Page({
   getSystemInfo: function() {
     try {
       const systemInfo = wx.getSystemInfoSync();
-      console.log('系统信息:', systemInfo);
-      
-      // 获取状态栏和导航栏高度
-      let statusBarHeight = systemInfo.statusBarHeight || 20;
-      let navBarHeight = 44; // 默认导航栏高度
-      
-      // 获取胶囊按钮信息
+      const statusBarHeight = systemInfo.statusBarHeight || 20;
+      const navBarHeight = 44;
       const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
       
       this.setData({
-        systemInfo: systemInfo,
-        statusBarHeight: statusBarHeight,
-        navBarHeight: navBarHeight,
+        systemInfo,
+        statusBarHeight,
+        navBarHeight,
         capsuleButtonInfo: menuButtonInfo
       });
     } catch (e) {
@@ -160,7 +166,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
       this.setData({
-        userInfo: userInfo,
+        userInfo,
         hasUserInfo: true,
         isLoading: false
       });
@@ -179,16 +185,13 @@ Page({
         console.log('获取用户信息成功:', res);
         const userInfo = res.userInfo;
         
-        // 保存到本地缓存
         wx.setStorageSync('userInfo', userInfo);
         
-        // 更新页面数据
         this.setData({
-          userInfo: userInfo,
+          userInfo,
           hasUserInfo: true
         });
         
-        // 保存用户信息到云数据库
         this.saveUserToDatabase(userInfo);
       },
       fail: (err) => {
@@ -277,24 +280,44 @@ Page({
   
   // 获取最近会话
   getRecentChats: function() {
-    // 调用云数据库查询最近会话
     const db = wx.cloud.database();
     db.collection('chats')
-      .where({
-        _openid: '{openid}' // 使用服务端自动替换的openid
-      })
       .orderBy('updateTime', 'desc')
       .limit(5)
       .get()
       .then(res => {
-        console.log('获取最近会话成功', res);
         this.setData({
-          recentChats: res.data
+          recentChats: (res.data || []).map(item => ({
+            ...item,
+            title: item.title || '工作流记录',
+            lastMessage: item.lastMessage || item.question || '继续完善这个任务'
+          }))
         });
       })
       .catch(err => {
         console.error('获取最近会话失败', err);
       });
+  },
+
+  onPullDownRefresh: function() {
+    this.checkUserInfo();
+    this.getRecentChats();
+    setTimeout(() => {
+      wx.stopPullDownRefresh();
+    }, 300);
+  },
+
+  claimDailyPoints: function() {
+    wx.showToast({
+      title: '今日已打卡 +2',
+      icon: 'none'
+    });
+  },
+
+  openMembership: function() {
+    wx.navigateTo({
+      url: '/pages/membership/membership'
+    });
   },
   
   // 跳转到会员中心

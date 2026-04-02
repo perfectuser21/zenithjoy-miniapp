@@ -2,6 +2,17 @@
 const app = getApp()
 const db = wx.cloud.database()
 
+function fetchOpenId() {
+  return wx.cloud.callFunction({
+    name: 'userLogin'
+  }).then(res => {
+    if (res.result && res.result.openid) {
+      return res.result.openid
+    }
+    throw new Error('无法获取 openid')
+  })
+}
+
 Page({
 
   /**
@@ -13,6 +24,21 @@ Page({
     canIUseGetUserProfile: false,
     isAdmin: false,
     phoneNumber: '', // 添加用户手机号
+    points: 26,
+    streakDays: 8,
+    profileStage: '体验版创作者',
+    growthStats: [
+      { label: '今日可用积分', value: '26' },
+      { label: '连续打卡', value: '8 天' },
+      { label: '最近任务', value: '3 条' }
+    ],
+    assetMenus: [
+      { id: 'membership', title: '会员与积分', desc: '查看权益、额度和升级入口', icon: '积分' },
+      { id: 'history', title: '经营记录', desc: '继续查看对话、任务和历史产出', icon: '记录' }
+    ],
+    supportMenus: [
+      { id: 'clear', title: '清除缓存', desc: '重置本地登录信息与历史缓存', icon: '清理' }
+    ],
     membership: {
       level: 'free', // 默认是免费会员
       name: '普通会员',
@@ -111,30 +137,23 @@ Page({
         })
         
         // 检查是否有手机号
-        wx.cloud.callFunction({
-          name: 'login',
-          success: res => {
-            const openid = res.result.openid
-            
-            // 查询用户的信息
-            db.collection('users').where({
-              _openid: openid
-            }).get().then(userRes => {
-              if (userRes.data.length > 0 && userRes.data[0].phoneNumber) {
-                this.setData({
-                  phoneNumber: userRes.data[0].phoneNumber
-                })
-              }
-              resolve()
-            }).catch(err => {
-              console.error('获取用户手机号失败', err)
-              resolve()
-            })
-          },
-          fail: err => {
-            console.error('登录失败', err)
+        fetchOpenId().then(openid => {
+          db.collection('users').where({
+            _openid: openid
+          }).get().then(userRes => {
+            if (userRes.data.length > 0 && userRes.data[0].phoneNumber) {
+              this.setData({
+                phoneNumber: userRes.data[0].phoneNumber
+              })
+            }
             resolve()
-          }
+          }).catch(err => {
+            console.error('获取用户手机号失败', err)
+            resolve()
+          })
+        }).catch(err => {
+          console.error('登录失败', err)
+          resolve()
         })
       } else {
         this.setData({
@@ -229,43 +248,34 @@ Page({
   
   // 保存用户资料到云数据库
   saveUserProfile(userInfo) {
-    wx.cloud.callFunction({
-      name: 'login',
-      success: res => {
-        const openid = res.result.openid
-        
-        // 查询用户是否已存在
-        db.collection('users').where({
-          _openid: openid
-        }).get().then(res => {
-          if (res.data.length === 0) {
-            // 如果用户不存在，创建新用户记录
-            db.collection('users').add({
-              data: {
-                ...userInfo,
-                createdAt: db.serverDate(),
-                updatedAt: db.serverDate(),
-                membership: {
-                  level: 'free',
-                  name: '普通会员',
-                  expireDate: null
-                }
+    fetchOpenId().then(openid => {
+      db.collection('users').where({
+        _openid: openid
+      }).get().then(res => {
+        if (res.data.length === 0) {
+          db.collection('users').add({
+            data: {
+              ...userInfo,
+              createdAt: db.serverDate(),
+              updatedAt: db.serverDate(),
+              membership: {
+                level: 'free',
+                name: '普通会员',
+                expireDate: null
               }
-            })
-          } else {
-            // 如果用户存在，更新用户信息
-            db.collection('users').doc(res.data[0]._id).update({
-              data: {
-                ...userInfo,
-                updatedAt: db.serverDate()
-              }
-            })
-          }
-        })
-      },
-      fail: err => {
-        console.error('登录失败', err)
-      }
+            }
+          })
+        } else {
+          db.collection('users').doc(res.data[0]._id).update({
+            data: {
+              ...userInfo,
+              updatedAt: db.serverDate()
+            }
+          })
+        }
+      })
+    }).catch(err => {
+      console.error('登录失败', err)
     })
   },
   
@@ -296,75 +306,62 @@ Page({
   // 检查会员状态
   checkMembershipStatus() {
     return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({
-        name: 'login',
-        success: res => {
-          const openid = res.result.openid
-          
-          // 查询用户的会员信息
-          db.collection('users').where({
-            _openid: openid
-          }).get().then(res => {
-            if (res.data.length > 0 && res.data[0].membership) {
-              const membership = res.data[0].membership
+      fetchOpenId().then(openid => {
+        db.collection('users').where({
+          _openid: openid
+        }).get().then(res => {
+          if (res.data.length > 0 && res.data[0].membership) {
+            const membership = res.data[0].membership
+            
+            if (membership.level !== 'free' && membership.expireDate) {
+              const expireDate = new Date(membership.expireDate)
+              const now = new Date()
               
-              // 检查会员是否过期
-              if (membership.level !== 'free' && membership.expireDate) {
-                const expireDate = new Date(membership.expireDate)
-                const now = new Date()
+              if (now > expireDate) {
+                this.setData({
+                  membership: {
+                    level: 'free',
+                    name: '普通会员',
+                    expireDate: null
+                  }
+                })
                 
-                // 如果已过期，降级为免费会员
-                if (now > expireDate) {
-                  this.setData({
+                db.collection('users').doc(res.data[0]._id).update({
+                  data: {
                     membership: {
                       level: 'free',
                       name: '普通会员',
                       expireDate: null
                     }
-                  })
-                  
-                  // 更新数据库中的会员状态
-                  db.collection('users').doc(res.data[0]._id).update({
-                    data: {
-                      membership: {
-                        level: 'free',
-                        name: '普通会员',
-                        expireDate: null
-                      }
-                    }
-                  })
-                } else {
-                  // 会员未过期
-                  this.setData({
-                    membership: membership
-                  })
-                }
+                  }
+                })
               } else {
-                // 用户是免费会员或没有过期日期
                 this.setData({
                   membership: membership
                 })
               }
             } else {
-              // 用户不存在或没有会员信息，设置为免费会员
               this.setData({
-                membership: {
-                  level: 'free',
-                  name: '普通会员',
-                  expireDate: null
-                }
+                membership: membership
               })
             }
-            resolve()
-          }).catch(err => {
-            console.error('获取会员信息失败', err)
-            resolve()
-          })
-        },
-        fail: err => {
-          console.error('登录失败', err)
+          } else {
+            this.setData({
+              membership: {
+                level: 'free',
+                name: '普通会员',
+                expireDate: null
+              }
+            })
+          }
           resolve()
-        }
+        }).catch(err => {
+          console.error('获取会员信息失败', err)
+          resolve()
+        })
+      }).catch(err => {
+        console.error('登录失败', err)
+        resolve()
       })
     })
   },
@@ -383,11 +380,31 @@ Page({
       url: '/pages/membership/membership'
     })
   },
+
+  handleAssetAction(e) {
+    const { id } = e.currentTarget.dataset;
+
+    if (id === 'membership') {
+      this.navigateToMembership();
+      return;
+    }
+
+    if (id === 'history') {
+      this.navigateToChatHistory();
+    }
+  },
+
+  handleSupportAction(e) {
+    const { id } = e.currentTarget.dataset;
+    if (id === 'clear') {
+      this.clearCache();
+    }
+  },
   
   // 导航到管理员页面
   navigateToAdmin() {
     wx.navigateTo({
-      url: '/pages/admin/index'
+      url: '/pages/admin/article/index'
     })
   },
   
@@ -420,6 +437,7 @@ Page({
           this.setData({
             userInfo: {},
             hasUserInfo: false,
+            phoneNumber: '',
             membership: {
               level: 'free',
               name: '普通会员',

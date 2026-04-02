@@ -2,7 +2,7 @@
   "usingComponents": {
     "no-data": "../../components/common/no-data"
   },
-  "navigationBarTitleText": "AI智能助手",
+  "navigationBarTitleText": "AI一人公司",
   "enablePullDownRefresh": true,
   "backgroundColor": "#F6F6F6"
 }

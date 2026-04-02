@@ -1,3 +1,37 @@
+const WORKFLOW_META = {
+  '脚本生成器': {
+    badge: '内容产出',
+    objective: '把一个想法整理成可直接发布的内容成果。',
+    metrics: ['结构完整', '可执行', '适合继续追问'],
+    prompts: ['帮我补成 60 秒短视频脚本', '再给我 5 个标题版本', '按种草风格重写一版']
+  },
+  '选题策划师': {
+    badge: '内容规划',
+    objective: '围绕你的定位给出今天最值得做的选题方向。',
+    metrics: ['更贴近账号定位', '更适合增长', '能继续延展成脚本'],
+    prompts: ['再细分成 3 条选题线', '给我一个 7 天内容计划', '筛出最适合新账号的方向']
+  },
+  '对标账号分析': {
+    badge: '增长调研',
+    objective: '拆出参考账号的定位、结构和可复制动作。',
+    metrics: ['定位更清楚', '结构可拆', '增长动作可执行'],
+    prompts: ['总结这个账号的内容套路', '给我 3 个可以复制的动作', '把结论整理成复盘清单']
+  },
+  '经营顾问': {
+    badge: '经营判断',
+    objective: '帮助你决定今天该做什么，以及资源优先级。',
+    metrics: ['决策更快', '优先级更清晰', '动作可落地'],
+    prompts: ['结合我的情况排一下今天优先级', '给我一个一人公司日程表', '如果我只做一件事应该做什么']
+  }
+};
+
+const DEFAULT_META = {
+  badge: 'AI 工作流',
+  objective: '围绕当前任务快速产出结果，并继续迭代。',
+  metrics: ['结果导向', '可继续追问', '面向执行'],
+  prompts: ['继续展开这一版', '帮我总结重点', '换一个更适合发布的版本']
+};
+
 // AI聊天页面
 Page({
   data: {
@@ -8,7 +42,8 @@ Page({
     systemMessages: [],
     title: '',
     chatType: 'general',
-    botId: ''
+    botId: '',
+    workflowMeta: DEFAULT_META
   },
 
   onLoad: function(options) {
@@ -21,11 +56,14 @@ Page({
     wx.setNavigationBarTitle({
       title: title
     });
+
+    const workflowMeta = WORKFLOW_META[title] || DEFAULT_META;
     
     this.setData({
-      title: title,
+      title,
       chatType: type,
-      botId: botId // 保存botId到data中
+      botId,
+      workflowMeta
     });
     
     const welcomeMessage = prompt || '你好！我是AI助手，有什么可以帮到您的吗？';
@@ -36,7 +74,8 @@ Page({
         {
           role: 'assistant',
           content: welcomeMessage,
-          time: this.formatTime(new Date())
+          time: this.formatTime(new Date()),
+          label: '工作流输出'
         }
       ]
     });
@@ -81,6 +120,17 @@ Page({
       inputValue: e.detail.value
     });
   },
+
+  usePromptChip: function(e) {
+    const { prompt } = e.currentTarget.dataset;
+    if (!prompt || this.data.sending) {
+      return;
+    }
+
+    this.setData({
+      inputValue: prompt
+    });
+  },
   
   // 发送消息
   sendMessage: function() {
@@ -96,7 +146,8 @@ Page({
     const updatedMessages = [...messages, {
       role: 'user',
       content: inputValue,
-      time: this.formatTime(new Date())
+      time: this.formatTime(new Date()),
+      label: '你的追问'
     }];
     
     // 清空输入框并更新消息列表
@@ -114,7 +165,8 @@ Page({
       role: 'assistant',
       content: '思考中...',
       isLoading: true,
-      time: this.formatTime(new Date())
+      time: this.formatTime(new Date()),
+      label: '工作流处理中'
     };
     
     this.setData({
@@ -160,7 +212,8 @@ Page({
           content: res.result.content || '抱歉，暂时无法回复您的问题',
           images: res.result.images || [],
           time: this.formatTime(new Date()),
-          isLoading: false
+          isLoading: false,
+          label: '工作流输出'
         };
         
         this.setData({
@@ -196,7 +249,8 @@ Page({
         content: `抱歉，发生了错误: ${errorMsg}`,
         time: this.formatTime(new Date()),
         isError: true,
-        isLoading: false
+        isLoading: false,
+        label: '异常提示'
       };
       
       this.setData({

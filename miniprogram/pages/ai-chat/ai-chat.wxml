@@ -1,5 +1,4 @@
 <view class="chat-container">
-  <!-- 系统消息区域 -->
   <view class="system-messages">
     <block wx:for="{{systemMessages}}" wx:key="index">
       <view class="system-message system-message-{{item.type}}">
@@ -7,18 +6,28 @@
       </view>
     </block>
   </view>
-  
-  <!-- 消息列表 -->
+
+  <view class="workflow-panel">
+    <view class="workflow-top">
+      <view class="workflow-badge">{{workflowMeta.badge}}</view>
+      <view class="workflow-title">{{title}}</view>
+    </view>
+    <view class="workflow-objective">{{workflowMeta.objective}}</view>
+    <view class="workflow-metrics">
+      <view class="metric-chip" wx:for="{{workflowMeta.metrics}}" wx:key="*this">{{item}}</view>
+    </view>
+  </view>
+
   <view class="messages-container" id="message-container">
     <block wx:for="{{messages}}" wx:key="index">
-      <!-- 用户消息 -->
       <view wx:if="{{item.role === 'user'}}" class="message-item user-message">
+        <view class="message-label">{{item.label || '你的输入'}}</view>
         <view class="message-content">{{item.content}}</view>
         <view class="message-time">{{item.time}}</view>
       </view>
-      
-      <!-- 助手消息 -->
+
       <view wx:else class="message-item assistant-message {{item.isError ? 'error-message' : ''}}">
+        <view class="message-label">{{item.label || '工作流输出'}}</view>
         <view class="message-content">
           <block wx:if="{{item.isLoading}}">
             <view class="loading-dots">
@@ -29,10 +38,8 @@
             {{item.content}}
           </block>
           <block wx:else>
-            <!-- 普通文本内容 -->
             <text selectable="true" user-select="true" class="message-text">{{item.content}}</text>
-            
-            <!-- 图片显示区域 -->
+
             <view wx:if="{{item.images && item.images.length > 0}}" class="message-images {{item.images.length === 1 ? 'single-image' : 'image-gallery'}}">
               <block wx:for="{{item.images}}" wx:for-item="img" wx:key="id">
                 <image 
@@ -52,14 +59,28 @@
       </view>
     </block>
   </view>
-  
-  <!-- 底部输入框 -->
+
+  <view class="prompt-panel">
+    <view class="prompt-title">继续追问</view>
+    <scroll-view scroll-x="true" class="prompt-scroll" show-scrollbar="false">
+      <view class="prompt-list">
+        <view
+          class="prompt-chip"
+          wx:for="{{workflowMeta.prompts}}"
+          wx:key="*this"
+          bindtap="usePromptChip"
+          data-prompt="{{item}}"
+        >{{item}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
   <view class="input-container">
     <input 
       class="message-input" 
       value="{{inputValue}}" 
       bindinput="handleInputChange" 
-      placeholder="请输入您的问题..."
+      placeholder="继续补充你的目标、风格或约束..."
       confirm-type="send"
       bindconfirm="sendMessage"
       disabled="{{sending}}"

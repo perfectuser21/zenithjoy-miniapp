@@ -1,69 +1,140 @@
-<wxs module="util">
-  module.exports = {
-    formatDate: function(date) {
-      var dateObj = getDate(date);
-      var year = dateObj.getFullYear();
-      var month = dateObj.getMonth() + 1;
-      var day = dateObj.getDate();
-      if(month < 10) month = "0" + month;
-      if(day < 10) day = "0" + day;
-      return year + "-" + month + "-" + day;
-    }
-  }
-</wxs>
-
 <view class="container">
-  <!-- 顶部功能区域 -->
-  <view class="header">
-    <view class="header-title">AI智能助手</view>
-    <view class="user-avatar-container" bindtap="getUserProfile" wx:if="{{!hasUserInfo}}">
-      <image class="user-avatar" src="/images/default-avatar.png" mode="aspectFill"></image>
+  <view class="hero-panel">
+    <view class="hero-backdrop hero-backdrop-top"></view>
+    <view class="hero-backdrop hero-backdrop-bottom"></view>
+
+    <view class="hero-nav" style="padding-top: {{statusBarHeight + 12}}px;">
+      <view class="hero-brand">
+        <view class="hero-kicker">ZENITHJOY</view>
+        <view class="hero-title">AI一人公司工作台</view>
+      </view>
+      <view class="user-avatar-container" bindtap="getUserProfile" wx:if="{{!hasUserInfo}}">
+        <image class="user-avatar" src="/images/default-avatar.png" mode="aspectFill"></image>
+      </view>
+      <view class="user-avatar-container" wx:else>
+        <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      </view>
     </view>
-    <view class="user-avatar-container" wx:else>
-      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+
+    <view class="hero-copy">
+      <view class="hero-heading">把个人品牌经营成一人公司</view>
+      <view class="hero-subtitle">用 AI workflow 处理调研、对标、选题、脚本和每日经营动作。</view>
+    </view>
+
+    <view class="hero-metrics">
+      <view class="metric-card metric-primary">
+        <view class="metric-label">今日积分</view>
+        <view class="metric-value">{{points}}</view>
+        <view class="metric-note">连续 {{streakDays}} 天打卡</view>
+      </view>
+      <view class="metric-card">
+        <view class="metric-label">当前阶段</view>
+        <view class="metric-text">{{growthLevel}}</view>
+        <view class="metric-note">继续完成高价值工作流</view>
+      </view>
+    </view>
+
+    <view class="hero-actions">
+      <view class="hero-action hero-action-primary" bindtap="claimDailyPoints">领取今日积分</view>
+      <view class="hero-action hero-action-secondary" bindtap="openMembership">查看会员权益</view>
+    </view>
+
+    <view class="tag-row">
+      <view class="tag-chip" wx:for="{{personaTags}}" wx:key="*this">{{item}}</view>
     </view>
   </view>
-  
-  <!-- AI工具区域 -->
-  <view class="tools-section">
-    <view class="section-title">AI助手</view>
-    <view class="tools-grid">
-      <view class="tool-item" wx:for="{{aiTools}}" wx:key="id" bindtap="openAIChat" data-id="{{item.id}}">
-        <view class="tool-icon">
-          <image wx:if="{{item.icon}}" src="{{item.icon}}" mode="aspectFit" class="tool-icon-image"></image>
-          <text wx:else>{{item.emoji}}</text>
+
+  <view class="content">
+    <view class="insight-card">
+      <view class="insight-label">今日建议</view>
+      <view class="insight-title">{{dailyInsight.title}}</view>
+      <view class="insight-desc">{{dailyInsight.description}}</view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <view class="section-title">今日任务</view>
+        <view class="section-meta">积分驱动留存</view>
+      </view>
+      <view class="task-list">
+        <view class="task-item" wx:for="{{dailyTasks}}" wx:key="title">
+          <view class="task-status task-status-{{item.status}}"></view>
+          <view class="task-main">
+            <view class="task-title">{{item.title}}</view>
+            <view class="task-reward">{{item.reward}}</view>
+          </view>
+          <view class="task-state">{{item.status === 'done' ? '已完成' : '待完成'}}</view>
         </view>
-        <view class="tool-name">{{item.name}}</view>
+      </view>
+    </view>
+
+    <block wx:for="{{workflowGroups}}" wx:key="title">
+      <view class="section">
+        <view class="section-header">
+          <view class="section-title">{{item.title}}</view>
+          <view class="section-meta">点击即进入</view>
+        </view>
+        <view class="workflow-list">
+          <view class="workflow-card" wx:for="{{item.workflows}}" wx:key="id" bindtap="openAIChat" data-id="{{item.id}}">
+            <view class="workflow-top">
+              <view class="workflow-badge">{{item.badge}}</view>
+              <view class="workflow-cost">{{item.cost}} 积分</view>
+            </view>
+            <view class="workflow-name">{{item.name}}</view>
+            <view class="workflow-summary">{{item.summary}}</view>
+            <view class="workflow-footer">
+              <view class="workflow-duration">{{item.duration}}</view>
+              <view class="workflow-arrow">开始</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="section" wx:if="{{recentChats.length > 0}}">
+      <view class="section-header">
+        <view class="section-title">最近经营记录</view>
+        <view class="section-meta">继续上次任务</view>
+      </view>
+      <view class="recent-list">
+        <view class="recent-item" wx:for="{{recentChats}}" wx:key="_id" bindtap="continueChat" data-id="{{item._id}}" data-botid="{{item.botId}}" data-title="{{item.title}}">
+          <view class="recent-icon">记录</view>
+          <view class="recent-info">
+            <view class="recent-title">{{item.title}}</view>
+            <view class="recent-time">{{item.lastMessage}}</view>
+          </view>
+          <view class="recent-arrow">继续</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <view class="section-title">产品原则</view>
+        <view class="section-meta">给用户的价值</view>
+      </view>
+      <view class="principles">
+        <view class="principle-item">
+          <view class="principle-title">先给今日动作</view>
+          <view class="principle-text">用户打开后，先看到最值得做的事情，而不是一堆 AI 能力名词。</view>
+        </view>
+        <view class="principle-item">
+          <view class="principle-title">工作流优先于闲聊</view>
+          <view class="principle-text">把调研、对标、脚本和经营建议做成明确入口，聊天作为延展交互层。</view>
+        </view>
       </view>
     </view>
   </view>
-  
-  <!-- 最近会话 -->
-  <view class="recent-section" wx:if="{{recentChats.length > 0}}">
-    <view class="section-title">最近会话</view>
-    <view class="recent-list">
-      <view class="recent-item" wx:for="{{recentChats}}" wx:key="_id" bindtap="continueChat" data-id="{{item._id}}" data-botid="{{item.botId}}" data-title="{{item.title}}">
-        <view class="recent-icon">💬</view>
-        <view class="recent-info">
-          <view class="recent-title">{{item.title || '智能助手'}}</view>
-          <view class="recent-time">{{item.lastMessage || '开始新的对话...'}}</view>
-        </view>
-        <view class="recent-arrow">〉</view>
-      </view>
-    </view>
-  </view>
-  
-  <!-- 底部区域 -->
+
   <view class="footer">
-    <view class="version-info">版本 1.0.0</view>
+    <view class="version-info">ZenithJoy Miniapp · AI one-person company beta</view>
   </view>
 </view>
 
-<!-- 应急错误页面 -->
 <view class="emergency-container" wx:if="{{isEmergency}}">
   <view class="emergency-content">
     <icon type="warn" size="64" color="#ff4d4f"></icon>
     <text class="emergency-text">{{errorMsg || '页面加载出错，请重启小程序'}}</text>
     <button class="emergency-btn" bindtap="reloadPage">重新加载</button>
   </view>
-</view> 
+</view>

@@ -1,17 +1,16 @@
-/* 聊天页面样式 */
-
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background-color: #f6f7f9;
-  padding-bottom: env(safe-area-inset-bottom);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(247, 206, 151, 0.24), transparent 28%),
+    linear-gradient(180deg, #f4eee5 0%, #f7f4ef 34%, #fbfaf7 100%);
+  padding-bottom: calc(210rpx + env(safe-area-inset-bottom));
 }
 
-/* 系统消息样式 */
 .system-messages {
   position: fixed;
-  top: 0;
+  top: 18rpx;
   left: 0;
   right: 0;
   z-index: 100;
@@ -23,7 +22,7 @@
 
 .system-message {
   margin: 6rpx 0;
-  padding: 8rpx 24rpx;
+  padding: 10rpx 26rpx;
   border-radius: 30rpx;
   font-size: 24rpx;
   max-width: 90%;
@@ -32,7 +31,7 @@
 }
 
 .system-message-info {
-  background-color: rgba(7, 193, 96, 0.8);
+  background-color: rgba(29, 61, 54, 0.86);
   color: white;
 }
 
@@ -51,6 +50,59 @@
   color: white;
 }
 
+.workflow-panel {
+  margin: 34rpx 24rpx 18rpx;
+  padding: 28rpx;
+  border-radius: 32rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1rpx solid rgba(92, 71, 56, 0.08);
+  box-shadow: 0 18rpx 42rpx rgba(71, 50, 34, 0.08);
+}
+
+.workflow-top {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 18rpx;
+}
+
+.workflow-badge {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(31, 64, 57, 0.1);
+  color: #21423c;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.workflow-title {
+  font-size: 38rpx;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #241813;
+}
+
+.workflow-objective {
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: #665448;
+  margin-bottom: 18rpx;
+}
+
+.workflow-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.metric-chip {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(243, 239, 232, 0.95);
+  color: #7b685b;
+  font-size: 22rpx;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20rpx); }
   to { opacity: 1; transform: translateY(0); }
@@ -61,17 +113,15 @@
   to { opacity: 0; }
 }
 
-/* 消息列表样式 */
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 30rpx 30rpx 120rpx;
-  margin-bottom: 120rpx;
+  padding: 0 24rpx 32rpx;
 }
 
 .message-item {
-  max-width: 80%;
-  margin-bottom: 30rpx;
+  max-width: 86%;
+  margin-bottom: 28rpx;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -111,41 +161,47 @@
   margin-right: auto;
 }
 
+.message-label {
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
+  color: #8d7867;
+  margin-bottom: 10rpx;
+}
+
 .message-content {
-  padding: 20rpx 24rpx;
-  border-radius: 18rpx;
+  padding: 24rpx 26rpx;
+  border-radius: 24rpx;
   font-size: 28rpx;
-  line-height: 1.5;
+  line-height: 1.7;
   word-break: break-word;
   position: relative;
 }
 
 .user-message .message-content {
-  background-color: #07C160;
-  color: white;
-  border-top-right-radius: 4rpx;
+  background: linear-gradient(180deg, #1f4138 0%, #18312b 100%);
+  color: #f8efe6;
+  border-top-right-radius: 8rpx;
 }
 
 .assistant-message .message-content {
-  background-color: white;
-  color: #333333;
-  border-top-left-radius: 4rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.86);
+  color: #2a211d;
+  border-top-left-radius: 8rpx;
+  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.07);
 }
 
 .error-message .message-content {
-  background-color: #ffebee;
+  background-color: #fff0ed;
   color: #d32f2f;
 }
 
 .message-time {
   font-size: 20rpx;
-  color: #999999;
-  margin-top: 6rpx;
+  color: #948275;
+  margin-top: 10rpx;
   align-self: flex-end;
 }
 
-/* 加载动画 */
 .loading-dots {
   display: inline-flex;
   margin-right: 10rpx;
@@ -174,52 +230,77 @@
   100% { opacity: 1; }
 }
 
-/* 输入框样式 */
+.prompt-panel {
+  margin: 0 24rpx 18rpx;
+}
+
+.prompt-title {
+  font-size: 24rpx;
+  color: #7f6e62;
+  margin-bottom: 12rpx;
+  font-weight: 600;
+}
+
+.prompt-scroll {
+  white-space: nowrap;
+}
+
+.prompt-list {
+  display: inline-flex;
+  gap: 14rpx;
+  padding-right: 20rpx;
+}
+
+.prompt-chip {
+  padding: 18rpx 22rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1rpx solid rgba(90, 70, 54, 0.08);
+  color: #4d3d33;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
 .input-container {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
-  padding: 20rpx 30rpx;
-  background-color: white;
-  border-top: 1rpx solid #e5e5e5;
-  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom));
+  background-color: rgba(250, 247, 243, 0.96);
+  border-top: 1rpx solid rgba(92, 71, 56, 0.08);
+  box-shadow: 0 -10rpx 30rpx rgba(0, 0, 0, 0.04);
   z-index: 10;
 }
 
 .message-input {
   flex: 1;
-  height: 72rpx;
-  background-color: #f5f5f5;
-  border-radius: 36rpx;
+  height: 84rpx;
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 28rpx;
   padding: 0 30rpx;
   font-size: 28rpx;
-  color: #333;
+  color: #332822;
+  border: 1rpx solid rgba(90, 70, 54, 0.08);
 }
 
 .send-button {
-  width: 120rpx;
-  height: 72rpx;
-  line-height: 72rpx;
-  margin-left: 20rpx;
-  background-color: #07C160;
-  color: white;
-  border-radius: 36rpx;
+  width: 132rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  margin-left: 16rpx;
+  background-color: #1d1a17;
+  color: #f7efe6;
+  border-radius: 28rpx;
   font-size: 28rpx;
   padding: 0;
 }
 
 .send-button-disabled {
-  background-color: rgba(7, 193, 96, 0.5);
+  background-color: rgba(29, 26, 23, 0.45);
 }
 
-/* 功能按钮区域 - 移除 */
-.action-buttons {
-  display: none;
-}
-
-/* 图片样式 */
 .message-images {
   margin-top: 16rpx;
   width: 100%;
@@ -244,19 +325,16 @@
   max-height: 400rpx;
 }
 
-/* 分段消息样式 */
 .assistant-message + .assistant-message {
   margin-top: 12rpx;
 }
 
-/* 标题消息特殊样式 */
 .assistant-message .message-content strong,
 .assistant-message .message-content .title-text {
   font-weight: bold;
-  color: #07C160;
+  color: #21423c;
 }
 
-/* 图片容器呼吸动画 */
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(7, 193, 96, 0.1);
@@ -267,4 +345,4 @@
   100% {
     box-shadow: 0 0 0 0 rgba(7, 193, 96, 0);
   }
-} 
+}
