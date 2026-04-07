@@ -23,25 +23,40 @@ Page({
     hasUserInfo: false,
     canIUseGetUserProfile: false,
     isAdmin: false,
+    statusBarHeight: 20,
     phoneNumber: '', // 添加用户手机号
-    points: 26,
-    streakDays: 8,
-    profileStage: '体验版创作者',
+    profileName: 'Jin · 创作者',
+    avatarInitials: 'JY',
+    showProfileCard: true,
+    points: 1280,
+    streakDays: 6,
+    weeklyGrowth: 160,
+    monthlySpend: 42,
+    profileStage: '连续打卡 6 天',
     growthStats: [
-      { label: '今日可用积分', value: '26' },
+      { label: '今日可用积分', value: '1280' },
       { label: '连续打卡', value: '8 天' },
       { label: '最近任务', value: '3 条' }
     ],
     assetMenus: [
-      { id: 'membership', title: '会员与积分', desc: '查看权益、额度和升级入口', icon: '积分' },
-      { id: 'history', title: '经营记录', desc: '继续查看对话、任务和历史产出', icon: '记录' }
+      { id: 'membership', title: '积分明细', desc: '查看权益、额度和升级入口', icon: '积分' },
+      { id: 'history', title: '任务中心', desc: '继续查看对话、任务和历史产出', icon: '记录' },
+      { id: 'membership', title: '会员管理', desc: '查看权益状态', icon: '会员' }
     ],
     supportMenus: [
       { id: 'clear', title: '清除缓存', desc: '重置本地登录信息与历史缓存', icon: '清理' }
     ],
+    growthBenefits: [
+      { title: '每周赠送 50 积分', status: '已开启' },
+      { title: '专属 AI 助理高阶提示词', status: '可用' }
+    ],
+    recentActivities: [
+      { title: '完成标题生成 6 次', value: '-24' },
+      { title: '完成朋友圈文案 3 次', value: '-12' }
+    ],
     membership: {
       level: 'free', // 默认是免费会员
-      name: '普通会员',
+      name: '成长会员',
       expireDate: null
     }
   },
@@ -50,6 +65,15 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    try {
+      const systemInfo = wx.getSystemInfoSync()
+      this.setData({
+        statusBarHeight: systemInfo.statusBarHeight || 20
+      })
+    } catch (e) {
+      console.error('获取系统信息失败', e)
+    }
+
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -133,7 +157,9 @@ Page({
       if (userInfo) {
         this.setData({
           userInfo: userInfo,
-          hasUserInfo: true
+          hasUserInfo: true,
+          profileName: userInfo.nickName || 'Jin · 创作者',
+          avatarInitials: (userInfo.nickName || 'JY').slice(0, 2)
         })
         
         // 检查是否有手机号
@@ -157,7 +183,9 @@ Page({
         })
       } else {
         this.setData({
-          hasUserInfo: false
+          hasUserInfo: false,
+          profileName: 'Jin · 创作者',
+          avatarInitials: 'JY'
         })
         resolve()
       }
@@ -184,7 +212,9 @@ Page({
         // 更新数据
         this.setData({
           userInfo: res.userInfo,
-          hasUserInfo: true
+          hasUserInfo: true,
+          profileName: res.userInfo.nickName || 'Jin · 创作者',
+          avatarInitials: (res.userInfo.nickName || 'JY').slice(0, 2)
         })
         
         // 保存用户信息到云数据库

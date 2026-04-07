@@ -24,26 +24,12 @@ const AI_BOTS = {
 Page({
   data: {
     statusBarHeight: 20,
-    points: 128,
-    creationSteps: [
-      { title: '热点' },
-      { title: '灵感' },
-      { title: '选题' },
-      { title: '知识库' }
+    quickActions: [
+      '常见问题',
+      '徐先生课程',
+      '联系我们'
     ],
-    titleActions: [
-      { label: '冲突型', bot: 'content' },
-      { label: '数字型', bot: 'writer' },
-      { label: '悬念型', bot: 'expert' },
-      { label: '图配人群', bot: 'content' },
-      { label: '情绪型', bot: 'writer' },
-      { label: '方法型', bot: 'expert' }
-    ],
-    momentActions: [
-      { label: '基础', bot: 'content' },
-      { label: '六大支柱', bot: 'writer' },
-      { label: '内容类型', bot: 'expert' }
-    ]
+    previewMessage: '我可以先帮你拆 3 条低粉爆款，再给你可用标题。'
   },
 
   onLoad() {
@@ -57,17 +43,11 @@ Page({
     }
   },
 
-  openFeature(e) {
-    const { id } = e.currentTarget.dataset;
-    const aiBot = AI_BOTS[id];
-
-    if (!aiBot) {
-      wx.showToast({ title: '功能准备中', icon: 'none' });
-      return;
-    }
-
+  openAssistant(e) {
+    const { prompt, bot } = e.currentTarget.dataset;
+    const aiBot = AI_BOTS[bot || 'expert'];
     wx.navigateTo({
-      url: `/pages/ai-chat/ai-chat?botId=${aiBot.botId}&title=${encodeURIComponent(aiBot.title)}&prompt=${encodeURIComponent(aiBot.prompt)}`
+      url: `/pages/ai-chat/ai-chat?botId=${aiBot.botId}&title=${encodeURIComponent(aiBot.title)}&prompt=${encodeURIComponent(prompt || aiBot.prompt)}`
     });
   }
 });

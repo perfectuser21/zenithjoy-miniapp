@@ -43,7 +43,12 @@ Page({
     title: '',
     chatType: 'general',
     botId: '',
-    workflowMeta: DEFAULT_META
+    workflowMeta: DEFAULT_META,
+    quickActions: DEFAULT_META.prompts,
+    primaryPrompt: DEFAULT_META.prompts[0],
+    welcomeText: DEFAULT_META.objective,
+    statusBarHeight: 20,
+    scrollAnchor: ''
   },
 
   onLoad: function(options) {
@@ -58,12 +63,24 @@ Page({
     });
 
     const workflowMeta = WORKFLOW_META[title] || DEFAULT_META;
+    let statusBarHeight = 20;
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      statusBarHeight = systemInfo.statusBarHeight || 20;
+    } catch (e) {
+      console.error('获取系统信息失败', e);
+    }
     
     this.setData({
       title,
       chatType: type,
       botId,
-      workflowMeta
+      workflowMeta,
+      quickActions: workflowMeta.prompts.slice(0, 3),
+      primaryPrompt: workflowMeta.prompts[0],
+      welcomeText: prompt || workflowMeta.objective,
+      statusBarHeight,
+      scrollAnchor: 'msg-bottom'
     });
     
     const welcomeMessage = prompt || '你好！我是AI助手，有什么可以帮到您的吗？';
@@ -77,7 +94,8 @@ Page({
           time: this.formatTime(new Date()),
           label: '工作流输出'
         }
-      ]
+      ],
+      scrollAnchor: 'msg-bottom'
     });
     
     // 自动滚动到底部
@@ -154,7 +172,8 @@ Page({
     this.setData({
       messages: updatedMessages,
       inputValue: '',
-      sending: true
+      sending: true,
+      scrollAnchor: 'msg-bottom'
     });
     
     // 自动滚动到底部
@@ -170,7 +189,8 @@ Page({
     };
     
     this.setData({
-      messages: [...updatedMessages, loadingMessage]
+      messages: [...updatedMessages, loadingMessage],
+      scrollAnchor: 'msg-bottom'
     });
     
     // 调用聊天API获取回复
@@ -218,7 +238,8 @@ Page({
         
         this.setData({
           messages: updatedMessages,
-          sending: false
+          sending: false,
+          scrollAnchor: 'msg-bottom'
         });
         
         // 自动滚动到底部
@@ -255,7 +276,8 @@ Page({
       
       this.setData({
         messages: updatedMessages,
-        sending: false
+        sending: false,
+        scrollAnchor: 'msg-bottom'
       });
     } else {
       // 添加系统错误提示
@@ -266,19 +288,15 @@ Page({
   
   // 滚动到底部
   scrollToBottom: function() {
+    this.setData({
+      scrollAnchor: ''
+    });
+
     setTimeout(() => {
-      wx.createSelectorQuery()
-        .select('#message-container')
-        .boundingClientRect(rect => {
-          if (rect) {
-            wx.pageScrollTo({
-              scrollTop: rect.height,
-              duration: 300
-            });
-          }
-        })
-        .exec();
-    }, 100);
+      this.setData({
+        scrollAnchor: 'msg-bottom'
+      });
+    }, 50);
   },
   
   // 预览图片

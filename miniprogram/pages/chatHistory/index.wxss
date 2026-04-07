@@ -1,40 +1,42 @@
 /* 聊天记录页面样式 */
 .container {
-  padding: 0 0 20rpx 0;
+  padding: 0 32rpx calc(64rpx + env(safe-area-inset-bottom));
   min-height: 100vh;
-  background-color: #f8f8f8;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(122, 109, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
+  box-sizing: border-box;
 }
 
 .header {
-  background: #fff;
-  padding: 30rpx;
+  background: transparent;
+  padding: 32rpx 0 24rpx;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
-  border-bottom: 1rpx solid #eee;
 }
 
 .title {
-  font-size: 34rpx;
+  font-size: 56rpx;
   font-weight: bold;
-  color: #333;
+  color: #111827;
 }
 
 .chat-list {
-  padding: 20rpx;
+  padding: 0;
 }
 
 .chat-item {
-  background-color: #fff;
-  border-radius: 16rpx;
+  background-color: rgba(255, 255, 255, 0.94);
+  border-radius: 28rpx;
   margin-bottom: 20rpx;
-  padding: 30rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 28rpx 24rpx;
+  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
 }
 
 .chat-date {
   font-size: 24rpx;
-  color: #999;
+  color: #8f95af;
   margin-bottom: 16rpx;
 }
 
@@ -44,9 +46,9 @@
 }
 
 .chat-question {
-  font-size: 30rpx;
-  color: #333;
-  font-weight: 500;
+  font-size: 32rpx;
+  color: #1f2937;
+  font-weight: 700;
   margin-bottom: 16rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -56,8 +58,8 @@
 }
 
 .chat-answer {
-  font-size: 26rpx;
-  color: #666;
+  font-size: 24rpx;
+  color: #6b7280;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -66,8 +68,8 @@
 }
 
 .chat-status {
-  font-size: 26rpx;
-  color: #999;
+  font-size: 24rpx;
+  color: #8f95af;
 }
 
 .empty-state {
@@ -75,7 +77,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100rpx 40rpx;
+  padding: 120rpx 40rpx;
 }
 
 .empty-image {
@@ -98,11 +100,13 @@
 }
 
 .go-chat-btn {
-  background-color: #07c160;
+  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
   color: #fff;
-  font-size: 30rpx;
-  padding: 20rpx 60rpx;
-  border-radius: 40rpx;
+  font-size: 28rpx;
+  width: 280rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  border-radius: 24rpx;
 }
 
 .loading {
@@ -114,7 +118,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.76);
   z-index: 999;
 }
 
@@ -123,7 +127,7 @@
   height: 80rpx;
   border-radius: 50%;
   border: 6rpx solid #f3f3f3;
-  border-top: 6rpx solid #07c160;
+  border-top: 6rpx solid #7267ff;
   animation: spin 1s linear infinite;
 }
 
