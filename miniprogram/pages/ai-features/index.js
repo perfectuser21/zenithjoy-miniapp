@@ -40,7 +40,7 @@ Page({
       { label: '方法型', bot: 'expert' }
     ],
     momentActions: [
-      { label: '基础', bot: 'content' },
+      { label: '想法', bot: 'content' },
       { label: '六大支柱', bot: 'writer' },
       { label: '内容类型', bot: 'expert' }
     ]

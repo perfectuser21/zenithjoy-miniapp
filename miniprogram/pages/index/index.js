@@ -36,7 +36,7 @@ Page({
       description: '先研究 3 个低粉爆款，再进入脚本生成。这样今天的选题判断会更稳。'
     },
     todayRanking: [
-      { rank: '榜单', title: '抖音热点榜', bot: 'content' },
+      { rank: '热点', title: '抖音热点榜', bot: 'content' },
       { rank: '低粉', title: '低粉爆款榜', bot: 'imagine' },
       { rank: '涨粉', title: '高涨粉榜', bot: 'expert' }
     ],
@@ -47,8 +47,8 @@ Page({
       { id: 'content', title: '朋友圈文案', desc: '轻量输出', icon: '✉' }
     ],
     collectionTasks: [
-      { id: 'c1', index: '01', title: '油管大神 Dan Koe：最快建立一人公司（详细指南）', desc: '', bot: 'expert' },
-      { id: 'c2', index: '02', title: '拆解百万博主 Dan Koe 爆文创作系统', desc: '', bot: 'writer' },
+      { id: 'c1', index: '01', title: '油管大神Dan Koe: 最快建立一人公司（详细指南）', desc: '', bot: 'expert' },
+      { id: 'c2', index: '02', title: '拆解百万博主Dan Koe爆文创作系统', desc: '', bot: 'writer' },
       { id: 'c3', index: '03', title: '如何用AI做出百万价值的内容', desc: '', bot: 'content' }
     ],
     recentChats: [],

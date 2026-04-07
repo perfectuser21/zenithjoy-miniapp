@@ -6,8 +6,11 @@
         <view class="page-title">今天先做什么</view>
       </view>
       <view class="hero-chip" bindtap="openMembership">
-        <view class="hero-chip-title">成长会员</view>
-        <view class="hero-chip-meta">连续打卡 {{streakDays}} 天</view>
+        <view class="hero-chip-icon">会</view>
+        <view class="hero-chip-copy">
+          <view class="hero-chip-title">成长会员</view>
+          <view class="hero-chip-meta">连续打卡 {{streakDays}} 天</view>
+        </view>
       </view>
     </view>
 
@@ -15,7 +18,7 @@
       <image class="hero-image" src="/images/home-banner.png" mode="aspectFill"></image>
       <view class="hero-overlay"></view>
       <view class="hero-banner-content">
-        <view class="hero-badge">今日创作单</view>
+        <view class="hero-badge">今日创作提示</view>
         <view class="hero-banner-title">{{dailyInsight.title}}</view>
         <view class="hero-banner-desc">{{dailyInsight.description}}</view>
       </view>
@@ -25,10 +28,10 @@
   <view class="section">
     <view class="section-head">
       <view>
-        <view class="section-kicker">TODAY RANKING</view>
-        <view class="section-title">今日榜单</view>
+        <view class="section-kicker rank-kicker">TODAY RANKING</view>
+        <view class="section-title rank-title">今日榜单</view>
       </view>
-      <view class="section-link">实时更新</view>
+      <view class="section-link rank-link">实时更新</view>
     </view>
     <view class="ranking-list">
       <view class="ranking-item {{index === 0 ? 'ranking-item-primary' : 'ranking-item-secondary'}}" wx:for="{{todayRanking}}" wx:key="title">
@@ -44,10 +47,10 @@
   <view class="section">
     <view class="section-head">
       <view>
-        <view class="section-kicker">MEDIA CREATION</view>
-        <view class="section-title">自媒体创作区域</view>
+        <view class="section-kicker create-kicker">MEDIA CREATION</view>
+        <view class="section-title create-title">自媒体创作区域</view>
       </view>
-      <view class="section-link" bindtap="openStudio">常用工具</view>
+      <view class="section-link create-link" bindtap="openStudio">常用工具</view>
     </view>
     <view class="tool-grid">
       <view
@@ -69,10 +72,10 @@
   <view class="section">
     <view class="section-head">
       <view>
-        <view class="section-kicker">CREATOR COLLECTION</view>
-        <view class="section-title">自媒体前沿创作集</view>
+        <view class="section-kicker collection-kicker">CREATOR COLLECTION</view>
+        <view class="section-title collection-head-title">自媒体前沿创作集</view>
       </view>
-      <view class="section-link" bindtap="openStudio">精选 3 篇</view>
+      <view class="section-link collection-head-link" bindtap="openStudio">精选 3 篇</view>
     </view>
     <view class="collection-list">
       <view

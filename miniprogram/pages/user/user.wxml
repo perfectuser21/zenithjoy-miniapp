@@ -26,17 +26,17 @@
         <view class="points-value">{{points}}</view>
         <view class="points-growth">
           <view class="points-growth-value">本周 +{{weeklyGrowth}}</view>
-          <view class="points-growth-meta">本月消耗 {{monthlySpend}}</view>
+          <view class="points-growth-meta">本周消耗 {{monthlySpend}}</view>
         </view>
       </view>
       <view class="points-stats">
         <view class="points-stat">
           <view class="points-stat-title">积分获取</view>
-          <view class="points-stat-desc">签到 / 提问 / 问答</view>
+          <view class="points-stat-desc">签到/推荐/问答</view>
         </view>
         <view class="points-stat">
           <view class="points-stat-title">积分消耗</view>
-          <view class="points-stat-desc">标题 / 文案 / 助理</view>
+          <view class="points-stat-desc">标题/文案/助理</view>
         </view>
       </view>
     </view>
