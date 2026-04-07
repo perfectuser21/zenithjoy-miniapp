@@ -3,6 +3,7 @@
     <view class="hero-top">
       <view>
         <view class="eyebrow">AI 自媒体小程序</view>
+        <view class="build-badge">BUILD 20260407-03</view>
         <view class="page-title">今天先做什么</view>
       </view>
       <view class="hero-chip" bindtap="openMembership">
