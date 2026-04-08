@@ -1,0 +1,37 @@
+<view class="page">
+  <view class="stack">
+    <view class="progress">
+      <view class="progress-main">找方向 / 选题 / 出成稿</view>
+      <view class="progress-step">5 / 6</view>
+    </view>
+
+    <view class="hero" wx:if="{{topic}}">
+      <view class="kicker">STEP 5</view>
+      <view class="title">{{topic.title}}</view>
+      <view class="desc">{{topic.summary}}</view>
+    </view>
+
+    <view class="notice" wx:if="{{generating}}">正在围绕这个选题生成 3 篇不同结构的文章...</view>
+
+    <view class="list">
+      <view class="article-card" wx:for="{{articles}}" wx:key="articleId">
+        <view class="badge">{{item.variantLabel}}</view>
+        <view class="card-title">{{item.title}}</view>
+        <view class="card-desc">{{item.preview200}}...</view>
+        <view class="meta">
+          <view class="badge">约 {{item.wordCount}} 字</view>
+        </view>
+        <view class="card-actions">
+          <view class="card-action" bindtap="openDetail" data-id="{{item.articleId}}">查看全文</view>
+          <view class="card-action" bindtap="regenerateOne" data-id="{{item.articleId}}">重生成本篇</view>
+          <view class="card-action" bindtap="copyPreview" data-id="{{item.articleId}}">复制预览</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer">
+      <button class="btn-secondary" bindtap="goBack">换一个选题</button>
+      <button class="btn" bindtap="regenerateAll" loading="{{generating}}" disabled="{{generating}}">全部重新生成</button>
+    </view>
+  </view>
+</view>

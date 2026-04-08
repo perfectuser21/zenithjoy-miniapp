@@ -3,7 +3,7 @@
     <view class="eyebrow">MY CENTER</view>
     <view class="title-row">
       <view class="title">我的</view>
-      <view class="section-link">编辑资料</view>
+      <view class="edit-chip">编辑资料</view>
     </view>
   </view>
 
@@ -70,8 +70,8 @@
 
   <view class="section-block">
     <view class="section-head">
-      <view class="section-title">最近活跃</view>
-      <view class="section-meta">本周</view>
+      <view class="section-title section-title-recent">最近活跃</view>
+      <view class="section-meta section-meta-week">本周</view>
     </view>
     <view class="activity-list">
       <view class="activity-item" wx:for="{{recentActivities}}" wx:key="title">

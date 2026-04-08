@@ -1,133 +1,122 @@
 <view class="page">
-  <view class="hero" style="padding-top: {{statusBarHeight + 12}}px;">
-    <view class="hero-top">
-      <view>
-        <view class="eyebrow">AI 自媒体小程序</view>
-        <view class="build-badge">BUILD 20260407-03</view>
-        <view class="page-title">今天先做什么</view>
+  <view class="page-shell" style="padding-top: {{statusBarHeight + 20}}px;">
+    <view class="head">
+      <view class="head-copy">
+        <view class="head-kicker">AI 自媒体小程序</view>
+        <view class="head-title">今天先做什么</view>
       </view>
-      <view class="hero-chip" bindtap="openMembership">
-        <view class="hero-chip-icon">会</view>
-        <view class="hero-chip-copy">
-          <view class="hero-chip-title">成长会员</view>
-          <view class="hero-chip-meta">连续打卡 {{streakDays}} 天</view>
+      <view class="user-entry" bindtap="openMembership">
+        <view class="user-avatar">{{memberInitial}}</view>
+        <view class="user-meta">
+          <view class="user-tier">{{memberTier}}</view>
+          <view class="user-streak">连续打卡 {{streakDays}} 天</view>
         </view>
       </view>
     </view>
 
-    <view class="hero-banner" bindtap="openStudio">
-      <image class="hero-image" src="/images/home-banner.png" mode="aspectFill"></image>
-      <view class="hero-overlay"></view>
-      <view class="hero-banner-content">
-        <view class="hero-badge">今日创作提示</view>
-        <view class="hero-banner-title">{{dailyInsight.title}}</view>
-        <view class="hero-banner-desc">{{dailyInsight.description}}</view>
+    <view class="hero-card" bindtap="openAIChat" data-id="expert">
+      <image class="hero-image" src="{{heroCard.image}}" mode="aspectFill"></image>
+      <view class="hero-mask"></view>
+      <view class="hero-chip">{{heroCard.tag}}</view>
+      <view class="hero-copy">
+        <view class="hero-title">{{heroCard.titleTop}}</view>
+        <view class="hero-title">{{heroCard.titleBottom}}</view>
+        <view class="hero-desc">{{heroCard.description}}</view>
       </view>
     </view>
-  </view>
 
-  <view class="section">
-    <view class="section-head">
-      <view>
-        <view class="section-kicker rank-kicker">TODAY RANKING</view>
-        <view class="section-title rank-title">今日榜单</view>
-      </view>
-      <view class="section-link rank-link">实时更新</view>
-    </view>
-    <view class="ranking-list">
-      <view class="ranking-item {{index === 0 ? 'ranking-item-primary' : 'ranking-item-secondary'}}" wx:for="{{todayRanking}}" wx:key="title">
-        <view class="ranking-left">
-          <view class="ranking-index">{{item.rank}}</view>
-          <view class="ranking-title {{index === 0 ? 'ranking-title-primary' : 'ranking-title-secondary'}}">{{item.title}}</view>
+    <view class="panel">
+      <view class="panel-head">
+        <view class="panel-head-copy">
+          <view class="panel-kicker panel-kicker-ranking">TODAY RANKING</view>
+          <view class="panel-title">今日榜单</view>
         </view>
-        <view class="ranking-action" bindtap="openAIChat" data-id="{{item.bot}}">查看</view>
+        <view class="panel-hint panel-hint-muted">实时更新</view>
       </view>
-    </view>
-  </view>
-
-  <view class="section">
-    <view class="section-head">
-      <view>
-        <view class="section-kicker create-kicker">MEDIA CREATION</view>
-        <view class="section-title create-title">自媒体创作区域</view>
-      </view>
-      <view class="section-link create-link" bindtap="openStudio">常用工具</view>
-    </view>
-    <view class="tool-grid">
       <view
-        class="tool-card {{index === 0 ? 'tool-card-primary' : ''}}"
-        wx:for="{{creationCards}}"
-        wx:key="id"
-        bindtap="openAIChat"
-        data-id="{{item.id}}"
+        class="rank-row"
+        wx:for="{{rankingItems}}"
+        wx:key="title"
+        bindtap="handleAction"
+        data-type="{{item.actionType}}"
+        data-target="{{item.actionTarget}}"
       >
-        <view class="tool-card-top">
-          <view class="tool-card-title">{{item.title}}</view>
-          <view class="tool-card-icon">{{item.icon}}</view>
-        </view>
-        <view class="tool-card-desc">{{item.desc}}</view>
+        <view class="rank-tag">{{item.tag}}</view>
+        <view class="rank-title">{{item.title}}</view>
+        <view class="rank-link">查看</view>
       </view>
     </view>
-  </view>
 
-  <view class="section">
-    <view class="section-head">
-      <view>
-        <view class="section-kicker collection-kicker">CREATOR COLLECTION</view>
-        <view class="section-title collection-head-title">自媒体前沿创作集</view>
-      </view>
-      <view class="section-link collection-head-link" bindtap="openStudio">精选 3 篇</view>
-    </view>
-    <view class="collection-list">
-      <view
-        class="collection-item {{index === 0 ? 'collection-item-primary' : 'collection-item-secondary'}}"
-        wx:for="{{collectionTasks}}"
-        wx:key="id"
-        bindtap="openAIChat"
-        data-id="{{item.bot}}"
-      >
-        <view class="collection-index">{{item.index}}</view>
-        <view class="collection-main">
-          <view class="collection-title {{index === 0 ? 'collection-title-primary' : 'collection-title-secondary'}}">{{item.title}}</view>
-          <view class="collection-desc">{{item.desc}}</view>
+    <view class="panel panel-creation">
+      <view class="panel-head">
+        <view class="panel-head-copy">
+          <view class="panel-kicker panel-kicker-creation panel-kicker-purple">MEDIA CREATION</view>
+          <view class="panel-title">自媒体创作区域</view>
         </view>
+        <view class="panel-hint panel-hint-purple">常用工具</view>
+      </view>
+
+      <view class="tool-grid">
+        <view
+          class="tool-card {{item.cardClass}}"
+          wx:for="{{creationTools}}"
+          wx:key="title"
+          bindtap="handleAction"
+          data-type="{{item.actionType}}"
+          data-target="{{item.actionTarget}}"
+        >
+          <view class="tool-icon-box {{item.iconBoxClass}}">
+            <view wx:if="{{item.iconType === 'target'}}" class="tool-icon-target">
+              <view class="target-ring target-ring-outer"></view>
+              <view class="target-ring target-ring-inner"></view>
+              <view class="target-dot"></view>
+              <view class="target-line target-line-horizontal"></view>
+              <view class="target-line target-line-vertical"></view>
+            </view>
+            <view wx:elif="{{item.iconType === 'pen'}}" class="tool-icon-pen">
+              <view class="pen-body"></view>
+              <view class="pen-tip"></view>
+              <view class="pen-cut"></view>
+            </view>
+            <view wx:elif="{{item.iconType === 'sparkles'}}" class="tool-icon-sparkles">
+              <view class="sparkle-ray sparkle-ray-vertical"></view>
+              <view class="sparkle-ray sparkle-ray-horizontal"></view>
+              <view class="sparkle-ray sparkle-ray-diagonal-a"></view>
+              <view class="sparkle-ray sparkle-ray-diagonal-b"></view>
+              <view class="sparkle-core"></view>
+            </view>
+            <view wx:else class="tool-icon-send">
+              <view class="send-outline"></view>
+              <view class="send-tail"></view>
+            </view>
+          </view>
+          <view class="tool-title">{{item.title}}</view>
+          <view class="tool-meta">{{item.meta}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="panel-head">
+        <view class="panel-head-copy">
+          <view class="panel-kicker panel-kicker-collection">CREATOR COLLECTION</view>
+          <view class="panel-title">自媒体前沿创作集</view>
+        </view>
+        <view class="panel-hint panel-hint-muted">精选文章</view>
+      </view>
+      <view
+        class="collection-row"
+        wx:for="{{collectionItems}}"
+        wx:key="index"
+        bindtap="handleAction"
+        data-type="{{item.actionType}}"
+        data-target="{{item.actionTarget}}"
+      >
+        <view class="collection-tag">{{item.index}}</view>
+        <view class="collection-title">{{item.title}}</view>
         <view class="collection-link">查看</view>
       </view>
     </view>
-  </view>
 
-  <view class="section" wx:if="{{recentChats.length > 0}}">
-    <view class="section-head">
-      <view class="section-title">最近对话</view>
-      <view class="section-link">继续处理</view>
-    </view>
-    <view class="recent-list">
-      <view
-        class="recent-item"
-        wx:for="{{recentChats}}"
-        wx:key="_id"
-        bindtap="continueChat"
-        data-id="{{item._id}}"
-        data-botid="{{item.botId}}"
-        data-title="{{item.title}}"
-      >
-        <view class="recent-mark">AI</view>
-        <view class="recent-body">
-          <view class="recent-title">{{item.title}}</view>
-          <view class="recent-desc">{{item.lastMessage}}</view>
-        </view>
-        <view class="recent-link">继续</view>
-      </view>
-    </view>
-  </view>
-
-  <view class="safe-bottom"></view>
-</view>
-
-<view class="emergency-container" wx:if="{{isEmergency}}">
-  <view class="emergency-content">
-    <icon type="warn" size="64" color="#ff4d4f"></icon>
-    <text class="emergency-text">{{errorMsg}}</text>
-    <button class="emergency-btn" bindtap="reloadPage">重新加载</button>
   </view>
 </view>

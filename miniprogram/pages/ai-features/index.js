@@ -26,16 +26,18 @@ Page({
     statusBarHeight: 20,
     points: 128,
     creationSteps: [
-      { title: '热点' },
-      { title: '灵感' },
-      { title: '选题' },
-      { title: '知识库' }
+      { no: '01', title: '收集关键词', desc: '先写下赛道、产品词和最近反复出现的问题。' },
+      { no: '02', title: '补充灵感', desc: '把热点、案例和你想讲的切口整理进来。' },
+      { no: '03', title: '明确人群', desc: '补齐目标读者、价值承诺和个人表达方式。' },
+      { no: '04', title: '生成选题', desc: '系统会基于前面信息输出 5 个可执行方向。' },
+      { no: '05', title: '扩写成稿', desc: '从选题进入正文，生成结构完整的文案初稿。' },
+      { no: '06', title: '打磨发布', desc: '继续细修标题、语气和发布版本，直接进入输出。' }
     ],
     titleActions: [
       { label: '冲突型', bot: 'content' },
       { label: '数字型', bot: 'writer' },
       { label: '悬念型', bot: 'expert' },
-      { label: '图配人群', bot: 'content' },
+      { label: '圈定人群', bot: 'content' },
       { label: '情绪型', bot: 'writer' },
       { label: '方法型', bot: 'expert' }
     ],

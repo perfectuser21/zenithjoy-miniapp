@@ -27,33 +27,34 @@ Page({
     hasUserInfo: false,
     canIUseGetUserProfile: false,
     isLoading: true,
-    isEmergency: false,
     isAdmin: false,
-    points: 18,
-    streakDays: 6,
-    dailyInsight: {
-      title: '今日建议：\n先做低粉爆款研究',
-      description: '先研究 3 个低粉爆款，再进入脚本生成。这样今天的选题判断会更稳。'
-    },
-    todayRanking: [
-      { rank: '热点', title: '抖音热点榜', bot: 'content' },
-      { rank: '低粉', title: '低粉爆款榜', bot: 'imagine' },
-      { rank: '涨粉', title: '高涨粉榜', bot: 'expert' }
-    ],
-    creationCards: [
-      { id: 'imagine', title: '智能选题', desc: '先定方向', icon: '◌' },
-      { id: 'writer', title: '文案创作', desc: '生成文案', icon: '✎' },
-      { id: 'expert', title: '爆款标题', desc: '强化点击', icon: '✦' },
-      { id: 'content', title: '朋友圈文案', desc: '轻量输出', icon: '✉' }
-    ],
-    collectionTasks: [
-      { id: 'c1', index: '01', title: '油管大神Dan Koe: 最快建立一人公司（详细指南）', desc: '', bot: 'expert' },
-      { id: 'c2', index: '02', title: '拆解百万博主Dan Koe爆文创作系统', desc: '', bot: 'writer' },
-      { id: 'c3', index: '03', title: '如何用AI做出百万价值的内容', desc: '', bot: 'content' }
-    ],
-    recentChats: [],
     statusBarHeight: 20,
-    errorMsg: '页面加载出错，请重启小程序'
+    memberInitial: "X",
+    memberTier: "成长会员",
+    streakDays: 6,
+    heroCard: {
+      tag: "今日创作提示",
+      titleTop: "今日建议：",
+      titleBottom: "先做低粉爆款研究",
+      description: "先研究 3 个低粉爆款，再进入脚本生成。这样今天的选题判断会更稳。",
+      image: "/images/home-banner.png"
+    },
+    rankingItems: [
+      { tag: "热点", title: "抖音热点榜", actionType: "page", actionTarget: "articles" },
+      { tag: "低粉", title: "低粉爆款榜", actionType: "chat", actionTarget: "imagine" },
+      { tag: "涨粉", title: "高涨粉榜", actionType: "chat", actionTarget: "content" }
+    ],
+    creationTools: [
+      { title: "智能选题", meta: "先定方向", iconType: "target", cardClass: "tool-card-gradient", iconBoxClass: "tool-icon-box-gradient", actionType: "chat", actionTarget: "content" },
+      { title: "文案创作", meta: "6 步工作流", iconType: "pen", cardClass: "tool-card-blue", iconBoxClass: "tool-icon-box-blue", actionType: "page", actionTarget: "copywriter" },
+      { title: "爆款标题", meta: "强化点击", iconType: "sparkles", cardClass: "tool-card-purple", iconBoxClass: "tool-icon-box-purple", actionType: "chat", actionTarget: "content" },
+      { title: "朋友圈文案", meta: "轻量输出", iconType: "send", cardClass: "tool-card-indigo", iconBoxClass: "tool-icon-box-indigo", actionType: "chat", actionTarget: "expert" }
+    ],
+    collectionItems: [
+      { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", actionType: "page", actionTarget: "articles" },
+      { index: "02", title: "拆解百万博主Dan Koe爆文创作系统", actionType: "page", actionTarget: "articles" },
+      { index: "03", title: "如何用AI做出百万价值的内容", actionType: "page", actionTarget: "articles" }
+    ]
   },
 
   onLoad() {
@@ -64,17 +65,11 @@ Page({
     this.checkUserInfo();
     this.getSystemInfo();
     this.initializeDatabase();
-    this.getRecentChats();
     this.checkAdminStatus();
-  },
-
-  onShow() {
-    this.getRecentChats();
   },
 
   onPullDownRefresh() {
     this.checkUserInfo();
-    this.getRecentChats();
     setTimeout(() => wx.stopPullDownRefresh(), 300);
   },
 
@@ -85,33 +80,40 @@ Page({
         statusBarHeight: systemInfo.statusBarHeight || 20
       });
     } catch (e) {
-      console.error('获取系统信息失败:', e);
+      console.error("获取系统信息失败:", e);
     }
   },
 
   checkUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo');
+    const userInfo = wx.getStorageSync("userInfo");
     if (userInfo) {
+      const nickname = userInfo.nickName || "";
       this.setData({
         userInfo,
         hasUserInfo: true,
-        isLoading: false
+        isLoading: false,
+        memberInitial: nickname ? nickname.slice(0, 1).toUpperCase() : "X"
       });
       return;
     }
 
-    this.setData({ isLoading: false });
+    this.setData({
+      isLoading: false,
+      memberInitial: "X"
+    });
   },
 
   getUserProfile() {
     wx.getUserProfile({
-      desc: '用于完善会员资料',
+      desc: "用于完善会员资料",
       success: (res) => {
         const userInfo = res.userInfo;
-        wx.setStorageSync('userInfo', userInfo);
+        const nickname = userInfo.nickName || "";
+        wx.setStorageSync("userInfo", userInfo);
         this.setData({
           userInfo,
-          hasUserInfo: true
+          hasUserInfo: true,
+          memberInitial: nickname ? nickname.slice(0, 1).toUpperCase() : "X"
         });
         this.saveUserToDatabase(userInfo);
       }
@@ -120,21 +122,21 @@ Page({
 
   saveUserToDatabase(userInfo) {
     wx.cloud.callFunction({
-      name: 'userLogin',
+      name: "userLogin",
       data: { userInfo },
-      fail: (err) => console.error('保存用户信息失败:', err)
+      fail: (err) => console.error("保存用户信息失败:", err)
     });
   },
 
   initializeDatabase() {
     wx.cloud.callFunction({
-      name: 'initDatabase',
-      fail: (err) => console.error('数据库初始化失败', err)
+      name: "initDatabase",
+      fail: (err) => console.error("数据库初始化失败", err)
     });
   },
 
   checkAdminStatus() {
-    wx.cloud.callFunction({ name: 'checkAdmin' })
+    wx.cloud.callFunction({ name: "checkAdmin" })
       .then((res) => {
         this.setData({
           isAdmin: !!(res.result && res.result.isAdmin)
@@ -145,12 +147,38 @@ Page({
       });
   },
 
+  handleAction(e) {
+    const { type, target } = e.currentTarget.dataset;
+
+    if (type === "chat") {
+      this.openAIChat({ currentTarget: { dataset: { id: target } } });
+      return;
+    }
+
+    if (target === "studio") {
+      this.openStudio();
+      return;
+    }
+
+    if (target === "membership") {
+      this.openMembership();
+      return;
+    }
+
+    if (target === "copywriter") {
+      this.openCopywriter();
+      return;
+    }
+
+    this.openArticleLibrary();
+  },
+
   openAIChat(e) {
     const { id } = e.currentTarget.dataset;
     const aiBot = AI_BOTS[id];
 
     if (!aiBot) {
-      wx.showToast({ title: '该功能暂未开放', icon: 'none' });
+      wx.showToast({ title: "该功能暂未开放", icon: "none" });
       return;
     }
 
@@ -161,50 +189,37 @@ Page({
 
   openStudio() {
     wx.switchTab({
-      url: '/pages/ai-features/index'
+      url: "/pages/ai-features/index"
     });
   },
 
-  continueChat(e) {
-    const { id, botid, title } = e.currentTarget.dataset;
-    if (!id || !botid) return;
-    wx.navigateTo({
-      url: `/pages/ai-chat/ai-chat?conversationId=${id}&botId=${botid}&title=${encodeURIComponent(title || '智能助手')}`
+  openAssistantTab() {
+    wx.switchTab({
+      url: "/pages/assistant/index"
     });
   },
 
-  getRecentChats() {
-    const db = wx.cloud.database();
-    db.collection('chats')
-      .orderBy('updateTime', 'desc')
-      .limit(3)
-      .get()
-      .then((res) => {
-        this.setData({
-          recentChats: (res.data || []).map((item) => ({
-            ...item,
-            title: item.title || '工作流记录',
-            lastMessage: item.lastMessage || item.question || '继续完善这个任务'
-          }))
-        });
-      })
-      .catch((err) => {
-        console.error('获取最近会话失败', err);
-      });
-  },
-
-  claimDailyPoints() {
-    wx.showToast({ title: '今日已打卡 +2', icon: 'none' });
+  openUserTab() {
+    wx.switchTab({
+      url: "/pages/user/user"
+    });
   },
 
   openMembership() {
     wx.navigateTo({
-      url: '/pages/membership/membership'
+      url: "/pages/membership/membership"
     });
   },
 
-  reloadPage() {
-    this.setData({ isEmergency: false });
-    this.onLoad();
+  openCopywriter() {
+    wx.navigateTo({
+      url: "/pages/copywriter/start/start"
+    });
+  },
+
+  openArticleLibrary() {
+    wx.navigateTo({
+      url: "/pages/article-list/index"
+    });
   }
 });

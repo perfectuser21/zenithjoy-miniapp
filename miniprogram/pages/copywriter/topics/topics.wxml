@@ -1,0 +1,53 @@
+<view class="page">
+  <view class="stack">
+    <view class="progress">
+      <view class="progress-main">找方向 / 选题 / 出成稿</view>
+      <view class="progress-step">4 / 6</view>
+    </view>
+
+    <view class="hero">
+      <view class="kicker">STEP 4</view>
+      <view class="title">先选一个你最想写的方向</view>
+      <view class="desc">已基于你的关键词、灵感和创作信息生成 5 个候选选题。</view>
+    </view>
+
+    <view class="summary-card">
+      <view class="row" style="justify-content: space-between; align-items: flex-start;">
+        <view>
+          <view class="label">本次创作条件</view>
+          <view class="muted">关键词 + 灵感 + 人群 + 价值 + IP</view>
+        </view>
+        <view class="card-action" bindtap="toggleSummary">{{summaryToggleText}}</view>
+      </view>
+      <view wx:if="{{summaryOpen}}" class="list" style="margin-top: 16rpx;">
+        <view class="notice" wx:for="{{summaryRows}}" wx:key="label">{{item.label}}：{{item.value}}</view>
+      </view>
+    </view>
+
+    <view class="notice" wx:if="{{topicsDirty || articlesDirty}}">你修改过前面的创作条件。当前结果还保留着，但建议重新生成以保持一致。</view>
+    <view class="notice" wx:if="{{generating}}">正在根据你的创作条件生成 5 个选题...</view>
+
+    <view class="list">
+      <view class="topic-card" wx:for="{{topicCards}}" wx:key="topicId">
+        <view class="badge">{{item.typeTag}}</view>
+        <view class="card-title">{{item.title}}</view>
+        <view class="card-desc">{{item.summary}}</view>
+        <view class="meta">
+          <view class="badge" wx:for="{{item.platformTags}}" wx:key="*this" wx:for-item="tag">{{tag}}</view>
+          <view class="badge" wx:if="{{item.locked}}">已锁定</view>
+        </view>
+        <view class="card-actions">
+          <view class="card-action" bindtap="openArticles" data-id="{{item.topicId}}">基于这个写文章</view>
+          <view class="card-action" bindtap="editTopic" data-id="{{item.topicId}}" data-title="{{item.title}}" data-summary="{{item.summary}}">编辑标题和摘要</view>
+          <view class="card-action" bindtap="regenerateOne" data-id="{{item.topicId}}">换一个</view>
+          <view class="card-action" bindtap="lockTopic" data-id="{{item.topicId}}">{{item.lockLabel}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer">
+      <button class="btn-secondary" bindtap="goBack">返回修改条件</button>
+      <button class="btn" bindtap="regenerateAll" loading="{{generating}}" disabled="{{generating}}">全部重生成</button>
+    </view>
+  </view>
+</view>

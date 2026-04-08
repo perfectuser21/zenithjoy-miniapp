@@ -19,20 +19,26 @@
     </view>
   </view>
 
-  <view class="section">
+  <view class="section section-flow">
     <view class="section-head">
       <view class="section-title">自媒体创作区域</view>
-      <view class="section-meta">按流程执行</view>
+      <view class="section-meta">6 步完成一轮创作</view>
     </view>
-    <view class="step-row">
-      <block wx:for="{{creationSteps}}" wx:key="title">
-        <view class="step-chip">
-          <view class="step-index">{{index + 1}}</view>
-          <view class="step-title">{{item.title}}</view>
-        </view>
-        <view class="step-arrow" wx:if="{{index !== creationSteps.length - 1}}">→</view>
-      </block>
+    <view class="step-shell">
+      <view class="step-rail"></view>
+      <view class="step-list">
+        <block wx:for="{{creationSteps}}" wx:key="no">
+          <view class="step-item">
+            <view class="step-index">{{item.no}}</view>
+            <view class="step-card">
+              <view class="step-title">{{item.title}}</view>
+              <view class="step-desc">{{item.desc}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
     </view>
+    <view class="flow-note">从输入创作条件到生成成稿，这里展示的是完整主流程，不再和下方功能入口重复。</view>
     <view class="primary-cta" bindtap="openFeature" data-id="writer">开始文案创作</view>
   </view>
 
@@ -42,11 +48,11 @@
       <view class="section-meta">基于当前选题</view>
     </view>
     <view class="pill-grid">
-      <view class="pill-item" wx:for="{{titleActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
+      <view class="pill-item {{index === 0 ? 'pill-item-active' : ''}}" wx:for="{{titleActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
         {{item.label}}
       </view>
     </view>
-    <view class="secondary-cta" bindtap="openFeature" data-id="content">生成标题</view>
+    <view class="secondary-cta" bindtap="openFeature" data-id="content">生成标题 →</view>
   </view>
 
   <view class="section">
@@ -59,7 +65,7 @@
         {{item.label}}
       </view>
     </view>
-    <view class="secondary-cta secondary-cta-blue" bindtap="openFeature" data-id="expert">生成朋友圈文案</view>
+    <view class="secondary-cta secondary-cta-blue" bindtap="openFeature" data-id="expert">生成朋友圈文案 →</view>
   </view>
 
   <view class="safe-bottom"></view>

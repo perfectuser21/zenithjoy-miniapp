@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="stack">
+    <view class="progress">
+      <view class="progress-main">找方向 / 选题 / 出成稿</view>
+      <view class="progress-step">1 / 6</view>
+    </view>
+
+    <view class="hero">
+      <view class="kicker">STEP 1</view>
+      <view class="title">先告诉我你想写什么</view>
+      <view class="desc">关键词、热点、标题碎片、链接都可以先贴进来。</view>
+    </view>
+
+    <view class="card">
+      <view class="label">关键词 / 热点信息</view>
+      <textarea class="textarea" maxlength="-1" value="{{keywordsText}}" bindinput="handleInput" placeholder="例如：\n副业赚钱\n小红书起号\n为什么普通人做内容总是坚持不下去"></textarea>
+      <view class="card-actions">
+        <view class="card-action" bindtap="useSample">填入示例</view>
+      </view>
+    </view>
+
+    <view class="notice">输入越具体，后续选题和文章越贴近你真正想写的方向。</view>
+
+    <view class="footer">
+      <button class="btn-secondary" bindtap="skipStep">跳过这步</button>
+      <button class="btn" bindtap="saveAndNext">继续补充灵感</button>
+    </view>
+  </view>
+</view>

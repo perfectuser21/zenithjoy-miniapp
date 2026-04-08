@@ -8,7 +8,7 @@
 }
 
 .eyebrow {
-  font-size: 20rpx;
+  font-size: 19rpx;
   color: #6d63ff;
   margin-bottom: 6rpx;
 }
@@ -68,20 +68,20 @@
 }
 
 .profile-name {
-  font-size: 28rpx;
+  font-size: 27rpx;
   font-weight: 700;
   color: #111827;
 }
 
 .profile-subtitle {
   margin-top: 4rpx;
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: #7a7e9a;
   font-weight: 600;
 }
 
 .section-title {
-  font-size: 28rpx;
+  font-size: 29rpx;
   font-weight: 700;
   color: #1d2340;
 }
@@ -91,6 +91,29 @@
   font-size: 21rpx;
   color: #7a7e9a;
   font-weight: 600;
+}
+
+.section-title-recent {
+  font-size: 27rpx;
+}
+
+.section-meta-week {
+  font-size: 19rpx;
+}
+
+.edit-chip {
+  min-width: 130rpx;
+  height: 50rpx;
+  padding: 0 18rpx;
+  border-radius: 18rpx;
+  background: #eef1ff;
+  color: #5a52d6;
+  font-size: 19rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .points-label {
@@ -119,7 +142,7 @@
 
 .points-growth-meta {
   margin-top: 4rpx;
-  font-size: 18rpx;
+  font-size: 19rpx;
   color: #7a7e9a;
   font-weight: 600;
 }
@@ -175,7 +198,7 @@
 .growth-name,
 .menu-text,
 .activity-title {
-  font-size: 24rpx;
+  font-size: 23rpx;
   color: #2d3553;
   font-weight: 600;
 }

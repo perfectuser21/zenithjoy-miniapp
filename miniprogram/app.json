@@ -1,6 +1,13 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/copywriter/start/start",
+    "pages/copywriter/keywords/keywords",
+    "pages/copywriter/ideas/ideas",
+    "pages/copywriter/profile/profile",
+    "pages/copywriter/topics/topics",
+    "pages/copywriter/articles/articles",
+    "pages/copywriter/article-detail/article-detail",
     "pages/ai-features/ai-features",
     "pages/ai-features/index",
     "pages/assistant/index",
@@ -65,11 +72,10 @@
   "debug": false,
   "cloud": true,
   "lazyCodeLoading": "requiredComponents",
-  "usingComponents": {
-  },
+  "usingComponents": {},
   "permission": {
     "scope.userLocation": {
       "desc": "你的位置信息将用于获取本地服务"
     }
   }
-} 
+}

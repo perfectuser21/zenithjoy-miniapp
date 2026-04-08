@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="stack">
+    <view class="hero">
+      <view class="kicker">COPYWRITER FLOW</view>
+      <view class="title">开始文案创作</view>
+      <view class="desc">从关键词到成稿，6 步完成一轮内容创作。你可以随时返回上一步修改。</view>
+    </view>
+
+    <view class="card">
+      <view class="label">本次流程</view>
+      <view class="list">
+        <view class="notice">1. 输入关键词或热点</view>
+        <view class="notice">2. 补充灵感和角度</view>
+        <view class="notice">3. 完善人群、价值、IP</view>
+        <view class="notice">4. 生成 5 个选题</view>
+        <view class="notice">5. 每个选题生成 3 篇文章</view>
+        <view class="notice">6. 编辑、复制、导出</view>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{hasDraft}}">
+      <view class="label">上次草稿</view>
+      <view class="muted">最近保存时间：{{draftUpdatedAt}}</view>
+    </view>
+
+    <view class="footer">
+      <button class="btn-secondary" bindtap="continueDraft">继续上次草稿</button>
+      <button class="btn" bindtap="startCreation">开始文案创作</button>
+    </view>
+  </view>
+</view>
