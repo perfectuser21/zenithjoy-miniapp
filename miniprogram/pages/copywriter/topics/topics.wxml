@@ -38,6 +38,7 @@
           bindscroll="handleTopicScroll"
         >
           <view class="topic-list-inner">
+            <view wx:if="{{!topicCards.length && !generating}}" class="notice">暂无选题，点击"全部重生成"按钮重新生成</view>
             <view class="list">
               <view class="topic-card" wx:for="{{topicCards}}" wx:key="topicId">
                 <view class="badge">{{item.typeTag}}</view>
