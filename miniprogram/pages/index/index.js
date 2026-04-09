@@ -66,6 +66,7 @@ Page({
     this.getSystemInfo();
     this.initializeDatabase();
     this.checkAdminStatus();
+    this.loadHeroCard();
   },
 
   onPullDownRefresh() {
@@ -144,6 +145,31 @@ Page({
       })
       .catch(() => {
         this.setData({ isAdmin: false });
+      });
+  },
+
+  loadHeroCard() {
+    wx.cloud.database().collection('dynamic_content')
+      .where({ type: 'hero_card', active: true })
+      .orderBy('updated_at', 'desc')
+      .limit(1)
+      .get()
+      .then(res => {
+        if (res.data && res.data.length > 0) {
+          const card = res.data[0];
+          this.setData({
+            heroCard: {
+              tag: card.tag || '今日创作提示',
+              titleTop: card.title_top || '',
+              titleBottom: card.title_bottom || '',
+              description: card.description || '',
+              image: card.image || '/images/home-banner.png'
+            }
+          });
+        }
+      })
+      .catch(err => {
+        console.warn('[index] heroCard 云数据库加载失败，使用默认值', err);
       });
   },
 
