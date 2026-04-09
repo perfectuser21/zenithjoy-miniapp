@@ -201,6 +201,46 @@ Page({
       })
   },
   
+  // 升级会员 — 调起微信支付
+  onUpgrade: async function(e) {
+    const planId = e.currentTarget.dataset.planId;
+    if (!planId || planId === 'free') return;
+
+    wx.showLoading({ title: '创建订单...' });
+    try {
+      const orderRes = await wx.cloud.callFunction({
+        name: 'createPaymentOrder',
+        data: { planId }
+      });
+      if (!orderRes.result?.success) {
+        throw new Error(orderRes.result?.error || '创建订单失败');
+      }
+
+      const { timeStamp, nonceStr, package: pkg, signType, paySign } = orderRes.result;
+      wx.hideLoading();
+
+      wx.requestPayment({
+        timeStamp,
+        nonceStr,
+        package: pkg,
+        signType,
+        paySign,
+        success: () => {
+          wx.showToast({ title: '支付成功', icon: 'success' });
+          this.checkMembership();
+        },
+        fail: (err) => {
+          if (err.errMsg && !err.errMsg.includes('cancel')) {
+            wx.showToast({ title: '支付失败，请重试', icon: 'error' });
+          }
+        }
+      });
+    } catch (err) {
+      wx.hideLoading();
+      wx.showToast({ title: err.message || '操作失败', icon: 'error' });
+    }
+  },
+
   // 格式化日期
   formatDate: function(dateString) {
     const date = new Date(dateString)
