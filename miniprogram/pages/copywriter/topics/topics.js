@@ -35,8 +35,9 @@ function mergeTopicResults(currentTopics, nextTopics) {
   }));
   let unlockedIndex = 0;
 
-  return (currentTopics || []).map((topic) => {
+  const result = (currentTopics || []).map((topic) => {
     if (topic.locked) {
+      console.log('[mergeTopicResults] 保留锁定选题:', topic.topicId, topic.title);
       return topic;
     }
 
@@ -44,6 +45,10 @@ function mergeTopicResults(currentTopics, nextTopics) {
     unlockedIndex += 1;
     return replacement || topic;
   });
+
+  const lockedCount = result.filter((t) => t.locked).length;
+  console.log('[mergeTopicResults] 合并完成，共', result.length, '个选题，其中锁定', lockedCount, '个');
+  return result;
 }
 
 Page({
