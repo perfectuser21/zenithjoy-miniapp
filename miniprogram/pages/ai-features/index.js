@@ -33,16 +33,7 @@ Page({
     var apiKey = wx.getStorageSync('cozeApiKey') || '';
     var botId = wx.getStorageSync('cozeBotId') || '';
     
-    // 如果没有保存API密钥，则自动保存新的API密钥
-    if (!apiKey) {
-      apiKey = 'pat_BSo4wqL0AH7Fii9IKE9ZGjyntLBdxdtB1UYt7o3MJIWfmYUj9uCAGqJ6zqCfSmDm';
-      wx.setStorageSync('cozeApiKey', apiKey);
-      wx.showToast({
-        title: 'API密钥已自动配置',
-        icon: 'success',
-        duration: 2000
-      });
-    }
+    // API密钥通过云函数获取，禁止在前端硬编码
     
     this.setData({ 
       history: history,

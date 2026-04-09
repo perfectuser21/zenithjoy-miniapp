@@ -4,7 +4,12 @@
     "pages/user/user",
     "pages/ai-chat/ai-chat",
     "pages/membership/membership",
-    "pages/web-view/web-view"
+    "pages/web-view/web-view",
+    "pages/chatHistory/index",
+    "pages/ai-features/index",
+    "pages/article/preview",
+    "pages/article-detail/article-detail",
+    "pages/article-list/article-list"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

@@ -37,11 +37,8 @@ Page({
       return
     }
     
-    // 从云数据库获取聊天记录
+    // 从云数据库获取聊天记录（微信云数据库权限：仅创建者可读，无需显式过滤 _openid）
     db.collection('chats')
-      .where({
-        _openid: '{openid}' // 在云函数中会自动替换为当前用户openid
-      })
       .orderBy('createTime', 'desc')
       .limit(50)
       .get()
