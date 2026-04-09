@@ -54,7 +54,10 @@ Page({
     topicCards: [],
     topicsDirty: false,
     articlesDirty: false,
-    generating: false
+    generating: false,
+    showTopicScrollbar: false,
+    topicScrollbarThumbTop: 0,
+    topicScrollbarThumbHeight: 0
   },
 
   async onShow() {
@@ -74,13 +77,16 @@ Page({
       return;
     }
 
-    this.setData({
-      summaryRows: buildSummaryRows(session.stepData || {}),
-      topicCards: buildTopicCards(session.topics || []),
-      topicsDirty: !!session.topicsDirty,
-      articlesDirty: !!session.articlesDirty,
-      summaryToggleText: this.data.summaryOpen ? '收起' : '查看'
-    });
+    this.setData(
+      {
+        summaryRows: buildSummaryRows(session.stepData || {}),
+        topicCards: buildTopicCards(session.topics || []),
+        topicsDirty: !!session.topicsDirty,
+        articlesDirty: !!session.articlesDirty,
+        summaryToggleText: this.data.summaryOpen ? '收起' : '查看'
+      },
+      () => this.syncTopicScrollbar()
+    );
   },
 
   toggleSummary() {
@@ -184,5 +190,56 @@ Page({
       currentArticleId: ''
     });
     wx.redirectTo({ url: route });
+  },
+
+  handleTopicScroll(e) {
+    const { scrollTop = 0, scrollHeight = 0 } = e.detail || {};
+    this.updateTopicScrollbar(scrollTop, scrollHeight);
+  },
+
+  syncTopicScrollbar() {
+    wx.nextTick(() => {
+      const query = wx.createSelectorQuery().in(this);
+      query.select('.topic-scroll').boundingClientRect();
+      query.select('.topic-list-inner').boundingClientRect();
+      query.exec((res) => {
+        const scrollRect = res && res[0];
+        const contentRect = res && res[1];
+        if (!scrollRect || !contentRect) {
+          return;
+        }
+
+        this.updateTopicScrollbar(0, contentRect.height, scrollRect.height);
+      });
+    });
+  },
+
+  updateTopicScrollbar(scrollTop, scrollHeight, viewportHeight) {
+    const currentViewportHeight = viewportHeight || this.topicViewportHeight || 0;
+    if (!currentViewportHeight || !scrollHeight || scrollHeight <= currentViewportHeight) {
+      this.topicViewportHeight = currentViewportHeight;
+      this.setData({
+        showTopicScrollbar: false,
+        topicScrollbarThumbTop: 0,
+        topicScrollbarThumbHeight: 0
+      });
+      return;
+    }
+
+    this.topicViewportHeight = currentViewportHeight;
+    const minThumbHeight = 36;
+    const thumbHeight = Math.max(
+      minThumbHeight,
+      (currentViewportHeight * currentViewportHeight) / scrollHeight
+    );
+    const maxScrollTop = Math.max(scrollHeight - currentViewportHeight, 1);
+    const maxThumbTop = currentViewportHeight - thumbHeight;
+    const thumbTop = Math.min(maxThumbTop, (scrollTop / maxScrollTop) * maxThumbTop);
+
+    this.setData({
+      showTopicScrollbar: true,
+      topicScrollbarThumbTop: thumbTop,
+      topicScrollbarThumbHeight: thumbHeight
+    });
   }
 });

@@ -27,20 +27,41 @@
     <view class="notice" wx:if="{{topicsDirty || articlesDirty}}">你修改过前面的创作条件。当前结果还保留着，但建议重新生成以保持一致。</view>
     <view class="notice" wx:if="{{generating}}">正在根据你的创作条件生成 5 个选题...</view>
 
-    <view class="list">
-      <view class="topic-card" wx:for="{{topicCards}}" wx:key="topicId">
-        <view class="badge">{{item.typeTag}}</view>
-        <view class="card-title">{{item.title}}</view>
-        <view class="card-desc">{{item.summary}}</view>
-        <view class="meta">
-          <view class="badge" wx:for="{{item.platformTags}}" wx:key="*this" wx:for-item="tag">{{tag}}</view>
-          <view class="badge" wx:if="{{item.locked}}">已锁定</view>
-        </view>
-        <view class="card-actions">
-          <view class="card-action" bindtap="openArticles" data-id="{{item.topicId}}">基于这个写文章</view>
-          <view class="card-action" bindtap="editTopic" data-id="{{item.topicId}}" data-title="{{item.title}}" data-summary="{{item.summary}}">编辑标题和摘要</view>
-          <view class="card-action" bindtap="regenerateOne" data-id="{{item.topicId}}">换一个</view>
-          <view class="card-action" bindtap="lockTopic" data-id="{{item.topicId}}">{{item.lockLabel}}</view>
+    <view class="topic-results">
+      <view class="topic-results-header">本轮标题结果</view>
+      <view class="topic-scroll-shell">
+        <scroll-view
+          class="topic-scroll"
+          scroll-y
+          enhanced
+          show-scrollbar="{{false}}"
+          bindscroll="handleTopicScroll"
+        >
+          <view class="topic-list-inner">
+            <view class="list">
+              <view class="topic-card" wx:for="{{topicCards}}" wx:key="topicId">
+                <view class="badge">{{item.typeTag}}</view>
+                <view class="card-title">{{item.title}}</view>
+                <view class="card-desc">{{item.summary}}</view>
+                <view class="meta">
+                  <view class="badge" wx:for="{{item.platformTags}}" wx:key="*this" wx:for-item="tag">{{tag}}</view>
+                  <view class="badge" wx:if="{{item.locked}}">已锁定</view>
+                </view>
+                <view class="card-actions">
+                  <view class="card-action" bindtap="openArticles" data-id="{{item.topicId}}">基于这个写文章</view>
+                  <view class="card-action" bindtap="editTopic" data-id="{{item.topicId}}" data-title="{{item.title}}" data-summary="{{item.summary}}">编辑标题和摘要</view>
+                  <view class="card-action" bindtap="regenerateOne" data-id="{{item.topicId}}">换一个</view>
+                  <view class="card-action" bindtap="lockTopic" data-id="{{item.topicId}}">{{item.lockLabel}}</view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+        <view class="topic-scrollbar" wx:if="{{showTopicScrollbar}}">
+          <view
+            class="topic-scrollbar-thumb"
+            style="height: {{topicScrollbarThumbHeight}}px; transform: translateY({{topicScrollbarThumbTop}}px);"
+          ></view>
         </view>
       </view>
     </view>
