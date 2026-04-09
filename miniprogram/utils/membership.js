@@ -4,7 +4,7 @@
  */
 async function checkQuota() {
   try {
-    const res = await wx.cloud.callFunction({ name: 'getUserMembership' });
+    const res = await wx.cloud.callFunction({ name: 'checkMembership' });
     const remaining = res.result?.data?.remainingQuota ?? 0;
     if (remaining <= 0) {
       wx.showModal({

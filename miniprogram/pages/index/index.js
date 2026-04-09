@@ -245,7 +245,7 @@ Page({
 
   openArticleLibrary() {
     wx.navigateTo({
-      url: "/pages/article-list/index"
+      url: "/pages/article-list/article-list"
     });
   }
 });
