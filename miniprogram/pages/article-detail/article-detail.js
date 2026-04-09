@@ -15,7 +15,13 @@ Page({
    */
   onLoad(options) {
     const { id, url } = options;
-    
+
+    wx.updateShareMenu({
+      withShareTicket: false,
+      isUpdatableMessage: false,
+      success() { console.log('[share] updateShareMenu ok'); }
+    });
+
     if (url) {
       // 外部链接用web-view打开
       wx.redirectTo({
@@ -23,7 +29,7 @@ Page({
       });
       return;
     }
-    
+
     if (id) {
       // 获取文章详情
       this.getArticleDetail(id);
@@ -99,16 +105,18 @@ Page({
    */
   onShareAppMessage() {
     const article = this.data.article;
-    if (article) {
-      return {
-        title: article.title,
-        path: `/pages/article-detail/article-detail?id=${article.id}`,
-        imageUrl: article.cover || '/images/default-share.png'
-      };
-    }
     return {
-      title: 'AI智能助手 - 精彩文章',
-      path: '/pages/index/index'
+      title: article?.title || 'ZenithJoy 精选内容',
+      path: `/pages/article-detail/article-detail?id=${article?.id || ''}`,
+      imageUrl: article?.cover || '/images/default-cover.png'
+    };
+  },
+
+  onShareTimeline() {
+    const article = this.data.article;
+    return {
+      title: article?.title || 'ZenithJoy 精选内容',
+      imageUrl: article?.cover || '/images/default-cover.png'
     };
   },
 
