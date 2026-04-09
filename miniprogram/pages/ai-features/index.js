@@ -26,12 +26,10 @@ Page({
     statusBarHeight: 20,
     points: 128,
     creationSteps: [
-      { no: '01', title: '收集关键词', desc: '先写下赛道、产品词和最近反复出现的问题。' },
-      { no: '02', title: '补充灵感', desc: '把热点、案例和你想讲的切口整理进来。' },
-      { no: '03', title: '明确人群', desc: '补齐目标读者、价值承诺和个人表达方式。' },
-      { no: '04', title: '生成选题', desc: '系统会基于前面信息输出 5 个可执行方向。' },
-      { no: '05', title: '扩写成稿', desc: '从选题进入正文，生成结构完整的文案初稿。' },
-      { no: '06', title: '打磨发布', desc: '继续细修标题、语气和发布版本，直接进入输出。' }
+      { no: '1', label: '关键词', badgeColor: '#6D63FF' },
+      { no: '2', label: '灵感', badgeColor: '#4C7AF1' },
+      { no: '3', label: '知识库', badgeColor: '#7A4EDC' },
+      { no: '4', label: '选题', badgeColor: '#5B67E7' }
     ],
     titleActions: [
       { label: '冲突型', bot: 'content' },
@@ -43,8 +41,7 @@ Page({
     ],
     momentActions: [
       { label: '想法', bot: 'content' },
-      { label: '六大支柱', bot: 'writer' },
-      { label: '内容类型', bot: 'expert' }
+      { label: '六大支柱', bot: 'writer' }
     ]
   },
 

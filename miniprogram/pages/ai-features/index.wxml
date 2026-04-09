@@ -22,23 +22,17 @@
   <view class="section section-flow">
     <view class="section-head">
       <view class="section-title">自媒体创作区域</view>
-      <view class="section-meta">6 步完成一轮创作</view>
+      <view class="section-meta">按流程执行</view>
     </view>
-    <view class="step-shell">
-      <view class="step-rail"></view>
-      <view class="step-list">
-        <block wx:for="{{creationSteps}}" wx:key="no">
-          <view class="step-item">
-            <view class="step-index">{{item.no}}</view>
-            <view class="step-card">
-              <view class="step-title">{{item.title}}</view>
-              <view class="step-desc">{{item.desc}}</view>
-            </view>
-          </view>
-        </block>
+    <view class="flow-list">
+      <block wx:for="{{creationSteps}}" wx:key="label">
+        <view class="flow-item">
+          <view class="flow-badge" style="background: {{item.badgeColor}};">{{item.no}}</view>
+          <view class="flow-label">{{item.label}}</view>
+        </view>
+        <view wx:if="{{index < creationSteps.length - 1}}" class="flow-arrow">→</view>
+      </block>
       </view>
-    </view>
-    <view class="flow-note">从输入创作条件到生成成稿，这里展示的是完整主流程，不再和下方功能入口重复。</view>
     <view class="primary-cta" bindtap="openFeature" data-id="writer">开始文案创作</view>
   </view>
 
@@ -61,7 +55,7 @@
       <view class="section-meta">根据需求生成</view>
     </view>
     <view class="pill-grid">
-      <view class="pill-item pill-item-blue" wx:for="{{momentActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
+      <view class="pill-item {{index === 0 ? 'pill-item-blue-active' : 'pill-item-blue'}}" wx:for="{{momentActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
         {{item.label}}
       </view>
     </view>
