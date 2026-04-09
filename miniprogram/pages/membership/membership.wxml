@@ -92,10 +92,12 @@
             </view>
           </view>
           <view class="plan-action">
-            <button 
-              class="btn-purchase {{item.id === membership.level ? 'btn-disabled' : ''}}" 
-              disabled="{{item.id === membership.level}}">
-              {{item.id === 'free' ? '免费会员' : (item.id === membership.level ? '当前套餐' : '后台开通')}}
+            <button
+              class="btn-purchase {{item.id === membership.level ? 'btn-disabled' : ''}}"
+              disabled="{{item.id === membership.level || item.id === 'free'}}"
+              bindtap="onUpgrade"
+              data-plan-id="{{item.id}}">
+              {{item.id === 'free' ? '免费会员' : (item.id === membership.level ? '当前套餐' : '立即升级')}}
             </button>
           </view>
         </view>
