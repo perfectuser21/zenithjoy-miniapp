@@ -116,6 +116,6 @@ Page({
   },
 
   goBack() {
-    wx.navigateBack();
+    wx.redirectTo({ url: '/pages/copywriter/topics/topics' });
   }
 });

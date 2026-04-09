@@ -181,7 +181,7 @@ Page({
   openArticles(e) {
     const topicId = e.currentTarget.dataset.id;
     setCurrentStep(5, { topicId, articleId: '' });
-    wx.navigateTo({ url: `/pages/copywriter/articles/articles?topicId=${topicId}` });
+    wx.redirectTo({ url: `/pages/copywriter/articles/articles?topicId=${topicId}` });
   },
 
   goBack() {
