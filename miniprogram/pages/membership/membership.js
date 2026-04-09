@@ -153,7 +153,7 @@ Page({
     
     db.collection('chats')
       .where({
-        _openid: '{openid}', // 云函数会自动替换为实际openid
+        // 依赖微信云数据库创建者读权限，无需显式过滤 _openid
         createTime: _.gte(sevenDaysAgo)
       })
       .orderBy('createTime', 'desc')
