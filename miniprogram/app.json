@@ -9,7 +9,10 @@
     "pages/ai-features/index",
     "pages/article/preview",
     "pages/article-detail/article-detail",
-    "pages/article-list/article-list"
+    "pages/article-list/article-list",
+    "pages/admin/article/index",
+    "pages/admin/article/add",
+    "pages/admin/article/edit"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
