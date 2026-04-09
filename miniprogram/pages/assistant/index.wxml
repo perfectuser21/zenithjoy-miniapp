@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="page-inner" style="padding-top: {{statusBarHeight + 12}}px;">
+    <view class="top">
+      <view>
+        <view class="eyebrow">AI ASSISTANT</view>
+        <view class="title">AI 助理</view>
+      </view>
+      <view class="status-box">
+        <view class="status-title">在线服务中</view>
+        <view class="status-meta">平均响应 2s</view>
+      </view>
+    </view>
+
+    <view class="content-area">
+      <view class="assistant-panel">
+        <view class="assistant-name">AI 对话区</view>
+        <view class="starter-row">
+          <view class="starter-badge">AI</view>
+          <view class="starter-bubble">{{previewMessage}}</view>
+        </view>
+        <view class="starter-action" bindtap="openAssistant" data-bot="expert" data-prompt="帮我先梳理今天适合做的方向">
+          帮我先出今天的抖音选题方向
+        </view>
+      </view>
+
+      <view class="prompt-bar">
+        <view class="prompt-chip prompt-chip-{{index}}" wx:for="{{quickActions}}" wx:key="*this" bindtap="openAssistant" data-bot="expert" data-prompt="{{item}}">
+          {{item}}
+        </view>
+      </view>
+
+      <view class="input-bar">
+        <view class="input-placeholder">输入你的问题...</view>
+        <view class="send-btn">发送</view>
+      </view>
+    </view>
+  </view>
+</view>

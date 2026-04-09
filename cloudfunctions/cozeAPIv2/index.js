@@ -1,4 +1,6 @@
 // 云函数入口文件 - cozeAPIv2
+const fs = require('fs');
+const path = require('path');
 const cloud = require('wx-server-sdk');
 const axios = require('axios');
 const crypto = require('crypto');
@@ -35,10 +37,84 @@ try {
   };
 }
 
+function readLocalConfig() {
+  const configPath = path.join(__dirname, 'config.json');
+
+  try {
+    return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  } catch (error) {
+    console.warn('读取本地配置失败，继续使用环境变量:', error.message);
+    return {};
+  }
+}
+
+const LOCAL_CONFIG = readLocalConfig();
+
+function firstNonEmptyValue(...values) {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return '';
+}
+
+function getCozeCredentials(apiSettings = {}) {
+  const envVariables = LOCAL_CONFIG.envVariables || {};
+  const apiKey = firstNonEmptyValue(
+    apiSettings.apiKey,
+    process.env.COZE_API_KEY,
+    process.env.coze_api_key,
+    envVariables.COZE_API_KEY,
+    LOCAL_CONFIG.cozeApiKey
+  );
+  const botId = firstNonEmptyValue(
+    apiSettings.botId,
+    apiSettings.bot_id,
+    process.env.COZE_BOT_ID,
+    process.env.coze_bot_id,
+    envVariables.COZE_BOT_ID,
+    LOCAL_CONFIG.botId,
+    '7481212266399449139'
+  );
+
+  return { apiKey, botId };
+}
+
+function maskSecret(secret, visibleChars = 10) {
+  if (!secret) {
+    return '[missing]';
+  }
+
+  return `${secret.slice(0, visibleChars)}...`;
+}
+
+function normalizeImageLinks(imageLinks = []) {
+  return imageLinks
+    .map((image) => {
+      if (typeof image === 'string' && image.trim()) {
+        return {
+          url: image.trim(),
+          mpUrl: image.trim()
+        };
+      }
+
+      if (image && typeof image.url === 'string' && image.url.trim()) {
+        return {
+          ...image,
+          url: image.url.trim(),
+          mpUrl: image.mpUrl || image.url.trim()
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+}
+
 // Coze API 配置
 const COZE_API_BASE_URL = 'https://api.coze.com';
-const COZE_API_KEY = 'your_coze_api_key'; // 请替换为实际的 API Key
-const BOT_ID = '7481212266399449139'; // 默认使用agent1的ID
 
 // 记录环境信息，用于调试
 function logEnvironmentInfo() {
@@ -61,7 +137,7 @@ async function pollForMessageResponse(conversationId, chatId, options = {}) {
   const isMiniProgram = true; // 默认假设为小程序环境
   
   let attempt = 0;
-  const { retries = 0, cleanMd = false, originalQuery } = options;
+  const { retries = 0, cleanMd = false, originalQuery, apiKey } = options;
   let content = '';
   const maxAttempts = 60; // 最多尝试60次
   const delay = 10000; // 每10秒查询一次
@@ -94,7 +170,7 @@ async function pollForMessageResponse(conversationId, chatId, options = {}) {
         method: 'get',
         url: retrieveUrl,
         headers: {
-          'Authorization': `Bearer ${COZE_API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
         params: queryParams,
@@ -279,7 +355,7 @@ async function pollForMessageResponse(conversationId, chatId, options = {}) {
             status: 'completed',
             content: cleanedContent,
             raw_content: realContent, // 保留原始内容
-            images: imageLinks, // 返回图片对象数组
+            images: normalizeImageLinks(imageLinks),
             // 添加渲染指南
             rendering_guide: {
               image_count: imageLinks.length,
@@ -408,8 +484,11 @@ async function callAI(query, openId, messageId, existingConversationId, options 
       options
     }));
     
-    // 解析botId (可以从options中传入，或从event直接传入)
-    const botId = options.botId || options.bot_id || BOT_ID; // 使用传入的botId或默认值
+    const { apiKey, botId } = getCozeCredentials(options);
+    if (!apiKey) {
+      throw new Error('缺少 Coze API Key，请在云函数环境变量 COZE_API_KEY 或 cloudfunctions/cozeAPIv2/config.json 中配置');
+    }
+
     console.log(`开始调用AI, botId: ${botId}, query: ${query}`);
     
     // 获取conversations集合引用
@@ -477,7 +556,7 @@ async function callAI(query, openId, messageId, existingConversationId, options 
     }
     
     console.log('开始调用Coze API...');
-    console.log(`使用API密钥的前10个字符: ${COZE_API_KEY.substring(0, 10)}...`);
+    console.log(`使用API密钥前缀: ${maskSecret(apiKey)}`);
     
     // 调用Coze API
     const response = await axios({
@@ -485,7 +564,7 @@ async function callAI(query, openId, messageId, existingConversationId, options 
       url: `${COZE_API_BASE_URL}/v1/bot/${botId}/chat/completions`,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${COZE_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       data: requestData,
       timeout: 30000 // 30秒超时，仅用于初始请求
@@ -547,6 +626,7 @@ async function callAI(query, openId, messageId, existingConversationId, options 
 
     // 调用轮询函数
     const pollResult = await pollForMessageResponse(conversationId, chatId, {
+      apiKey,
       cleanMd: cleanMarkdown,
       originalQuery: query // 传入原始查询用于调试
     });
@@ -645,8 +725,8 @@ async function callAI(query, openId, messageId, existingConversationId, options 
       
       // 如果有图片，添加到返回结果中
       if (pollResult.data.images && pollResult.data.images.length > 0) {
-        console.log(`返回${pollResult.data.images.length}张图片`);
-        returnResult.images = pollResult.data.images;
+        returnResult.images = normalizeImageLinks(pollResult.data.images);
+        console.log(`返回${returnResult.images.length}张图片`);
         
         // 详细记录每个图片的URL
         returnResult.images.forEach((img, idx) => {
@@ -772,9 +852,13 @@ exports.main = async (event, context) => {
         };
       }
       
-      // 使用API设置
-      const finalApiKey = (apiSettings && apiSettings.apiKey) || COZE_API_KEY;
-      const finalBotId = (apiSettings && apiSettings.botId) || BOT_ID;
+      const { apiKey: finalApiKey, botId: finalBotId } = getCozeCredentials(apiSettings);
+      if (!finalApiKey) {
+        return {
+          success: false,
+          error: '缺少 Coze API Key 配置'
+        };
+      }
       
       // 构建流式URL和请求数据
       const streamUrl = 'https://api.coze.cn/v3/chat/streaming';

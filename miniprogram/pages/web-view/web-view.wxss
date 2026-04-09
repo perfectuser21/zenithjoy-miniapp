@@ -4,6 +4,9 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(122, 109, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
 }
 
 .error-container {
@@ -12,11 +15,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 40rpx;
+  padding: 48rpx;
 }
 
 .error-text {
   margin-top: 30rpx;
   font-size: 32rpx;
-  color: #666;
-} 
+  color: #6b7280;
+}

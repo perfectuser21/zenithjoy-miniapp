@@ -180,7 +180,7 @@ Page({
   previewArticle(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/article/detail?id=${id}`,
+      url: `/pages/article-detail/article-detail?id=${id}`,
     });
   }
-}) 
+})

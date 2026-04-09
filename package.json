@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "description": "ZenithJoy 微信小程序 - ToC 产品入口",
   "private": true,
+  "engines": {
+    "node": ">=18 <23"
+  },
   "scripts": {
-    "upload": "npx -y node@20 scripts/upload.js",
-    "preview": "npx -y node@20 scripts/preview.js",
+    "upload": "node scripts/run-with-supported-node.js scripts/upload.js",
+    "preview": "node scripts/run-with-supported-node.js scripts/preview.js",
     "test": "jest --testPathPattern=__tests__"
   },
   "dependencies": {

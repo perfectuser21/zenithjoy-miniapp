@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const ci = require('miniprogram-ci');
 const { getBaseConfig, getVersion, resolveSecret } = require('./ci-config');
 
@@ -10,6 +12,9 @@ async function main() {
   const pagePath = process.env.MINIAPP_PREVIEW_PAGE || 'pages/index/index';
   const searchQuery = process.env.MINIAPP_PREVIEW_QUERY || '';
   const robot = Number(process.env.MINIAPP_ROBOT || 1);
+  const qrcodeDir = path.dirname(qrcodeOutputDest);
+
+  fs.mkdirSync(qrcodeDir, { recursive: true });
 
   const project = new ci.Project(config);
 

@@ -1,12 +1,21 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/copywriter/start/start",
+    "pages/copywriter/keywords/keywords",
+    "pages/copywriter/ideas/ideas",
+    "pages/copywriter/profile/profile",
+    "pages/copywriter/topics/topics",
+    "pages/copywriter/articles/articles",
+    "pages/copywriter/article-detail/article-detail",
+    "pages/ai-features/ai-features",
+    "pages/ai-features/index",
+    "pages/assistant/index",
     "pages/user/user",
     "pages/ai-chat/ai-chat",
     "pages/membership/membership",
     "pages/web-view/web-view",
     "pages/chatHistory/index",
-    "pages/ai-features/index",
     "pages/article/preview",
     "pages/article-detail/article-detail",
     "pages/article-list/article-list",
@@ -34,6 +43,18 @@
         "selectedIconPath": "images/tab-home-active.png"
       },
       {
+        "pagePath": "pages/ai-features/index",
+        "text": "创作",
+        "iconPath": "images/tab-create.png",
+        "selectedIconPath": "images/tab-create-active.png"
+      },
+      {
+        "pagePath": "pages/assistant/index",
+        "text": "AI助理",
+        "iconPath": "images/tab-ai.png",
+        "selectedIconPath": "images/tab-ai-active.png"
+      },
+      {
         "pagePath": "pages/user/user",
         "text": "我的",
         "iconPath": "images/tab-user.png",
@@ -49,11 +70,10 @@
   "debug": false,
   "cloud": true,
   "lazyCodeLoading": "requiredComponents",
-  "usingComponents": {
-  },
+  "usingComponents": {},
   "permission": {
     "scope.userLocation": {
       "desc": "你的位置信息将用于获取本地服务"
     }
   }
-} 
+}

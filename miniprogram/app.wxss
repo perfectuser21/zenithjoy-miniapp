@@ -1,9 +1,10 @@
 /**app.wxss**/
 page {
   background-color: #f7f7f7;
-  font-size: 16px;
+  font-size: 32rpx;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Sans-serif;
   box-sizing: border-box;
+  min-height: 100%;
 }
 
 .container {
