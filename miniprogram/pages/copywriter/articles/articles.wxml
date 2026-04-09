@@ -13,6 +13,8 @@
 
     <view class="notice" wx:if="{{generating}}">正在围绕这个选题生成 3 篇不同结构的文章...</view>
 
+    <view wx:if="{{!articles.length && !generating}}" class="notice">暂无文章，点击"全部重新生成"按钮生成文章</view>
+
     <view class="list">
       <view class="article-card" wx:for="{{articles}}" wx:key="articleId">
         <view class="badge">{{item.variantLabel}}</view>
