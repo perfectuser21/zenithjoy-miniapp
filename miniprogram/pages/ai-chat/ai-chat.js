@@ -1,3 +1,5 @@
+const { checkQuota } = require('../../utils/membership');
+
 const WORKFLOW_META = {
   '脚本生成器': {
     badge: '内容产出',
@@ -151,9 +153,11 @@ Page({
   },
   
   // 发送消息
-  sendMessage: function() {
+  sendMessage: async function() {
+    if (!(await checkQuota())) return;
+
     const { inputValue, messages, botId } = this.data;
-    
+
     // 检查输入是否为空
     if (!inputValue.trim()) {
       this.addSystemMessage('请输入有效内容', 'warning');

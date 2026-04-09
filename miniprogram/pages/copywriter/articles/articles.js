@@ -7,6 +7,7 @@ const {
   setCurrentStep
 } = require('../../../utils/copywriter-session');
 const { generateArticlesWithAI } = require('../../../services/copywriter-ai');
+const { checkQuota } = require('../../../utils/membership');
 
 Page({
   data: {
@@ -50,6 +51,8 @@ Page({
   },
 
   async generateWithAI(useLoading = true) {
+    if (!(await checkQuota())) return;
+
     const session = loadSession();
     const topic = getTopic(session || {}, this.data.topicId);
     if (!session || !topic) {

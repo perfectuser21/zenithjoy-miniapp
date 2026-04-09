@@ -10,6 +10,7 @@ const {
   updateTopicTitle
 } = require('../../../utils/copywriter-session');
 const { generateTopicsWithAI } = require('../../../services/copywriter-ai');
+const { checkQuota } = require('../../../utils/membership');
 
 function buildSummaryRows(stepData) {
   return [
@@ -98,6 +99,8 @@ Page({
   },
 
   async generateWithAI(useLoading = true) {
+    if (!(await checkQuota())) return;
+
     const session = loadSession();
     if (!session) {
       return;
