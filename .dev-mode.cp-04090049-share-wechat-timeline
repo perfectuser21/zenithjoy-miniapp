@@ -1,0 +1,9 @@
+dev
+branch: cp-04090049-share-wechat-timeline
+task_card: .task-cp-04090049-share-wechat-timeline.md
+started: 2026-04-09T15:52:11+08:00
+step_0_worktree: done
+step_1_spec: done
+step_2_code: done
+step_3_integrate: pending
+step_4_ship: pending
