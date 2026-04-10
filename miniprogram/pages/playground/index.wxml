@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="toolbar">
+    <view class="title">HTML 实时映射工作台</view>
+    <view class="actions">
+      <button class="btn ghost" size="mini" bindtap="resetCode">重置</button>
+      <button class="btn" size="mini" bindtap="copyCode">复制HTML</button>
+    </view>
+  </view>
+
+  <view class="workspace">
+    <view class="panel panel-code">
+      <view class="panel-title">左侧代码（HTML）</view>
+      <textarea
+        class="editor"
+        value="{{htmlCode}}"
+        auto-height="false"
+        maxlength="-1"
+        cursor-spacing="20"
+        bindinput="onHtmlInput"
+      />
+    </view>
+
+    <view class="panel panel-preview">
+      <view class="panel-title">右侧实时页面（HTML 映射）</view>
+      <view class="phone-shell">
+        <view class="phone-status">
+          <view>09:41</view>
+          <view>5G · 100%</view>
+        </view>
+        <view class="phone-navbar">实时预览</view>
+
+        <scroll-view class="phone-content" scroll-y="true">
+          <rich-text nodes="{{previewHtml}}"></rich-text>
+        </scroll-view>
+
+        <view class="tabbar">
+          <view class="tab-item active">首页</view>
+          <view class="tab-item">创作</view>
+          <view class="tab-item">消息</view>
+          <view class="tab-item">我的</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
