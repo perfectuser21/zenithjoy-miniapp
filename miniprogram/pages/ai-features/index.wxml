@@ -33,7 +33,7 @@
         <view wx:if="{{index < creationSteps.length - 1}}" class="flow-arrow">→</view>
       </block>
       </view>
-    <view class="primary-cta" bindtap="openFeature" data-id="writer">开始文案创作</view>
+    <view class="primary-cta" bindtap="openCopywriterFlow">开始文案创作</view>
   </view>
 
   <view class="section">
@@ -42,11 +42,11 @@
       <view class="section-meta">基于当前选题</view>
     </view>
     <view class="pill-grid">
-      <view class="pill-item {{index === 0 ? 'pill-item-active' : ''}}" wx:for="{{titleActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
+      <view class="pill-item {{index === 0 ? 'pill-item-active' : ''}}" wx:for="{{titleActions}}" wx:key="label" bindtap="openTitleStudio">
         {{item.label}}
       </view>
     </view>
-    <view class="secondary-cta" bindtap="openFeature" data-id="content">生成标题 →</view>
+    <view class="secondary-cta" bindtap="openTitleStudio">生成标题 →</view>
   </view>
 
   <view class="section">
@@ -55,11 +55,11 @@
       <view class="section-meta">根据需求生成</view>
     </view>
     <view class="pill-grid">
-      <view class="pill-item {{index === 0 ? 'pill-item-blue-active' : 'pill-item-blue'}}" wx:for="{{momentActions}}" wx:key="label" bindtap="openFeature" data-id="{{item.bot}}">
+      <view class="pill-item {{index === 0 ? 'pill-item-blue-active' : 'pill-item-blue'}}" wx:for="{{momentActions}}" wx:key="label" bindtap="openMomentsStudio">
         {{item.label}}
       </view>
     </view>
-    <view class="secondary-cta secondary-cta-blue" bindtap="openFeature" data-id="expert">生成朋友圈文案 →</view>
+    <view class="secondary-cta secondary-cta-blue" bindtap="openMomentsStudio">生成朋友圈文案 →</view>
   </view>
 
   <view class="safe-bottom"></view>

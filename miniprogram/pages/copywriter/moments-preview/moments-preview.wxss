@@ -1,0 +1,148 @@
+@import "../common.wxss";
+
+.preview-page {
+  min-height: 100vh;
+  padding: 16rpx 20rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #f6f7fe 0%, #eef2ff 100%);
+  box-sizing: border-box;
+}
+
+.preview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.toolbar-row,
+.section-head,
+.bottom-actions,
+.summary-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.toolbar-btn,
+.toolbar-tag,
+.summary-tag {
+  padding: 14rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.toolbar-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #344054;
+}
+
+.toolbar-tag {
+  background: rgba(255, 255, 255, 0.86);
+  color: #4f46e5;
+}
+
+.hero-card,
+.summary-card,
+.preview-panel {
+  border-radius: 38rpx;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  box-sizing: border-box;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #243bce 0%, #5a4cff 100%);
+  box-shadow: 0 22rpx 46rpx rgba(58, 79, 182, 0.2);
+}
+
+.hero-kicker {
+  font-size: 24rpx;
+  color: #e1e8ff;
+  font-weight: 600;
+}
+
+.hero-title {
+  margin-top: 8rpx;
+  font-size: 44rpx;
+  line-height: 1.22;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.hero-desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.44;
+  color: #e7ecff;
+}
+
+.section-title {
+  font-size: 30rpx;
+  color: #101828;
+  font-weight: 700;
+}
+
+.section-meta {
+  font-size: 22rpx;
+  color: #7a7e9a;
+  font-weight: 600;
+}
+
+.summary-tags {
+  justify-content: flex-start;
+  margin-top: 12rpx;
+}
+
+.summary-tag {
+  background: #dfe7ff;
+  color: #3151d7;
+  padding: 10rpx 18rpx;
+  font-size: 20rpx;
+}
+
+.summary-tag-purple {
+  background: #f4eeff;
+  color: #7a4edc;
+}
+
+.summary-tag-blue {
+  background: #eef6ff;
+  color: #4b6fcf;
+}
+
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.preview-card {
+  border-radius: 28rpx;
+  padding: 22rpx 24rpx;
+  background: #ffffff;
+  border: 2rpx solid #e5e7f0;
+}
+
+.preview-card-active {
+  background: #eef3ff;
+  border-color: #d9e2ff;
+}
+
+.preview-content {
+  font-size: 24rpx;
+  line-height: 1.48;
+  color: #101828;
+}
+
+.preview-meta {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #667085;
+}

@@ -1,0 +1,61 @@
+<view class="studio-page">
+  <view class="studio-stack">
+    <view class="studio-toolbar">
+      <view class="toolbar-btn" bindtap="goBack">返回</view>
+      <view class="toolbar-tag">朋友圈文案生成</view>
+    </view>
+
+    <view class="studio-hero">
+      <view class="studio-hero-kicker">朋友圈文案</view>
+      <view class="studio-hero-title">基于现有内容，快速生成更适合朋友圈发布的表达版本</view>
+      <view class="studio-hero-desc">自动提炼卖点、调整口语感、补足转化收口，输出可直接发布的文案草稿。</view>
+    </view>
+
+    <view class="studio-card">
+      <view class="section-head">
+        <view class="section-title">当前内容来源</view>
+        <view class="section-meta">{{sourceContext.sourceLabel}}</view>
+      </view>
+      <view class="section-text">{{sourceContext.articleContent}}</view>
+    </view>
+
+    <view class="studio-card">
+      <view class="section-head">
+        <view class="section-title">生成策略</view>
+        <view class="section-meta">支持切换组合</view>
+      </view>
+      <view class="strategy-label">文案目标</view>
+      <view class="chip-grid">
+        <view class="chip chip-active">{{strategyRows[0][0]}}</view>
+        <view class="chip">{{strategyRows[0][1]}}</view>
+        <view class="chip chip-purple">{{strategyRows[0][2]}}</view>
+      </view>
+      <view class="strategy-label">表达方式</view>
+      <view class="chip-grid">
+        <view class="chip">{{strategyRows[1][0]}}</view>
+        <view class="chip chip-purple">{{strategyRows[1][1]}}</view>
+        <view class="chip chip-blue">{{strategyRows[1][2]}}</view>
+      </view>
+    </view>
+
+    <view class="studio-card">
+      <view class="section-head">
+        <view class="section-title">生成预览</view>
+        <view class="section-meta">{{drafts.length}} 个版本</view>
+      </view>
+      <view class="preview-card" bindtap="openPreviewPage">
+        <view class="preview-content">{{drafts[0].content}}</view>
+        <view class="preview-meta">{{drafts[0].meta}}</view>
+      </view>
+      <view class="footer-actions">
+        <view class="ghost-action" bindtap="regenerateDrafts">换一种表达</view>
+        <view class="ghost-action ghost-action-primary" bindtap="openPreviewPage">加入创作页</view>
+      </view>
+    </view>
+
+    <view class="bottom-actions">
+      <button class="btn-secondary" bindtap="goBack">返回创作页</button>
+      <button class="btn" bindtap="openPreviewPage">生成文案</button>
+    </view>
+  </view>
+</view>
