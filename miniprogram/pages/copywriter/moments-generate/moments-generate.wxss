@@ -1,0 +1,168 @@
+@import "../common.wxss";
+
+.studio-page {
+  min-height: 100vh;
+  padding: 16rpx 20rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #f6f7fe 0%, #eef2ff 100%);
+  box-sizing: border-box;
+}
+
+.studio-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.studio-toolbar,
+.section-head,
+.footer-actions,
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.toolbar-btn,
+.toolbar-tag {
+  padding: 14rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.toolbar-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #344054;
+}
+
+.toolbar-tag {
+  background: rgba(255, 255, 255, 0.86);
+  color: #4f46e5;
+}
+
+.studio-hero,
+.studio-card {
+  border-radius: 38rpx;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  box-sizing: border-box;
+}
+
+.studio-hero {
+  background: linear-gradient(135deg, #243bce 0%, #5a4cff 100%);
+  box-shadow: 0 22rpx 46rpx rgba(58, 79, 182, 0.2);
+}
+
+.studio-hero-kicker {
+  font-size: 24rpx;
+  color: #e1e8ff;
+  font-weight: 600;
+}
+
+.studio-hero-title {
+  margin-top: 8rpx;
+  font-size: 44rpx;
+  line-height: 1.22;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.studio-hero-desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.44;
+  color: #e7ecff;
+}
+
+.section-title {
+  font-size: 30rpx;
+  color: #101828;
+  font-weight: 700;
+}
+
+.section-meta {
+  font-size: 22rpx;
+  color: #7a7e9a;
+  font-weight: 600;
+}
+
+.section-text,
+.preview-content {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.48;
+  color: #101828;
+}
+
+.strategy-label {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #667085;
+  font-weight: 600;
+}
+
+.chip-grid {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 10rpx;
+}
+
+.chip {
+  flex: 1;
+  height: 58rpx;
+  border-radius: 18rpx;
+  background: #eef1ff;
+  color: #5063c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.chip-active {
+  background: #8f87ff;
+  color: #ffffff;
+}
+
+.chip-purple {
+  background: #f4eeff;
+  color: #7a4edc;
+}
+
+.chip-blue {
+  background: #eef6ff;
+  color: #4b6fcf;
+}
+
+.preview-card {
+  margin-top: 12rpx;
+  border-radius: 28rpx;
+  padding: 22rpx 24rpx;
+  background: #eef3ff;
+}
+
+.preview-meta {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #667085;
+}
+
+.ghost-action {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 22rpx;
+  background: #f5f7ff;
+  color: #4b5fd0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.ghost-action-primary {
+  background: #eef2ff;
+  color: #2947d3;
+}

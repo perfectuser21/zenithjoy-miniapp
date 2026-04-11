@@ -1,0 +1,44 @@
+<view class="preview-page">
+  <view class="preview-stack">
+    <view class="toolbar-row">
+      <view class="toolbar-btn" bindtap="regenerateDrafts">返回</view>
+      <view class="toolbar-tag">文案预览页</view>
+    </view>
+
+    <view class="hero-card">
+      <view class="hero-kicker">朋友圈文案预览</view>
+      <view class="hero-title">生成结果单独展开，方便集中比较和挑选最终版本</view>
+      <view class="hero-desc">支持切换版本、快速重生成，并将满意文案带回创作流程。</view>
+    </view>
+
+    <view class="summary-card">
+      <view class="section-head">
+        <view class="section-title">生成配置</view>
+        <view class="section-meta">{{drafts.length}} 个版本</view>
+      </view>
+      <view class="summary-tags">
+        <view class="summary-tag">价值表达</view>
+        <view class="summary-tag summary-tag-purple">口语表达</view>
+        <view class="summary-tag summary-tag-blue">结尾收口</view>
+      </view>
+    </view>
+
+    <view class="preview-panel">
+      <view class="section-head">
+        <view class="section-title">生成预览</view>
+        <view class="section-meta">上下滑动查看</view>
+      </view>
+      <view class="preview-list">
+        <view class="preview-card {{index === 0 ? 'preview-card-active' : ''}}" wx:for="{{drafts}}" wx:key="id">
+          <view class="preview-content">{{item.content}}</view>
+          <view class="preview-meta">{{item.meta}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-actions">
+      <button class="btn-secondary" bindtap="regenerateDrafts">换一种表达</button>
+      <button class="btn" bindtap="useDraft">加入创作页</button>
+    </view>
+  </view>
+</view>

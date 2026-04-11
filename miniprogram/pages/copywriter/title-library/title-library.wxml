@@ -1,0 +1,66 @@
+<view class="library-page">
+  <view class="library-stack">
+    <view class="library-hero">
+      <view class="library-hero-kicker">标题备选库</view>
+      <view class="library-hero-title">把想保留的标题先收进这里，再集中比较和确认</view>
+      <view class="library-hero-desc">支持按状态查看、锁定优先标题、删除不需要的版本。</view>
+    </view>
+
+    <view class="library-filter-card">
+      <view class="section-head">
+        <view class="section-title">筛选视图</view>
+        <view class="section-meta">自动按状态整理</view>
+      </view>
+      <view class="filter-row">
+        <view class="filter-chip filter-chip-active">全部 {{items.length}}</view>
+        <view class="filter-chip">已锁定 {{items.length ? 1 : 0}}</view>
+        <view class="filter-chip">待比较 {{items.length > 1 ? 1 : 0}}</view>
+      </view>
+    </view>
+
+    <view class="library-card">
+      <view class="section-head">
+        <view class="section-title">我的备选标题</view>
+        <view class="section-meta">可继续补充</view>
+      </view>
+
+      <view class="library-list">
+        <view class="library-item {{index === 0 ? 'library-item-active' : ''}}" wx:for="{{items}}" wx:key="id">
+          <view class="library-item-head">
+            <view class="library-item-title">{{item.text}}</view>
+            <view class="status-pill {{item.className}}">{{item.label}}</view>
+          </view>
+          <view class="library-item-note">{{item.note}}</view>
+          <view class="item-actions">
+            <view class="item-action" bindtap="toggleStatus" data-id="{{item.id}}">{{item.actionText}}</view>
+            <view class="item-action item-action-danger" bindtap="removeItem" data-id="{{item.id}}">删除</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="fake-scrollbar">
+        <view class="fake-scrollbar-thumb"></view>
+      </view>
+    </view>
+
+    <view class="final-card" wx:if="{{finalTitle}}">
+      <view class="section-head">
+        <view class="section-title">最终选题</view>
+        <view class="status-pill status-locked">已确认 1 条</view>
+      </view>
+      <view class="final-title">{{finalTitle.text}}</view>
+      <view class="final-note">适合作为本轮主标题，冲突感强，点击意图明确。</view>
+      <view class="final-tags">
+        <view class="mini-tag">主标题</view>
+        <view class="mini-tag mini-tag-purple">冲突型</view>
+        <view class="mini-tag mini-tag-blue">优先发布</view>
+      </view>
+      <view class="copy-btn" bindtap="copyFinalTitle">复制标题</view>
+    </view>
+
+    <view class="bottom-actions">
+      <button class="btn-secondary" bindtap="continueAdd">继续添加</button>
+      <button class="btn" bindtap="backToStudio">返回创作页</button>
+    </view>
+  </view>
+</view>

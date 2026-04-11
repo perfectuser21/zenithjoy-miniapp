@@ -41,7 +41,6 @@ exports.main = async (event, context) => {
   }
 }
 
-// 获取备用文章数据
 function getBackupArticles(limit) {
   return [
     {
@@ -84,5 +83,5 @@ function getBackupArticles(limit) {
       date: '2024-02-20',
       tags: ['AI趋势', '技术前沿']
     }
-  ].slice(0, limit);
-} 
+  ].slice(0, limit)
+}
