@@ -1,31 +1,44 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
+const db = cloud.database()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
-  
-  // 返回空数组，不再获取任何文章
-  return {
-    success: true,
-    data: [],
-    message: "文章功能已禁用",
-    total: 0
-  }
-}
+  const { page = 1, limit = 10 } = event
 
-// 格式化日期函数
-function formatDate(dateTime) {
-  if (!dateTime) return ''
-  
-  const date = new Date(dateTime)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  
-  return `${year}-${month}-${day}`
+  try {
+    const skip = (page - 1) * limit
+    const res = await db.collection('articles')
+      .where({ status: 'published' })
+      .orderBy('createTime', 'desc')
+      .skip(skip)
+      .limit(limit)
+      .get()
+
+    if (res.data && res.data.length > 0) {
+      return {
+        success: true,
+        data: res.data,
+        total: res.data.length
+      }
+    }
+
+    // DB 无数据时返回备用文章
+    return {
+      success: true,
+      data: getBackupArticles(limit),
+      total: getBackupArticles(limit).length
+    }
+  } catch (err) {
+    // DB 查询失败时返回备用文章
+    return {
+      success: true,
+      data: getBackupArticles(limit),
+      total: getBackupArticles(limit).length
+    }
+  }
 }
 
 // 获取备用文章数据

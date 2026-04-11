@@ -9,7 +9,8 @@ Page({
     plans: [],
     remainingQuota: 0,
     usageToday: 0,
-    usageRecords: [] // 添加使用记录数组
+    usageRecords: [], // 添加使用记录数组
+    expireDateText: ''
   },
   
   onLoad: function(options) {
@@ -70,12 +71,14 @@ Page({
         
         if (res.result.success) {
           const membershipData = res.result.data
-          
+
+          const expireDate = membershipData.membership && membershipData.membership.expireDate
           this.setData({
             membership: membershipData.membership,
             membershipPlan: membershipData.membershipPlan,
             remainingQuota: membershipData.remainingQuota,
             usageToday: membershipData.usageToday,
+            expireDateText: expireDate ? this.formatDate(expireDate) : '',
             isLoading: false
           })
         } else {

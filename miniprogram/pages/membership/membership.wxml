@@ -29,7 +29,7 @@
       </view>
       <view class="member-info-item" wx:if="{{membership.level !== 'free'}}">
         <view class="info-label">到期时间</view>
-        <view class="info-value">{{formatDate(membership.expireDate)}}</view>
+        <view class="info-value">{{expireDateText}}</view>
       </view>
       <view class="member-info-item">
         <view class="info-label">今日使用</view>
