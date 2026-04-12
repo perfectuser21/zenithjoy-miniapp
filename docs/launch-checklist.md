@@ -89,10 +89,10 @@
 | `cozeAPIv2` | ✅ 正常 | AI 对话引擎 |
 | `checkMembership` | ✅ 正常 | 配额 + 会员状态 |
 | `userLogin` | ✅ 正常 | 用户初始化 |
-| `checkAdmin` | ⚠️ 需配置 | 替换真实管理员 OpenID |
+| `checkAdmin` | ✅ 已配置 | admins 集合动态查询，OpenID 已通过 write-admin-openid.js 写入 |
 | `getRecommendArticles` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
 | `getArticleDetail` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
-| `createPaymentOrder` | ⚠️ 需配置 | 需接入商户号 |
+| `createPaymentOrder` | ⚠️ 需配置 | 详见 docs/wechat-pay-setup.md |
 | `getUsageRecords` | ✅ 正常 | 7 天使用统计 |
 | `initDatabase` | ✅ 正常 | 初始化，部署时手动触发一次 |
 
@@ -102,8 +102,8 @@
 
 - [ ] 微信小程序 AppID 已填写（`project.config.json`）
 - [ ] 云环境 ID 正确（生产环境）
-- [ ] `checkAdmin` 中管理员 OpenID 已替换为真实值
-- [ ] 支付商户号配置完成（`createPaymentOrder` 云函数）
+- [x] `checkAdmin` 中管理员 OpenID 已配置（admins 集合 + write-admin-openid.js）
+- [ ] 支付商户号配置完成（详见 docs/wechat-pay-setup.md）
 - [ ] `sitemap.json` 无索引配置问题
 
 ---
