@@ -1,0 +1,8 @@
+<!--pages/ai-features/ai-features.wxml-->
+<view class="container">
+  <view class="ai-features-list">
+    <view class="feature-item" bindtap="navigateToChat">
+      <text class="feature-title">AI 助手</text>
+    </view>
+  </view>
+</view>
