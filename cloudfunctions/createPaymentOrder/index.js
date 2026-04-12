@@ -1,153 +1,145 @@
-// createPaymentOrder 云函数 — 微信支付 v3 JSAPI 统一下单
-// 凭据通过云函数环境变量注入（微信云开发控制台配置）：
-//   WECHAT_PAY_MCHID        — 商户号（如：1234567890）
-//   WECHAT_PAY_CERT_SERIAL  — API 证书序列号（微信支付平台获取）
-//   WECHAT_PAY_PRIVATE_KEY  — API 证书私钥（PEM 格式，含 BEGIN/END RSA PRIVATE KEY）
+// createPaymentOrder 云函数
+// 微信支付 V3 统一下单
+//
+// 所需云环境变量（在微信云控制台 → 云函数 → 环境变量中配置）：
+//   WX_PAY_MCHID        - 商户号（10位数字）
+//   WX_PAY_V3_KEY       - APIv3 密钥（32字节）
+//   WX_PAY_SERIAL_NO    - 商户证书序列号
+//   WX_PAY_PRIVATE_KEY  - 商户私钥（PKCS#8 PEM，去掉首尾行）
 const cloud = require('wx-server-sdk');
-const https = require('https');
 const crypto = require('crypto');
+const https = require('https');
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
-const APPID = 'wx98c067e00cce09da';
-const MCHID = process.env.WECHAT_PAY_MCHID;
-const CERT_SERIAL = process.env.WECHAT_PAY_CERT_SERIAL;
-const PRIVATE_KEY = process.env.WECHAT_PAY_PRIVATE_KEY;
+const db = cloud.database();
 
-function generateNonce() {
-  return crypto.randomBytes(16).toString('hex').toUpperCase();
+// ─── 配置读取 ───────────────────────────────────────────────────────────────
+const MCHID      = process.env.WX_PAY_MCHID;
+const V3_KEY     = process.env.WX_PAY_V3_KEY;
+const SERIAL_NO  = process.env.WX_PAY_SERIAL_NO;
+const PRIVATE_KEY_RAW = process.env.WX_PAY_PRIVATE_KEY;
+
+function isConfigured() {
+  return !!(MCHID && V3_KEY && SERIAL_NO && PRIVATE_KEY_RAW);
 }
 
-function generateTimestamp() {
-  return String(Math.floor(Date.now() / 1000));
+function getPrivateKey() {
+  return `-----BEGIN PRIVATE KEY-----\n${PRIVATE_KEY_RAW}\n-----END PRIVATE KEY-----`;
 }
 
-function signMessage(message) {
-  const sign = crypto.createSign('RSA-SHA256');
-  sign.update(message, 'utf8');
-  return sign.sign(PRIVATE_KEY, 'base64');
+// ─── 微信支付 V3 签名 ───────────────────────────────────────────────────────
+function buildSignMessage(method, url, timestamp, nonce, body) {
+  return [method, url, timestamp, nonce, body, ''].join('\n');
 }
 
-function buildAuthHeader(method, urlPath, body) {
-  const timestamp = generateTimestamp();
-  const nonce = generateNonce();
-  const message = [method, urlPath, timestamp, nonce, body].join('\n') + '\n';
-  const signature = signMessage(message);
-  return `WECHATPAY2-SHA256-RSA2048 mchid="${MCHID}",nonce_str="${nonce}",timestamp="${timestamp}",serial_no="${CERT_SERIAL}",signature="${signature}"`;
+function sign(message) {
+  const privateKey = getPrivateKey();
+  return crypto.createSign('sha256WithRSAEncryption')
+    .update(message)
+    .sign(privateKey, 'base64');
 }
 
-function httpsPost(path, body) {
+function buildAuthorization(method, url, body) {
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const nonce = crypto.randomBytes(16).toString('hex');
+  const message = buildSignMessage(method, url, timestamp, nonce, body || '');
+  const signature = sign(message);
+  return `WECHATPAY2-SHA256-RSA2048 mchid="${MCHID}",nonce_str="${nonce}",timestamp="${timestamp}",serial_no="${SERIAL_NO}",signature="${signature}"`;
+}
+
+// ─── JSAPI 支付签名（前端调起支付用）──────────────────────────────────────
+function signForJsapi(prepayId) {
+  const appId = cloud.getWXContext().APPID;
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const nonce = crypto.randomBytes(16).toString('hex');
+  const pkg = `prepay_id=${prepayId}`;
+  const message = [appId, timestamp, nonce, pkg, ''].join('\n');
+  const paySign = sign(message);
+  return { timeStamp: timestamp, nonceStr: nonce, package: pkg, signType: 'RSA', paySign };
+}
+
+// ─── 调用微信支付统一下单接口 ───────────────────────────────────────────────
+function callWxPayApi(path, body) {
   return new Promise((resolve, reject) => {
     const bodyStr = JSON.stringify(body);
-    const authorization = buildAuthHeader('POST', path, bodyStr);
-
+    const method = 'POST';
+    const url = path;
+    const auth = buildAuthorization(method, url, bodyStr);
     const options = {
       hostname: 'api.mch.weixin.qq.com',
       path,
-      method: 'POST',
+      method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'ZenithJoy-MiniApp/1.0',
-        Authorization: authorization
+        'Authorization': auth,
       }
     };
-
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
-        try {
-          resolve({ statusCode: res.statusCode, body: JSON.parse(data) });
-        } catch (_) {
-          resolve({ statusCode: res.statusCode, body: data });
-        }
+        try { resolve(JSON.parse(data)); }
+        catch (e) { reject(new Error('解析微信支付响应失败: ' + data)); }
       });
     });
-
     req.on('error', reject);
     req.write(bodyStr);
     req.end();
   });
 }
 
+// ─── 主入口 ─────────────────────────────────────────────────────────────────
 exports.main = async (event) => {
   const { planId } = event;
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
+  const appId = wxContext.APPID;
 
   if (!planId) {
     return { success: false, error: '缺少套餐参数 planId' };
   }
 
-  if (!MCHID || !CERT_SERIAL || !PRIVATE_KEY) {
-    console.error('[createPaymentOrder] 环境变量未配置: WECHAT_PAY_MCHID / WECHAT_PAY_CERT_SERIAL / WECHAT_PAY_PRIVATE_KEY');
-    return { success: false, error: '支付服务暂时不可用，请联系客服' };
+  if (!isConfigured()) {
+    console.error('createPaymentOrder: 微信支付商户号未配置，请在云函数环境变量中设置 WX_PAY_MCHID/WX_PAY_V3_KEY/WX_PAY_SERIAL_NO/WX_PAY_PRIVATE_KEY');
+    return { success: false, error: '支付功能暂未开放，请联系管理员' };
   }
 
-  if (!openid) {
-    return { success: false, error: '无法获取用户身份，请重新登录' };
+  // 1. 查询套餐金额
+  const planResult = await db.collection('membership_plans').where({ id: planId }).get();
+  if (planResult.data.length === 0) {
+    return { success: false, error: '套餐不存在: ' + planId };
   }
-
-  const db = cloud.database();
-
-  let plan;
-  try {
-    const planResult = await db.collection('membership_plans').where({ id: planId }).get();
-    if (!planResult.data || planResult.data.length === 0) {
-      return { success: false, error: '套餐不存在' };
-    }
-    plan = planResult.data[0];
-  } catch (err) {
-    console.error('[createPaymentOrder] 查询套餐失败:', err.message);
-    return { success: false, error: '套餐查询失败' };
-  }
-
+  const plan = planResult.data[0];
   const totalFee = Math.round(plan.price * 100); // 转为分
-  if (totalFee <= 0) {
-    return { success: false, error: '免费套餐无需支付' };
-  }
 
-  // 生成商户订单号（ZJ + 时间戳 + 3位随机数）
-  const outTradeNo = `ZJ${Date.now()}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-
-  const orderBody = {
-    appid: APPID,
+  // 2. 调用微信支付 V3 JSAPI 统一下单
+  const outTradeNo = `ZJ${Date.now()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  const reqBody = {
+    appid: appId,
     mchid: MCHID,
-    description: `ZenithJoy - ${plan.name}`,
+    description: `ZenithJoy ${plan.name}`,
     out_trade_no: outTradeNo,
-    notify_url: 'https://api.weixin.qq.com/cgi-bin/cloudbase/paidunion',
+    notify_url: `https://api.mch.weixin.qq.com/v3/pay/notify/${MCHID}`, // 云函数 HTTP 触发器地址，部署后更新
     amount: { total: totalFee, currency: 'CNY' },
     payer: { openid }
   };
 
-  let apiResult;
-  try {
-    apiResult = await httpsPost('/v3/pay/transactions/jsapi', orderBody);
-  } catch (err) {
-    console.error('[createPaymentOrder] 请求微信支付 API 失败:', err.message);
-    return { success: false, error: '创建订单失败，请稍后重试' };
+  const resp = await callWxPayApi('/v3/pay/transactions/jsapi', reqBody);
+
+  if (!resp.prepay_id) {
+    console.error('统一下单失败', resp);
+    return { success: false, error: resp.message || '下单失败', code: resp.code };
   }
 
-  if (apiResult.statusCode !== 200 || !apiResult.body.prepay_id) {
-    const errMsg = (apiResult.body && (apiResult.body.message || apiResult.body.err_code_des)) || '下单失败';
-    console.error('[createPaymentOrder] 微信支付下单失败:', JSON.stringify(apiResult.body));
-    return { success: false, error: errMsg };
-  }
-
-  // 生成 wx.requestPayment 所需签名
-  const timestamp = generateTimestamp();
-  const nonce = generateNonce();
-  const pkg = `prepay_id=${apiResult.body.prepay_id}`;
-  const paySignMessage = [APPID, timestamp, nonce, pkg].join('\n') + '\n';
-  const paySign = signMessage(paySignMessage);
+  // 3. 签名给前端调起支付
+  const jsapiParams = signForJsapi(resp.prepay_id);
 
   return {
     success: true,
-    timeStamp: timestamp,
-    nonceStr: nonce,
-    package: pkg,
-    signType: 'RSA',
-    paySign
+    outTradeNo,
+    ...jsapiParams
   };
 };
+
