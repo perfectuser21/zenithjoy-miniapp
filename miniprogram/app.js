@@ -6,28 +6,41 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
-        // env 参数说明：
-        //   env 参数决定接下来小程序发起的云开发调用会默认请求到哪个云环境的资源
-        //   此处请填入环境 ID, 环境 ID 可打开云控制台查看
-        //   如不填则使用默认环境（第一个创建的环境）
         env: 'zenithjoycloud-8g4ca5pbb5b027e8',
         traceUser: true,
       })
     }
-    
+
+    this.globalData = {
+      userInfo: null,
+      hasUserInfo: false,
+      hasLogin: false,
+      privacyResolve: null,    // 隐私授权 resolve 函数（onNeedPrivacyAuthorization 注入）
+      needPrivacyModal: false, // 是否需要弹出隐私弹窗
+      env: wx.getAccountInfoSync().miniProgram.envVersion || 'release'
+    };
+
+    // 注册隐私协议授权回调（微信 2.33.0+ 审核强制要求）
+    // 触发时机：用户第一次调用需要隐私授权的 API（如 getUserProfile 等）
+    if (wx.onNeedPrivacyAuthorization) {
+      wx.onNeedPrivacyAuthorization(resolve => {
+        this.globalData.privacyResolve = resolve;
+        this.globalData.needPrivacyModal = true;
+        // 通知当前页面显示隐私弹窗
+        const pages = getCurrentPages();
+        const currentPage = pages[pages.length - 1];
+        if (currentPage && typeof currentPage.showPrivacyModal === 'function') {
+          currentPage.showPrivacyModal();
+        }
+      });
+    }
+
     // 自动初始化数据库
     this.initDatabaseCollections();
 
     // 添加网络请求白名单（仅在开发环境中有效）
     this.setRequestDomains();
-    
-    this.globalData = {
-      userInfo: null,
-      hasUserInfo: false,
-      hasLogin: false,
-      env: wx.getAccountInfoSync().miniProgram.envVersion || 'release' // 获取当前环境
-    };
-    
+
     // 监听错误
     wx.onError((error) => {
       console.error('全局错误:', error);

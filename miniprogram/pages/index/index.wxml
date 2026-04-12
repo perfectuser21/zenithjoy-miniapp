@@ -119,4 +119,22 @@
     </view>
 
   </view>
+
+  <!-- 隐私协议弹窗（微信审核要求）-->
+  <view class="privacy-mask" wx:if="{{showPrivacy}}" catchtap="disagreePrivacy"></view>
+  <view class="privacy-modal" wx:if="{{showPrivacy}}">
+    <view class="privacy-title">用户隐私保护提示</view>
+    <view class="privacy-body">
+      感谢您使用 <text class="privacy-brand">ZenithJoy</text>。在使用本小程序前，请阅读并同意我们的
+      <text class="privacy-link" bindtap="openPrivacyPage">《用户隐私协议》</text>，我们将按照协议保护您的个人信息。
+    </view>
+    <view class="privacy-info">
+      <view class="privacy-info-item">· 微信昵称、头像：用于展示您的会员身份</view>
+      <view class="privacy-info-item">· 位置信息：仅在您主动使用相关功能时采集</view>
+    </view>
+    <view class="privacy-actions">
+      <button class="privacy-btn-disagree" bindtap="disagreePrivacy">不同意</button>
+      <button class="privacy-btn-agree" id="agree-btn" bindtap="agreePrivacy">同意并继续</button>
+    </view>
+  </view>
 </view>
