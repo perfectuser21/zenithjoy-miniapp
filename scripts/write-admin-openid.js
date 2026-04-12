@@ -111,8 +111,15 @@ async function main() {
       console.log('\n✅ 完成！管理员已在 admins 集合中');
       return;
     }
+    console.log('   📝 admins 集合中尚无此 OpenID，即将写入');
+  } else if (queryResp.errcode === -501005 || queryResp.errcode === -501000) {
+    console.error('\n⚠️  WeChat Cloud 权限限制，无法从外部查询数据库');
+    console.error('   尝试直接写入（可能也受限）...');
+  } else if (queryResp.errcode !== undefined && queryResp.errcode !== 0) {
+    console.warn(`   ⚠️  查询返回错误 ${queryResp.errcode}，继续尝试写入...`);
+  } else {
+    console.log('   📝 admins 集合中尚无此 OpenID，即将写入');
   }
-  console.log('   📝 admins 集合中尚无此 OpenID，即将写入');
 
   // Step 3: 写入管理员记录
   console.log('\n[3/3] 写入管理员记录...');
@@ -131,6 +138,26 @@ async function main() {
     console.log(`   OpenID : ${ADMIN_OPENID}`);
     console.log(`   集合   : admins`);
     console.log(`   环境   : ${ENV_ID}`);
+  } else if (addResp.errcode === -501005 || addResp.errcode === -501000) {
+    // WeChat Cloud 环境不允许外部直接写入数据库，需要通过云函数或手动配置
+    console.error('\n⚠️  WeChat Cloud 环境权限限制：外部服务器无法直接写入云数据库');
+    console.error('   （微信云开发环境只允许云函数内部或微信开发者工具访问 DB）\n');
+    console.error('─── 替代方案 A：在小程序端调用 bootstrapAdmin 云函数 ───────────────');
+    console.error('   1. 用微信打开 ZenithJoy 小程序（或在开发者工具体验版中）');
+    console.error('   2. 在开发者工具 → 云开发控制台 → 云函数 → bootstrapAdmin');
+    console.error('   3. 点击"调试"→"本地调用"，传入空参数 {}');
+    console.error('   4. 返回 success: true 即写入成功');
+    console.error('   注意：bootstrapAdmin 仅在 admins 集合为空时生效（防止覆盖）');
+    console.error('');
+    console.error('─── 替代方案 B：设置 checkAdmin 云函数环境变量 ─────────────────────');
+    console.error('   1. 打开微信开发者工具 → 云开发控制台 → 环境变量');
+    console.error(`   2. 为 checkAdmin 云函数添加环境变量：ADMIN_OPENIDS=${ADMIN_OPENID}`);
+    console.error('   3. 保存后 checkAdmin 会自动识别该 OpenID 为管理员（无需 DB）');
+    console.error('   提示：多个 OpenID 以英文逗号分隔');
+    console.error('');
+    console.error('─── 如何获取自己的 OpenID ──────────────────────────────────────────');
+    console.error('   打开小程序 → 我的 → 触发 checkAdmin → 在云函数日志中可见 OPENID');
+    process.exit(1);
   } else {
     console.error('❌ 写入失败:', JSON.stringify(addResp));
     process.exit(1);
