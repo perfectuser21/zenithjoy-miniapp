@@ -74,10 +74,13 @@
   "debug": false,
   "cloud": true,
   "lazyCodeLoading": "requiredComponents",
-  "usingComponents": {},
+  "usingComponents": {
+    "privacy-popup": "/components/privacy-popup/privacy-popup"
+  },
   "permission": {
     "scope.userLocation": {
       "desc": "你的位置信息将用于获取本地服务"
     }
-  }
+  },
+  "__usePrivacyCheck__": true
 }
