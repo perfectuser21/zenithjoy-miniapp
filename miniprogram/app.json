@@ -79,5 +79,18 @@
     "scope.userLocation": {
       "desc": "你的位置信息将用于获取本地服务"
     }
+  },
+  "__usePrivacyVersion__": true,
+  "privacy": {
+    "privacyList": [
+      {
+        "privacyKey": "getUserInfo",
+        "label": "你的微信昵称、头像"
+      },
+      {
+        "privacyKey": "getLocation",
+        "label": "你的位置信息"
+      }
+    ]
   }
 }

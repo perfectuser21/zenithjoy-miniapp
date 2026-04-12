@@ -28,6 +28,7 @@ Page({
     canIUseGetUserProfile: false,
     isLoading: true,
     isAdmin: false,
+    showPrivacy: false,        // 控制隐私协议弹窗显示
     statusBarHeight: 20,
     memberInitial: "X",
     memberTier: "成长会员",
@@ -67,6 +68,63 @@ Page({
     this.initializeDatabase();
     this.checkAdminStatus();
     this.loadHeroCard();
+    this.checkPrivacySetting();
+  },
+
+  // 检查隐私授权状态（首次启动时主动弹出）
+  checkPrivacySetting() {
+    if (!wx.getPrivacySetting) return;
+    wx.getPrivacySetting({
+      success: (res) => {
+        if (res.needAuthorization) {
+          this.setData({ showPrivacy: true });
+        }
+      }
+    });
+  },
+
+  // 供 App onNeedPrivacyAuthorization 回调调用
+  showPrivacyModal() {
+    this.setData({ showPrivacy: true });
+  },
+
+  // 用户同意隐私协议
+  agreePrivacy() {
+    if (wx.agreePrivacyAuthorization) {
+      wx.agreePrivacyAuthorization({
+        success: () => {
+          this.setData({ showPrivacy: false });
+          const app = getApp();
+          if (app.globalData.privacyResolve) {
+            app.globalData.privacyResolve({ event: 'agree', buttonId: 'agree-btn' });
+            app.globalData.privacyResolve = null;
+            app.globalData.needPrivacyModal = false;
+          }
+        }
+      });
+    } else {
+      this.setData({ showPrivacy: false });
+    }
+  },
+
+  // 用户拒绝隐私协议（不允许继续使用）
+  disagreePrivacy() {
+    wx.showModal({
+      title: '提示',
+      content: '您需要同意隐私协议才能正常使用本小程序',
+      showCancel: false,
+      confirmText: '重新阅读',
+      success: () => {
+        this.setData({ showPrivacy: true });
+      }
+    });
+  },
+
+  // 跳转到隐私协议页面
+  openPrivacyPage() {
+    wx.navigateTo({
+      url: '/pages/web-view/web-view?url=https%3A%2F%2Fzenithjoy.cc%2Fprivacy'
+    });
   },
 
   onPullDownRefresh() {
