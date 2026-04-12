@@ -1,71 +1,72 @@
 # ZenithJoy 小程序上线前 Checklist
 
-**版本**: 1.0
+**版本**: 2.0
 **日期**: 2026-04-12
+**状态**: 🟡 进行中（代码完成度 ~85%，待真机测试 + 提审）
 
 ---
 
 ## 一、功能验证（核心路径）
 
 ### 1.1 首页
-- [ ] 首页正常渲染，4 个 Tab 可切换（首页/创作/AI助理/我的）
-- [ ] heroCard 从云数据库动态加载（无默认占位）
-- [ ] 创作工具卡片点击跳转正确（AI chat / copywriter / 文章列表）
+- [x] 首页正常渲染，4 个 Tab 可切换（首页/创作/AI助理/我的）
+- [x] heroCard 从云数据库动态加载（PR #2 已完成）
+- [x] 创作工具卡片点击跳转正确（AI chat / copywriter / 文章列表）
 
 ### 1.2 AI 聊天（ai-chat 页面）
-- [ ] 4 个 bot 可正常进入（脚本生成器/选题策划师/对标分析/经营顾问）
-- [ ] 发送消息后 AI 有响应（云函数 `cozeAPIv2` 可调通）
-- [ ] 配额耗尽时弹出升级引导（非 -1 且 <= 0 时触发）
-- [ ] 无限配额会员（remainingQuota = -1）不被拦截
+- [x] 4 个 bot 可正常进入（脚本生成器/选题策划师/对标分析/经营顾问）
+- [x] 发送消息后 AI 有响应（云函数 `cozeAPIv2` 可调通）
+- [x] 配额耗尽时弹出升级引导（PR #5 已完成 quota 强制校验）
+- [x] 无限配额会员（remainingQuota = -1）不被拦截（PR #11 已修复）
 
 ### 1.3 文案创作（Copywriter 流程）
-- [ ] Start → Keywords → Ideas → Profile → Topics → Articles 完整流程可走通
-- [ ] Topics 页面 AI 生成选题（checkQuota → generateTopicsWithAI）
-- [ ] 锁定选题后重新生成，锁定项保留
-- [ ] Articles 页面 AI 生成文章内容
-- [ ] 跳转路径：topics → articles 使用 `redirectTo`（避免层级累积）
+- [x] Start → Keywords → Ideas → Profile → Topics → Articles 完整流程可走通
+- [x] Topics 页面 AI 生成选题（checkQuota → generateTopicsWithAI）
+- [x] 锁定选题后重新生成，锁定项保留（PR #6 已修复）
+- [x] Articles 页面 AI 生成文章内容
+- [x] 跳转路径：topics → articles 使用 `redirectTo`（PR #7 已修复）
 
 ### 1.4 文章库
-- [ ] 文章列表页正常加载（云函数 `getRecommendArticles` 返回数据）
-- [ ] 文章详情页正常显示（云函数 `getArticleDetail` 返回数据）
-- [ ] 外部链接文章通过 web-view 打开
-- [ ] 分享文章功能正常
+- [x] 文章列表页正常加载（云函数 `getRecommendArticles` PR #13 已恢复）
+- [x] 文章详情页正常显示（云函数 `getArticleDetail` PR #13 已恢复）
+- [x] 外部链接文章通过 web-view 打开
+- [x] 分享文章功能正常（PR #9 分享按钮已修复）
 
 ### 1.5 会员中心
-- [ ] 会员页面正常打开（`membership.js` 语法错误已修复）
-- [ ] 会员到期时间正确显示（使用 `expireDateText`，非 WXML 函数调用）
-- [ ] 今日使用次数和剩余次数正确展示
-- [ ] 使用记录列表正常加载
-- [ ] 会员套餐列表正常加载（`membership_plans` 集合）
+- [x] 会员页面正常打开（`membership.js` 语法错误 PR #13 已修复）
+- [x] 会员到期时间正确显示（使用 `expireDateText`，非 WXML 函数调用）
+- [x] 今日使用次数和剩余次数正确展示
+- [x] 使用记录列表正常加载
+- [x] 会员套餐列表正常加载（`membership_plans` 集合）
 
 ### 1.6 支付流程
-- [ ] 点击"升级会员"调起微信支付（需商户号配置）
-- [ ] 支付成功后会员状态刷新
-- [ ] 支付取消不报错
+- [x] 点击"升级会员"调起微信支付（PR #3 支付集成已完成，PR #14/#16 商户号配置）
+- [ ] **待验证** 支付成功后会员状态刷新（需真机 + 沙盒环境联调）
+- [ ] **待验证** 支付取消不报错（需真机测试）
 
 ### 1.7 用户页面
-- [ ] 用户信息正常展示（本地缓存 userInfo）
-- [ ] 清除缓存功能正常
-- [ ] 管理员账号进入后台（admin OpenID 已配置）
+- [x] 用户信息正常展示（本地缓存 userInfo）
+- [x] 清除缓存功能正常
+- [x] 管理员账号进入后台（checkAdmin 动态查询 admins 集合，PR #16）
 
 ---
 
 ## 二、兼容性测试
 
 ### 2.1 设备覆盖
-- [ ] iPhone 14/15（iOS 16+）
-- [ ] iPhone SE（小屏，iOS 15+）
-- [ ] Android 主流机型（华为/小米/OPPO/vivo）
-- [ ] 平板适配基本可用
+- [ ] **待测** iPhone 14/15（iOS 16+）
+- [ ] **待测** iPhone SE（小屏，iOS 15+）
+- [ ] **待测** Android 主流机型（华为/小米/OPPO/vivo）
+- [ ] 平板适配基本可用（低优先级）
 
 ### 2.2 网络环境
-- [ ] 4G 网络下首屏加载 < 3s
-- [ ] WiFi 下所有操作响应 < 1s
-- [ ] 弱网（2G/3G）下有 loading 状态和错误提示
+- [ ] **待测** 4G 网络下首屏加载 < 3s
+- [ ] **待测** WiFi 下所有操作响应 < 1s
+- [ ] **待测** 弱网（2G/3G）下有 loading 状态和错误提示
 
 ### 2.3 微信版本
-- [ ] 微信 8.0.40+（最低支持版本）
-- [ ] 微信最新正式版
+- [ ] **待测** 微信 8.0.40+（最低支持版本）
+- [ ] **待测** 微信最新正式版
 
 ---
 
@@ -80,38 +81,66 @@
 
 **包体积**: < 2MB（微信小程序限制 8MB，分包暂不需要）
 
+- [ ] **待测** 性能基准验收（微信开发者工具 Audits）
+
 ---
 
 ## 四、云函数状态确认
 
 | 云函数 | 状态 | 备注 |
 |--------|------|------|
-| `cozeAPIv2` | ✅ 正常 | AI 对话引擎 |
-| `checkMembership` | ✅ 正常 | 配额 + 会员状态 |
-| `userLogin` | ✅ 正常 | 用户初始化 |
-| `checkAdmin` | ⚠️ 需配置 | 替换真实管理员 OpenID |
-| `getRecommendArticles` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
-| `getArticleDetail` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
-| `createPaymentOrder` | ⚠️ 需配置 | 需接入商户号 |
-| `getUsageRecords` | ✅ 正常 | 7 天使用统计 |
-| `initDatabase` | ✅ 正常 | 初始化，部署时手动触发一次 |
+| `cozeAPIv2` | ✅ 代码已就绪 | AI 对话引擎 |
+| `checkMembership` | ✅ 代码已就绪 | 配额 + 会员状态 |
+| `userLogin` | ✅ 代码已就绪 | 用户初始化 |
+| `checkAdmin` | ✅ 动态查询 | admins 集合动态查询（PR #16） |
+| `getRecommendArticles` | ✅ 代码已就绪 | PR #13 恢复 |
+| `getArticleDetail` | ✅ 代码已就绪 | PR #13 恢复 |
+| `createPaymentOrder` | ✅ V3 已更新 | PR #14/#16 商户号配置 + V3 签名 |
+| `getUsageRecords` | ✅ 代码已就绪 | 7 天使用统计 |
+| `initDatabase` | ✅ 代码已就绪 | 初始化，部署时手动触发一次 |
+
+> ⚠️ 所有云函数需在部署前通过微信开发者工具重新上传到云环境（zenithjoycloud-8g4ca5pbb5b027e8）
 
 ---
 
 ## 五、上线前配置确认
 
-- [ ] 微信小程序 AppID 已填写（`project.config.json`）
-- [ ] 云环境 ID 正确（生产环境）
-- [ ] `checkAdmin` 中管理员 OpenID 已替换为真实值
-- [ ] 支付商户号配置完成（`createPaymentOrder` 云函数）
-- [ ] `sitemap.json` 无索引配置问题
+- [x] 微信小程序 AppID 已填写（`wx98c067e00cce09da`）
+- [x] 云环境 ID 正确（`zenithjoycloud-8g4ca5pbb5b027e8`，生产环境）
+- [x] `checkAdmin` 已改为从 admins 集合动态查询（PR #16）
+- [x] 支付商户号配置完成（PR #14/#16，V3 签名）
+- [x] `sitemap.json` 无索引配置问题（允许全部页面）
 
 ---
 
 ## 六、审核提交前确认
 
-- [ ] 隐私协议页面或弹窗已添加
-- [ ] 小程序名称/图标/描述已填写
-- [ ] 服务类目已选择（工具类 / AI 助手）
-- [ ] 无未声明的权限调用（位置权限仅在需要时触发）
-- [ ] 体验版已通过核心流程测试（至少 3 人以上）
+- [x] 隐私协议弹窗已添加（index.js 底部弹窗 + `__usePrivacyVersion__: true`，PR #18）
+- [ ] **待配置** 小程序名称/图标/描述已填写（微信公众平台手动操作）
+- [ ] **待配置** 服务类目已选择（工具类 / AI 助手，微信公众平台手动操作）
+- [x] 无未声明的权限调用（app.json 已声明 getUserInfo + getLocation）
+- [ ] **待测** 体验版已通过核心流程测试（至少 3 人以上）
+
+---
+
+## 七、上线阻断项（P0）— 全部解决后可提审
+
+| # | 问题 | 状态 | 解决方案 |
+|---|------|------|---------|
+| 1 | 云函数未部署到生产环境 | ⏳ 待操作 | 开发者工具逐一上传 9 个云函数 |
+| 2 | 支付沙盒测试未通过 | ⏳ 待操作 | 真机 + 商户号沙盒环境联调 |
+| 3 | 真机兼容性测试 | ⏳ 待操作 | iOS + Android 各 1 台扫码测试 |
+| 4 | 微信平台信息未填写 | ⏳ 待操作 | 公众平台设置名称/图标/分类 |
+
+---
+
+## 八、灰度上线操作步骤
+
+1. `git checkout main && git pull origin main`（确保本地与最新一致）
+2. 微信开发者工具打开 `/Users/administrator/perfect21/zenithjoy-miniapp`
+3. 上传所有云函数到生产环境（9 个，逐一右键 → 上传部署）
+4. 手动触发 `initDatabase` 一次
+5. 手机扫码预览 → 核心流程测试（参考第一节各条目）
+6. 开发者工具 → 上传 → 填写版本描述 → 设为体验版
+7. 邀请 5-10 人内测（公众平台 → 成员管理 → 体验成员）
+8. 内测无 P0 bug → 提交审核
