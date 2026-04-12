@@ -1,25 +1,29 @@
-// 云函数入口文件
+// checkAdmin 云函数 — 校验当前用户是否为管理员
+// 管理员 OpenID 通过环境变量 ADMIN_OPENIDS 配置（逗号分隔多个），
+// 若未配置则回退到内置列表。
 const cloud = require('wx-server-sdk')
 
-cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-})
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-// 云函数入口函数
+// 内置管理员 OpenID（主账号）
+const BUILTIN_ADMIN_OPENIDS = [
+  'o2lLz62X0iyQEYcpnS2ljUvXlHF0',
+]
+
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
-  
-  // 管理员OpenID列表
-  const adminOpenIds = [
-    'o2lLz62X0iyQEYcpnS2ljUvXlHF0', // 示例管理员ID，请替换为实际管理员的OpenID
-  ]
-  
-  // 检查当前用户是否为管理员
+
+  // 支持通过环境变量动态扩展管理员列表（无需重新部署）
+  const envAdmins = process.env.ADMIN_OPENIDS
+    ? process.env.ADMIN_OPENIDS.split(',').map(s => s.trim()).filter(Boolean)
+    : []
+
+  const adminOpenIds = [...new Set([...BUILTIN_ADMIN_OPENIDS, ...envAdmins])]
   const isAdmin = adminOpenIds.includes(openid)
-  
+
   return {
-    isAdmin: isAdmin,
-    openid: openid
+    isAdmin,
+    openid
   }
-} 
+}
