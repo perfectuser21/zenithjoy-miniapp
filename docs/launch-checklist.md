@@ -89,21 +89,23 @@
 | `cozeAPIv2` | ✅ 正常 | AI 对话引擎 |
 | `checkMembership` | ✅ 正常 | 配额 + 会员状态 |
 | `userLogin` | ✅ 正常 | 用户初始化 |
-| `checkAdmin` | ✅ 已配置 | admins 集合动态查询，OpenID 已通过 write-admin-openid.js 写入 |
-| `getRecommendArticles` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
-| `getArticleDetail` | ✅ 已修复 | 本 PR 恢复（原被禁用）|
-| `createPaymentOrder` | ⚠️ 需配置 | 详见 docs/wechat-pay-setup.md |
+| `checkAdmin` | ✅ 代码就绪 | DB 查询 + 环境变量 fallback（ADMIN_OPENIDS）；需部署后配置 env var 或调用 bootstrapAdmin |
+| `getRecommendArticles` | ✅ 已修复 | 原被禁用，已恢复 |
+| `getArticleDetail` | ✅ 已修复 | 原被禁用，已恢复 |
+| `createPaymentOrder` | ⚠️ 需配置 | 代码就绪，详见 docs/wechat-pay-setup.md |
 | `getUsageRecords` | ✅ 正常 | 7 天使用统计 |
-| `initDatabase` | ✅ 正常 | 初始化，部署时手动触发一次 |
+| `initDatabase` | ✅ 正常 | 初始化，部署后手动触发一次 |
+| `bootstrapAdmin` | ✅ 新增 | 首次部署后调用一次，调用者成为第一个超级管理员 |
+| `addAdmin` | ✅ 新增 | 运维工具，由现有管理员添加新管理员 |
 
 ---
 
 ## 五、上线前配置确认
 
-- [ ] 微信小程序 AppID 已填写（`project.config.json`）
-- [ ] 云环境 ID 正确（生产环境）
-- [x] `checkAdmin` 中管理员 OpenID 已配置（admins 集合 + write-admin-openid.js）
-- [ ] 支付商户号配置完成（详见 docs/wechat-pay-setup.md）
+- [x] 微信小程序 AppID 已填写（`project.config.json`：`wx98c067e00cce09da`）
+- [x] 云环境 ID 正确（`zenithjoycloud-8g4ca5pbb5b027e8`，`app.js` 中已配置）
+- [ ] 管理员 OpenID 配置：部署后在 Dev Tools 调用 `bootstrapAdmin` 一次，**或** 在 `checkAdmin` 云函数设置环境变量 `ADMIN_OPENIDS=o2lLz62X0iyQEYcpnS2ljUvXlHF0`
+- [ ] 支付商户号配置（详见 `docs/wechat-pay-setup.md`）
 - [ ] `sitemap.json` 无索引配置问题
 
 ---
