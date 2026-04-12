@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/playground/index",
     "pages/copywriter/start/start",
     "pages/copywriter/keywords/keywords",
     "pages/copywriter/ideas/ideas",

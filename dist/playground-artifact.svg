@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#f5f7fb"/>
+  <text x="40" y="48" font-size="28" fill="#111827" font-family="Arial">Mini Program Playground Artifact</text>
+
+  <rect x="40" y="90" width="750" height="750" rx="24" fill="#fff" stroke="#d1d5db"/>
+  <text x="70" y="130" font-size="24" fill="#4b5563" font-family="Arial">Left: HTML Editor</text>
+  <rect x="70" y="160" width="690" height="650" rx="16" fill="#0f172a"/>
+  <text x="95" y="205" font-size="24" fill="#e2e8f0" font-family="monospace">&lt;div style="padding:12px"&gt;</text>
+  <text x="95" y="245" font-size="24" fill="#e2e8f0" font-family="monospace">  &lt;div style="background:linear-gradient(...)"&gt;</text>
+  <text x="95" y="285" font-size="24" fill="#e2e8f0" font-family="monospace">    &lt;h3&gt;实时映射&lt;/h3&gt;</text>
+  <text x="95" y="325" font-size="24" fill="#e2e8f0" font-family="monospace">    &lt;p&gt;左边改 HTML，右边立即同步&lt;/p&gt;</text>
+  <text x="95" y="365" font-size="24" fill="#e2e8f0" font-family="monospace">  &lt;/div&gt;</text>
+  <text x="95" y="405" font-size="24" fill="#e2e8f0" font-family="monospace">&lt;/div&gt;</text>
+
+  <rect x="810" y="90" width="750" height="750" rx="24" fill="#fff" stroke="#d1d5db"/>
+  <text x="840" y="130" font-size="24" fill="#4b5563" font-family="Arial">Right: Live Preview (Rendered UI)</text>
+
+  <rect x="930" y="160" width="510" height="650" rx="34" fill="#f8fafc" stroke="#d1d5db" stroke-width="3"/>
+  <rect x="930" y="160" width="510" height="34" fill="#111827"/>
+  <text x="950" y="183" font-size="16" fill="#fff" font-family="Arial">09:41</text>
+  <text x="1365" y="183" font-size="16" fill="#fff" font-family="Arial">5G 100%</text>
+  <rect x="930" y="194" width="510" height="52" fill="#fff"/>
+  <text x="1135" y="226" font-size="24" fill="#111827" font-family="Arial">实时预览</text>
+
+  <rect x="960" y="280" width="450" height="110" rx="16" fill="#4f46e5"/>
+  <text x="980" y="322" font-size="28" fill="#fff" font-family="Arial">这是右侧的小程序样子</text>
+
+  <rect x="960" y="420" width="215" height="90" rx="12" fill="#fff"/>
+  <rect x="1195" y="420" width="215" height="90" rx="12" fill="#fff"/>
+  <text x="980" y="470" font-size="24" fill="#111827" font-family="Arial">智能选题</text>
+  <text x="1215" y="470" font-size="24" fill="#111827" font-family="Arial">脚本生成</text>
+
+  <rect x="960" y="540" width="450" height="80" rx="12" fill="#fff"/>
+  <text x="980" y="588" font-size="22" fill="#111827" font-family="Arial">内容流示例</text>
+
+  <rect x="930" y="760" width="510" height="50" fill="#fff"/>
+  <text x="980" y="792" font-size="20" fill="#4f46e5" font-family="Arial">首页</text>
+  <text x="1100" y="792" font-size="20" fill="#9ca3af" font-family="Arial">创作</text>
+  <text x="1220" y="792" font-size="20" fill="#9ca3af" font-family="Arial">消息</text>
+  <text x="1340" y="792" font-size="20" fill="#9ca3af" font-family="Arial">我的</text>
+</svg>

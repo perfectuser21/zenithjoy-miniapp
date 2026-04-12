@@ -49,7 +49,8 @@ Page({
       { title: "智能选题", meta: "先定方向", iconType: "target", cardClass: "tool-card-gradient", iconBoxClass: "tool-icon-box-gradient", actionType: "chat", actionTarget: "content" },
       { title: "文案创作", meta: "6 步工作流", iconType: "pen", cardClass: "tool-card-blue", iconBoxClass: "tool-icon-box-blue", actionType: "page", actionTarget: "copywriter" },
       { title: "爆款标题", meta: "强化点击", iconType: "sparkles", cardClass: "tool-card-purple", iconBoxClass: "tool-icon-box-purple", actionType: "chat", actionTarget: "content" },
-      { title: "朋友圈文案", meta: "轻量输出", iconType: "send", cardClass: "tool-card-indigo", iconBoxClass: "tool-icon-box-indigo", actionType: "chat", actionTarget: "expert" }
+      { title: "朋友圈文案", meta: "轻量输出", iconType: "send", cardClass: "tool-card-indigo", iconBoxClass: "tool-icon-box-indigo", actionType: "chat", actionTarget: "expert" },
+      { title: "代码预览台", meta: "左改右看", iconType: "sparkles", cardClass: "tool-card-purple", iconBoxClass: "tool-icon-box-purple", actionType: "page", actionTarget: "playground" }
     ],
     collectionItems: [
       { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", actionType: "page", actionTarget: "articles" },
@@ -254,6 +255,11 @@ Page({
       return;
     }
 
+    if (target === "playground") {
+      this.openPlayground();
+      return;
+    }
+
     this.openArticleLibrary();
   },
 
@@ -304,6 +310,12 @@ Page({
   openArticleLibrary() {
     wx.navigateTo({
       url: "/pages/article-list/article-list"
+    });
+  },
+
+  openPlayground() {
+    wx.navigateTo({
+      url: "/pages/playground/index"
     });
   }
 });
