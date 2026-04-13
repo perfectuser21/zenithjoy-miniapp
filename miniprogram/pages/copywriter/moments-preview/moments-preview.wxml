@@ -26,10 +26,16 @@
     <view class="preview-panel">
       <view class="section-head">
         <view class="section-title">生成预览</view>
-        <view class="section-meta">上下滑动查看</view>
+        <view class="section-meta">点选后进入下一步精修</view>
       </view>
       <view class="preview-list">
-        <view class="preview-card {{index === 0 ? 'preview-card-active' : ''}}" wx:for="{{drafts}}" wx:key="id">
+        <view
+          class="preview-card {{item.id === selectedDraftId ? 'preview-card-active' : ''}}"
+          wx:for="{{drafts}}"
+          wx:key="id"
+          bindtap="selectDraft"
+          data-id="{{item.id}}"
+        >
           <view class="preview-content">{{item.content}}</view>
           <view class="preview-meta">{{item.meta}}</view>
         </view>
@@ -38,7 +44,8 @@
 
     <view class="bottom-actions">
       <button class="btn-secondary" bindtap="regenerateDrafts">换一种表达</button>
-      <button class="btn" bindtap="useDraft">加入创作页</button>
+      <button class="btn-secondary" bindtap="useDraft">复制选中</button>
+      <button class="btn" bindtap="openEditorPage">下一步精修</button>
     </view>
   </view>
 </view>

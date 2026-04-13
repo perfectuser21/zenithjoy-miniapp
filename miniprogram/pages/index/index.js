@@ -41,20 +41,20 @@ Page({
       image: "/images/home-banner.png"
     },
     rankingItems: [
-      { tag: "热点", title: "抖音热点榜", actionType: "page", actionTarget: "articles" },
-      { tag: "低粉", title: "低粉爆款榜", actionType: "chat", actionTarget: "imagine" },
-      { tag: "涨粉", title: "高涨粉榜", actionType: "chat", actionTarget: "content" }
+      { tag: "热点", title: "抖音热点榜", actionType: "page", actionTarget: "rankingDetail" },
+      { tag: "低粉", title: "低粉爆款榜", actionType: "page", actionTarget: "rankingDetail" },
+      { tag: "涨粉", title: "高涨粉榜", actionType: "page", actionTarget: "rankingDetail" }
     ],
     creationTools: [
       { title: "智能选题", meta: "先定方向", iconType: "target", cardClass: "tool-card-gradient", iconBoxClass: "tool-icon-box-gradient", actionType: "chat", actionTarget: "content" },
-      { title: "文案创作", meta: "6 步工作流", iconType: "pen", cardClass: "tool-card-blue", iconBoxClass: "tool-icon-box-blue", actionType: "page", actionTarget: "copywriter" },
+      { title: "文案创作", meta: "生成文案", iconType: "pen", cardClass: "tool-card-blue", iconBoxClass: "tool-icon-box-blue", actionType: "page", actionTarget: "copywriter" },
       { title: "爆款标题", meta: "强化点击", iconType: "sparkles", cardClass: "tool-card-purple", iconBoxClass: "tool-icon-box-purple", actionType: "chat", actionTarget: "content" },
       { title: "朋友圈文案", meta: "轻量输出", iconType: "send", cardClass: "tool-card-indigo", iconBoxClass: "tool-icon-box-indigo", actionType: "chat", actionTarget: "expert" }
     ],
     collectionItems: [
-      { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", actionType: "page", actionTarget: "articles" },
-      { index: "02", title: "拆解百万博主Dan Koe爆文创作系统", actionType: "page", actionTarget: "articles" },
-      { index: "03", title: "如何用AI做出百万价值的内容", actionType: "page", actionTarget: "articles" }
+      { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", actionType: "page", actionTarget: "readingDetail" },
+      { index: "02", title: "拆解百万博主Dan Koe爆文创作系统", actionType: "page", actionTarget: "readingDetail" },
+      { index: "03", title: "如何用AI做出百万价值的内容", actionType: "page", actionTarget: "readingDetail" }
     ]
   },
 
@@ -254,6 +254,16 @@ Page({
       return;
     }
 
+    if (target === "rankingDetail") {
+      this.openRankingDetail();
+      return;
+    }
+
+    if (target === "readingDetail") {
+      this.openReadingDetail();
+      return;
+    }
+
     this.openArticleLibrary();
   },
 
@@ -296,8 +306,20 @@ Page({
   },
 
   openCopywriter() {
+    wx.switchTab({
+      url: "/pages/ai-features/index"
+    });
+  },
+
+  openRankingDetail() {
     wx.navigateTo({
-      url: "/pages/copywriter/start/start"
+      url: "/pages/ranking/detail/detail"
+    });
+  },
+
+  openReadingDetail() {
+    wx.navigateTo({
+      url: "/pages/reading-list/detail/detail"
     });
   },
 

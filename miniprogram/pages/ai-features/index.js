@@ -17,9 +17,8 @@ Page({
       { label: '方法型' }
     ],
     momentActions: [
-      { label: '价值表达' },
-      { label: '建立共鸣' },
-      { label: '轻度转化' }
+      { label: '想法' },
+      { label: '六大支柱' }
     ]
   },
 

@@ -1,0 +1,261 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FAFAFF 0%, #F2F5FF 100%);
+}
+
+.page-shell {
+  position: relative;
+  padding: 0 20rpx calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.floating-label {
+  position: absolute;
+  top: 8rpx;
+  left: 20rpx;
+  z-index: 2;
+  padding: 8rpx 12rpx;
+  border-radius: 999rpx;
+  background: rgba(17, 24, 39, 0.8);
+  color: #FFFFFF;
+  font-size: 19rpx;
+  font-weight: 700;
+}
+
+.hero-card {
+  margin-top: 46rpx;
+  padding: 14rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 58%, #312E81 100%);
+  color: #FFFFFF;
+  box-shadow: 0 20rpx 44rpx rgba(15, 23, 42, 0.32);
+}
+
+.hero-eyebrow {
+  font-size: 19rpx;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 1.4rpx;
+  color: #C4B5FD;
+}
+
+.hero-title {
+  margin-top: 10rpx;
+  font-size: 40rpx;
+  line-height: 1.16;
+  font-weight: 700;
+}
+
+.hero-desc {
+  margin-top: 6rpx;
+  font-size: 21rpx;
+  line-height: 1.4;
+  color: #DDD6FE;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 8rpx;
+  margin-top: 12rpx;
+}
+
+.hero-chip {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 19rpx;
+  font-weight: 700;
+}
+
+.hero-chip-ghost {
+  background: rgba(255, 255, 255, 0.10);
+  color: #DDD6FE;
+}
+
+.featured-card {
+  margin-top: 10rpx;
+  padding: 10rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #161B33 0%, #243B53 100%);
+  color: #FFFFFF;
+}
+
+.featured-head,
+.section-head,
+.item-bottom,
+.footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.featured-title,
+.section-title {
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.featured-meta,
+.section-hint {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.section-hint {
+  color: #98A2B3;
+}
+
+.featured-body {
+  margin-top: 8rpx;
+  padding: 12rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.featured-kicker {
+  font-size: 17rpx;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #C4B5FD;
+}
+
+.featured-main {
+  margin-top: 6rpx;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.featured-desc {
+  margin-top: 6rpx;
+  font-size: 21rpx;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+
+.chip {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #667085;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
+.chip-active {
+  background: #5D56EC;
+  color: #FFFFFF;
+}
+
+.section-card {
+  margin-top: 10rpx;
+  padding: 12rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.93);
+}
+
+.item-list {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.item-card {
+  display: flex;
+  gap: 12rpx;
+  padding: 12rpx;
+  border-radius: 18rpx;
+  background: #F8F9FD;
+}
+
+.item-index {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.item-index-fuchsia {
+  background: #F3E8FF;
+  color: #6D28D9;
+}
+
+.item-index-indigo {
+  background: #DBEAFE;
+  color: #4F46E5;
+}
+
+.item-index-teal {
+  background: #CCFBF1;
+  color: #0F9FB2;
+}
+
+.item-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-title {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.item-desc {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  font-weight: 600;
+  color: #667085;
+}
+
+.item-meta {
+  margin-top: 8rpx;
+  font-size: 19rpx;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  color: #4F46E5;
+}
+
+.item-action {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  font-weight: 700;
+  color: #98A2B3;
+}
+
+.footer-row {
+  gap: 10rpx;
+  margin-top: 12rpx;
+}
+
+.footer-btn {
+  flex: 1;
+  height: 46rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.footer-btn-secondary {
+  border: 1rpx solid #D4DCE8;
+  background: rgba(255, 255, 255, 0.9);
+  color: #344054;
+}
+
+.footer-btn-primary {
+  background: linear-gradient(90deg, #2563EB 0%, #7C3AED 100%);
+  color: #FFFFFF;
+}

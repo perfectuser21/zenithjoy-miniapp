@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/ranking/detail/detail",
+    "pages/reading-list/detail/detail",
     "pages/copywriter/start/start",
     "pages/copywriter/keywords/keywords",
     "pages/copywriter/ideas/ideas",
@@ -12,7 +14,7 @@
     "pages/copywriter/title-library/title-library",
     "pages/copywriter/moments-generate/moments-generate",
     "pages/copywriter/moments-preview/moments-preview",
-    "pages/ai-features/ai-features",
+    "pages/copywriter/moments-editor/moments-editor",
     "pages/ai-features/index",
     "pages/assistant/index",
     "pages/user/user",
@@ -35,6 +37,7 @@
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
+    "custom": true,
     "color": "#999999",
     "selectedColor": "#3a7fff",
     "backgroundColor": "#ffffff",

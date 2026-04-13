@@ -7,7 +7,8 @@ const {
 
 Page({
   data: {
-    drafts: []
+    drafts: [],
+    selectedDraftId: ''
   },
 
   onShow() {
@@ -15,7 +16,8 @@ Page({
       ? getLastMomentsDrafts()
       : buildMomentsDrafts(getSourceContext());
     saveMomentsDrafts(drafts);
-    this.setData({ drafts });
+    const selectedDraftId = this.data.selectedDraftId || (drafts[0] && drafts[0].id) || '';
+    this.setData({ drafts, selectedDraftId });
   },
 
   regenerateDrafts() {
@@ -38,13 +40,33 @@ Page({
     });
   },
 
+  selectDraft(e) {
+    const draftId = e.currentTarget.dataset.id;
+    if (!draftId) {
+      return;
+    }
+    this.setData({ selectedDraftId: draftId });
+  },
+
+  openEditorPage() {
+    if (!this.data.drafts.length) {
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/copywriter/moments-editor/moments-editor?draftId=${this.data.selectedDraftId || this.data.drafts[0].id}`
+    });
+  },
+
   useDraft() {
     if (!this.data.drafts.length) {
       return;
     }
 
+    const target =
+      this.data.drafts.find((item) => item.id === this.data.selectedDraftId) || this.data.drafts[0];
+
     wx.setClipboardData({
-      data: this.data.drafts[0].content,
+      data: target.content,
       success: () => {
         wx.showToast({ title: '已复制并可继续使用', icon: 'none' });
       }

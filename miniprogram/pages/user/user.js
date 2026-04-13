@@ -52,7 +52,8 @@ Page({
     ],
     recentActivities: [
       { title: '完成标题生成 6 次', value: '-24' },
-      { title: '完成朋友圈文案 3 次', value: '-12' }
+      { title: '完成朋友圈文案 3 次', value: '-12' },
+      { title: '完成内容创作 2 次', value: '-12' }
     ],
     membership: {
       level: 'free', // 默认是免费会员

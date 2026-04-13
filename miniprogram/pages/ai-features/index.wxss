@@ -3,7 +3,7 @@
   background:
     radial-gradient(circle at 16% 8%, rgba(114, 107, 255, 0.14), transparent 28%),
     linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
-  padding: 0 28rpx calc(44rpx + env(safe-area-inset-bottom));
+  padding: 0 28rpx calc(144rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
@@ -206,11 +206,13 @@
 .pill-item-blue {
   background: #eef1ff;
   color: #4f62c6;
+  width: calc((100% - 12rpx) / 2);
 }
 
 .pill-item-blue-active {
   background: #7698ee;
   color: #ffffff;
+  width: calc((100% - 12rpx) / 2);
 }
 
 .secondary-cta {

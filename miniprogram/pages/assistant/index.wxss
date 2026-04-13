@@ -3,7 +3,7 @@
   background:
     radial-gradient(circle at 15% 8%, rgba(122, 109, 255, 0.12), transparent 28%),
     linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
-  padding: 0 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  padding: 0 32rpx calc(132rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
