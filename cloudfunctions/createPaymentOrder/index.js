@@ -6,6 +6,8 @@
 //   WX_PAY_V3_KEY       - APIv3 密钥（32字节）
 //   WX_PAY_SERIAL_NO    - 商户证书序列号
 //   WX_PAY_PRIVATE_KEY  - 商户私钥（PKCS#8 PEM，去掉首尾行）
+//   WX_PAY_NOTIFY_URL   - 支付回调 URL（部署 notifyPayment 并创建 HTTP 触发器后填入）
+//                         格式：https://zenithjoycloud-8g4ca5pbb5b027e8.service.tcloudbase.com/notifyPayment
 const cloud = require('wx-server-sdk');
 const crypto = require('crypto');
 const https = require('https');
@@ -19,6 +21,9 @@ const MCHID      = process.env.WX_PAY_MCHID;
 const V3_KEY     = process.env.WX_PAY_V3_KEY;
 const SERIAL_NO  = process.env.WX_PAY_SERIAL_NO;
 const PRIVATE_KEY_RAW = process.env.WX_PAY_PRIVATE_KEY;
+// 支付回调 URL（部署 notifyPayment 云函数并设置 HTTP 触发器后配置此环境变量）
+const NOTIFY_URL = process.env.WX_PAY_NOTIFY_URL ||
+  'https://zenithjoycloud-8g4ca5pbb5b027e8.service.tcloudbase.com/notifyPayment';
 
 function isConfigured() {
   return !!(MCHID && V3_KEY && SERIAL_NO && PRIVATE_KEY_RAW);
@@ -121,7 +126,7 @@ exports.main = async (event) => {
     mchid: MCHID,
     description: `ZenithJoy ${plan.name}`,
     out_trade_no: outTradeNo,
-    notify_url: `https://api.mch.weixin.qq.com/v3/pay/notify/${MCHID}`, // 云函数 HTTP 触发器地址，部署后更新
+    notify_url: NOTIFY_URL,
     amount: { total: totalFee, currency: 'CNY' },
     payer: { openid }
   };
