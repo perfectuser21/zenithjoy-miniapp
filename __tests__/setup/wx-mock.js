@@ -23,6 +23,7 @@ global.wx = {
   navigateTo: jest.fn(),
   navigateBack: jest.fn(),
   redirectTo: jest.fn(),
+  updateShareMenu: jest.fn(({ success } = {}) => success && success()),
   setNavigationBarTitle: jest.fn(),
   stopPullDownRefresh: jest.fn(),
   previewImage: jest.fn(),
