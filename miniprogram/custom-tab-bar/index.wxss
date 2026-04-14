@@ -13,6 +13,7 @@
   align-items: stretch;
   gap: 8rpx;
   padding: 8rpx;
+  box-sizing: border-box;
   border-radius: 72rpx;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 -6rpx 18rpx rgba(42, 51, 103, 0.06), 0 16rpx 40rpx rgba(42, 51, 103, 0.14);

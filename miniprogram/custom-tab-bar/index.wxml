@@ -2,6 +2,8 @@
   <view class="tabbar-pill">
     <view
       wx:for="{{list}}"
+      wx:for-item="item"
+      wx:for-index="index"
       wx:key="pagePath"
       class="tab-item {{selected === index ? 'tab-item-active' : ''}}"
       bindtap="switchTab"

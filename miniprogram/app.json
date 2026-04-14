@@ -22,9 +22,6 @@
     "pages/membership/membership",
     "pages/web-view/web-view",
     "pages/chatHistory/index",
-    "pages/article/preview",
-    "pages/article-detail/article-detail",
-    "pages/article-list/article-list",
     "pages/admin/article/index",
     "pages/admin/article/add",
     "pages/admin/article/edit"
