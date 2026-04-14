@@ -1,3 +1,4 @@
+@import "/styles/pencil-theme.wxss";
 .page {
   height: 100vh;
   background:

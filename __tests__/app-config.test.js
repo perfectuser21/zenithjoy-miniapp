@@ -20,3 +20,12 @@ test('app json tab bar matches the frontstage tab manifest', () => {
     }))
   )
 })
+
+const fs = require('fs')
+const path = require('path')
+
+test('shared Pencil theme exists for frontstage pages', () => {
+  expect(
+    fs.existsSync(path.join(process.cwd(), 'miniprogram/styles/pencil-theme.wxss'))
+  ).toBe(true)
+})
