@@ -33,6 +33,6 @@ Page({
       return;
     }
 
-    wx.navigateTo({ url: getResumeRoute(session) });
+    wx.redirectTo({ url: getResumeRoute() });
   }
 });

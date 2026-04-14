@@ -104,6 +104,6 @@ Page({
   },
 
   goBack() {
-    wx.navigateBack();
+    wx.redirectTo({ url: '/pages/copywriter/articles/articles?topicId=' + this.data.topicId });
   }
 });
