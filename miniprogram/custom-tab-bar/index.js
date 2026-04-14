@@ -3,34 +3,12 @@ const {
   getTabIndexByRoute
 } = require('../utils/frontstage-routes')
 
-const TAB_ICON_MAP = {
-  '/pages/index/index': {
-    iconPath: '/images/tab-home.png',
-    selectedIconPath: '/images/tab-home-active.png'
-  },
-  '/pages/ai-features/index': {
-    iconPath: '/images/tab-create.png',
-    selectedIconPath: '/images/tab-create-active.png'
-  },
-  '/pages/assistant/index': {
-    iconPath: '/images/tab-ai.png',
-    selectedIconPath: '/images/tab-ai-active.png'
-  },
-  '/pages/user/user': {
-    iconPath: '/images/tab-user.png',
-    selectedIconPath: '/images/tab-user-active.png'
-  }
-}
-
 Component({
   data: {
     selected: 0,
     color: '#8E90A6',
     selectedColor: '#FFFFFF',
-    list: FRONTSTAGE_TABS.map((item) => ({
-      ...item,
-      ...TAB_ICON_MAP[item.pagePath]
-    }))
+    list: FRONTSTAGE_TABS
   },
 
   methods: {

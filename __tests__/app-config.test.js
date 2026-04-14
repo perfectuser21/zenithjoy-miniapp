@@ -12,11 +12,11 @@ test('app json pages excludes retired frontstage pages', () => {
 
 test('app json tab bar matches the frontstage tab manifest', () => {
   expect(appConfig.tabBar.list).toEqual(
-    FRONTSTAGE_TABS.map(({ pagePath, text }) => ({
+    FRONTSTAGE_TABS.map(({ pagePath, text, iconPath, selectedIconPath }) => ({
       pagePath: pagePath.slice(1),
       text,
-      iconPath: expect.any(String),
-      selectedIconPath: expect.any(String)
+      iconPath: iconPath.slice(1),
+      selectedIconPath: selectedIconPath.slice(1)
     }))
   )
 })
