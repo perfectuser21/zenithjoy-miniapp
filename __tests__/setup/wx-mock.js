@@ -18,6 +18,7 @@ global.wx = {
   getStorage: jest.fn(({ success } = {}) => success && success({ data: null })),
   setStorage: jest.fn(({ success } = {}) => success && success()),
   removeStorage: jest.fn(({ success } = {}) => success && success()),
+  clearStorageSync: jest.fn(),
   showToast: jest.fn(),
   showModal: jest.fn(({ success } = {}) => success && success({ confirm: true })),
   navigateTo: jest.fn(),

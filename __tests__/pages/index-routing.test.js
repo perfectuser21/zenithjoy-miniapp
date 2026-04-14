@@ -32,4 +32,24 @@ describe('index page routing', () => {
       url: '/pages/reading-list/detail/detail'
     })
   })
+
+  test('does not fall through to retired public routes for unknown actions', () => {
+    const page = global.__getLastPage()
+    wx.showToast.mockClear()
+
+    page.handleAction({
+      currentTarget: {
+        dataset: {
+          type: 'page',
+          target: 'unknown'
+        }
+      }
+    })
+
+    expect(wx.navigateTo).not.toHaveBeenCalled()
+    expect(wx.showToast).toHaveBeenCalledWith({
+      title: '该功能暂未开放',
+      icon: 'none'
+    })
+  })
 })
