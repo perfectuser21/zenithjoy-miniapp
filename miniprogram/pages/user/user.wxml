@@ -1,82 +1,49 @@
-<view class="page">
-  <view class="top" style="padding-top: {{statusBarHeight + 12}}px;">
-    <view class="eyebrow">MY CENTER</view>
-    <view class="title-row">
-      <view class="title">我的</view>
-      <view class="edit-chip">编辑资料</view>
-    </view>
-  </view>
-
-  <view class="profile-card" wx:if="{{showProfileCard}}">
-    <view class="avatar-badge">{{avatarInitials}}</view>
-    <view class="profile-main">
-      <view class="profile-name">{{profileName}}</view>
-      <view class="profile-subtitle">{{profileStage}} · {{membership.name}}</view>
-    </view>
-  </view>
-
-  <view class="points-section">
-    <view class="section-head">
-      <view class="section-title">积分中心</view>
-      <view class="section-link">查看明细</view>
-    </view>
-    <view class="points-card">
-      <view class="points-label">当前积分</view>
-      <view class="points-top">
-        <view class="points-value">{{points}}</view>
-        <view class="points-growth">
-          <view class="points-growth-value">本周 +{{weeklyGrowth}}</view>
-          <view class="points-growth-meta">本周消耗 {{monthlySpend}}</view>
-        </view>
-      </view>
-      <view class="points-stats">
-        <view class="points-stat">
-          <view class="points-stat-title">积分获取</view>
-          <view class="points-stat-desc">签到/推荐/问答</view>
-        </view>
-        <view class="points-stat">
-          <view class="points-stat-title">积分消耗</view>
-          <view class="points-stat-desc">标题/文案/助理</view>
+<view class="p-page">
+  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
+    <view class="p-card p-hero-card" wx:if="{{showProfileCard}}">
+      <view class="p-kicker">MY CENTER</view>
+      <view class="p-title">我的</view>
+      <view class="p-profile-row">
+        <view class="p-avatar">{{avatarInitials}}</view>
+        <view class="p-profile-copy">
+          <view class="p-profile-name">{{profileName}}</view>
+          <view class="p-subtitle">{{profileStage}} · {{membership.name}}</view>
         </view>
       </view>
     </view>
-  </view>
 
-  <view class="section-block">
-    <view class="section-head">
-      <view class="section-title">会员与成长</view>
-      <view class="section-link">{{membership.name}}</view>
-    </view>
-    <view class="growth-list">
-      <view class="growth-item" wx:for="{{growthBenefits}}" wx:key="title">
-        <view class="growth-name">{{item.title}}</view>
-        <view class="growth-status">{{item.status}}</view>
+    <view class="p-card">
+      <view class="p-section-head">
+        <view class="p-section-title">积分与会员</view>
+        <view class="p-section-meta">当前积分 {{points}}</view>
       </view>
-    </view>
-  </view>
-
-  <view class="section-block">
-    <view class="menu-list">
-      <view class="menu-item" wx:for="{{assetMenus}}" wx:key="id" bindtap="handleAssetAction" data-id="{{item.id}}">
-        <view class="menu-text">{{item.title}}</view>
-        <view class="menu-arrow">></view>
+      <view class="p-link-row" bindtap="openMembership">
+        <view>
+          <view class="p-link-title">进入会员中心</view>
+          <view class="p-link-desc">查看权益、积分明细与升级状态。</view>
+        </view>
+        <view class="p-link-arrow">></view>
       </view>
-      <view class="menu-item" wx:if="{{isAdmin}}" bindtap="navigateToAdmin">
-        <view class="menu-text">管理中心</view>
-        <view class="menu-arrow">></view>
+      <view class="p-link-row" bindtap="openTaskCenter">
+        <view>
+          <view class="p-link-title">查看任务中心</view>
+          <view class="p-link-desc">继续历史对话与任务产出。</view>
+        </view>
+        <view class="p-link-arrow">></view>
       </view>
-    </view>
-  </view>
-
-  <view class="section-block">
-    <view class="section-head">
-      <view class="section-title section-title-recent">最近活跃</view>
-      <view class="section-meta section-meta-week">本周</view>
-    </view>
-    <view class="activity-list">
-      <view class="activity-item" wx:for="{{recentActivities}}" wx:key="title">
-        <view class="activity-title">{{item.title}}</view>
-        <view class="activity-value">{{item.value}}</view>
+      <view class="p-link-row" bindtap="clearCache">
+        <view>
+          <view class="p-link-title">清除本地缓存</view>
+          <view class="p-link-desc">重置登录信息与本地历史缓存。</view>
+        </view>
+        <view class="p-link-arrow">></view>
+      </view>
+      <view class="p-link-row" wx:if="{{isAdmin}}" bindtap="openAdminCenter">
+        <view>
+          <view class="p-link-title">进入管理中心</view>
+          <view class="p-link-desc">仅管理员可见。</view>
+        </view>
+        <view class="p-link-arrow">></view>
       </view>
     </view>
   </view>

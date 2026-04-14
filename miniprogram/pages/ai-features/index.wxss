@@ -1,38 +1,53 @@
 @import "/styles/pencil-theme.wxss";
-.page {
+
+.p-page {
   min-height: 100vh;
   background:
     radial-gradient(circle at 16% 8%, rgba(114, 107, 255, 0.14), transparent 28%),
     linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
+}
+
+.p-shell {
   padding: 0 28rpx calc(144rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
-.hero-head,
-.section-head {
+.p-card {
+  margin-top: 16rpx;
+  padding: 24rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid rgba(108, 99, 255, 0.08);
+  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
+}
+
+.p-hero-card {
+  background: linear-gradient(180deg, rgba(108, 99, 255, 0.16) 0%, rgba(255, 255, 255, 0.96) 100%);
+}
+
+.p-hero-top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 16rpx;
 }
 
-.hero {
-  padding-bottom: 16rpx;
-}
-
-.eyebrow {
+.p-kicker,
+.p-action-label {
   font-size: 19rpx;
   color: #6d63ff;
-  margin-bottom: 6rpx;
+  letter-spacing: 1.6rpx;
 }
 
-.title {
+.p-title {
+  margin-top: 8rpx;
   font-size: 54rpx;
   line-height: 1.06;
   font-weight: 700;
   color: #111827;
 }
 
-.points-chip {
+.p-points-chip {
   padding: 12rpx 18rpx;
   background: #eef0ff;
   border-radius: 20rpx;
@@ -41,194 +56,18 @@
   font-weight: 600;
 }
 
-.hero-banner {
-  position: relative;
+.p-subtitle,
+.p-action-desc {
   margin-top: 16rpx;
-  height: 228rpx;
-  border-radius: 30rpx;
-  overflow: hidden;
-  box-shadow: 0 18rpx 36rpx rgba(104, 113, 176, 0.16);
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: #707998;
 }
 
-.hero-image {
-  width: 100%;
-  height: 100%;
-}
-
-.hero-mask {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(90deg, rgba(17, 24, 39, 0.4) 0%, rgba(17, 24, 39, 0.12) 100%);
-}
-
-.hero-copy {
-  position: absolute;
-  left: 24rpx;
-  right: 24rpx;
-  bottom: 20rpx;
-  color: #ffffff;
-}
-
-.hero-copy-kicker {
-  font-size: 17rpx;
-  opacity: 0.9;
-  margin-bottom: 6rpx;
-  font-weight: 700;
-}
-
-.hero-copy-title {
-  font-size: 36rpx;
-  line-height: 1.14;
-  font-weight: 700;
-}
-
-.hero-copy-desc {
-  margin-top: 6rpx;
-  font-size: 21rpx;
-  line-height: 1.35;
-  opacity: 0.92;
-}
-
-.section {
-  margin-top: 16rpx;
-  padding: 18rpx;
-  background: rgba(255, 255, 255, 0.88);
-  border-radius: 28rpx;
-  border: 1rpx solid rgba(108, 99, 255, 0.08);
-  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
-}
-
-.section-flow {
-  gap: 0;
-}
-
-.section-title {
-  font-size: 27rpx;
+.p-action-title {
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  line-height: 1.2;
   color: #1d2340;
   font-weight: 700;
-}
-
-.section-meta {
-  font-size: 19rpx;
-  color: #7a7e9a;
-  font-weight: 600;
-}
-
-.flow-list {
-  margin-top: 14rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8rpx;
-}
-
-.flow-item {
-  width: 140rpx;
-  padding: 16rpx 12rpx;
-  border-radius: 20rpx;
-  background: #f2f3ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  box-sizing: border-box;
-}
-
-.flow-badge {
-  width: 40rpx;
-  height: 40rpx;
-  line-height: 40rpx;
-  border-radius: 999rpx;
-  text-align: center;
-  color: #ffffff;
-  font-size: 19rpx;
-  font-weight: 700;
-}
-
-.flow-label {
-  font-size: 27rpx;
-  color: #2d3553;
-  font-weight: 700;
-}
-
-.flow-arrow {
-  color: #a1a8c4;
-  font-size: 27rpx;
-  font-weight: 700;
-}
-
-.primary-cta,
-.secondary-cta {
-  margin-top: 16rpx;
-  height: 68rpx;
-  line-height: 68rpx;
-  text-align: center;
-  border-radius: 20rpx;
-  font-size: 21rpx;
-  font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  box-shadow: 0 14rpx 28rpx rgba(108, 99, 255, 0.2);
-}
-
-.primary-cta {
-  font-size: 24rpx;
-}
-
-.pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-  margin-top: 14rpx;
-}
-
-.pill-item {
-  width: calc((100% - 16rpx) / 2);
-  min-height: 44rpx;
-  padding: 0 14rpx;
-  line-height: 44rpx;
-  text-align: center;
-  border-radius: 16rpx;
-  background: #f1eeff;
-  color: #6c63ff;
-  font-size: 18rpx;
-  font-weight: 700;
-  box-sizing: border-box;
-}
-
-.pill-item-active {
-  background: #928bed;
-  color: #ffffff;
-}
-
-.pill-item-blue {
-  background: #eef1ff;
-  color: #4f62c6;
-  width: calc((100% - 12rpx) / 2);
-}
-
-.pill-item-blue-active {
-  background: #7698ee;
-  color: #ffffff;
-  width: calc((100% - 12rpx) / 2);
-}
-
-.secondary-cta {
-  background: linear-gradient(180deg, #ebe5ff 0%, #ddd5ff 100%);
-  color: #5a4cff;
-  box-shadow: none;
-  border: 1rpx solid rgba(174, 157, 255, 0.7);
-}
-
-.secondary-cta-blue {
-  background: linear-gradient(180deg, #e6eeff 0%, #d8e3ff 100%);
-  color: #3856a8;
-  border: 1rpx solid rgba(175, 194, 255, 0.9);
-}
-
-.safe-bottom {
-  height: 0;
 }

@@ -305,10 +305,14 @@ Page({
     });
   },
 
-  openCopywriter() {
-    wx.switchTab({
-      url: "/pages/ai-features/index"
+  openCopywriterStart() {
+    wx.navigateTo({
+      url: "/pages/copywriter/start/start"
     });
+  },
+
+  openCopywriter() {
+    this.openCopywriterStart();
   },
 
   openRankingDetail() {
