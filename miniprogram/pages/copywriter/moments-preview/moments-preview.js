@@ -26,6 +26,16 @@ Page({
     this.setData({ drafts });
   },
 
+  goBackToGenerate() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack({ delta: 1 });
+      return;
+    }
+
+    wx.redirectTo({ url: '/pages/copywriter/moments-generate/moments-generate' });
+  },
+
   copyDraft(e) {
     const { content } = e.currentTarget.dataset;
     if (!content) {
