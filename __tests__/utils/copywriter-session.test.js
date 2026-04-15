@@ -40,3 +40,12 @@ test('resumes to article detail after an article is explicitly selected', () => 
     '/pages/copywriter/article-detail/article-detail?topicId=topic-1&articleId=article-1'
   );
 });
+
+test('resumes to topics after stepping back from selected article', () => {
+  createSession();
+  setCurrentStep(6, { topicId: 'topic-1', articleId: 'article-1' });
+  setCurrentStep(5, { topicId: 'topic-1', articleId: '' });
+  setCurrentStep(4, { topicId: '', articleId: '' });
+
+  expect(getResumeRoute()).toBe('/pages/copywriter/topics/topics');
+});
