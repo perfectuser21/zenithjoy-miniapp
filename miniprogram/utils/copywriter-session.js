@@ -199,7 +199,7 @@ function setTopics(topics) {
     session.topicsDirty = false;
     session.articlesDirty = true;
     session.currentStep = 4;
-    session.currentTopicId = session.topics[0] ? session.topics[0].topicId : '';
+    session.currentTopicId = '';
     session.currentArticleId = '';
     return session;
   });
@@ -252,9 +252,7 @@ function setArticles(topicId, articles) {
     session.articlesDirty = false;
     session.currentStep = 5;
     session.currentTopicId = topicId;
-    session.currentArticleId = session.articlesByTopic[topicId][0]
-      ? session.articlesByTopic[topicId][0].articleId
-      : '';
+    session.currentArticleId = '';
     return session;
   });
 }
@@ -270,9 +268,7 @@ function generateArticles(topicId) {
     session.articlesDirty = false;
     session.currentStep = 5;
     session.currentTopicId = topicId;
-    session.currentArticleId = session.articlesByTopic[topicId][0]
-      ? session.articlesByTopic[topicId][0].articleId
-      : '';
+    session.currentArticleId = '';
     return session;
   });
 }
