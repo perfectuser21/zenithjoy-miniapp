@@ -412,6 +412,10 @@ Page({
     })
   },
 
+  openMembership() {
+    this.navigateToMembership()
+  },
+
   handleAssetAction(e) {
     const { id } = e.currentTarget.dataset;
 
@@ -438,6 +442,10 @@ Page({
       url: '/pages/admin/article/index'
     })
   },
+
+  openAdminCenter() {
+    this.navigateToAdmin()
+  },
   
   // 导航到聊天记录
   navigateToChatHistory() {
@@ -452,6 +460,10 @@ Page({
     wx.navigateTo({
       url: '/pages/chatHistory/index'
     })
+  },
+
+  openTaskCenter() {
+    this.navigateToChatHistory()
   },
   
   // 清除缓存

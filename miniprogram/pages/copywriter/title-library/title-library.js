@@ -64,7 +64,13 @@ Page({
   },
 
   continueAdd() {
-    wx.navigateBack({ delta: 1 });
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack({ delta: 1 });
+      return;
+    }
+
+    wx.redirectTo({ url: '/pages/copywriter/title-generate/title-generate' });
   },
 
   backToStudio() {

@@ -1,126 +1,54 @@
-<view class="page">
-  <view class="page-shell" style="padding-top: {{statusBarHeight + 20}}px;">
-    <view class="head">
-      <view class="head-copy">
-        <view class="head-kicker">AI 自媒体小程序</view>
-        <view class="head-title">今天先做什么</view>
-      </view>
-      <view class="user-entry" bindtap="openMembership">
-        <view class="user-avatar">{{memberInitial}}</view>
-        <view class="user-meta">
-          <view class="user-tier">{{memberTier}}</view>
-          <view class="user-streak">连续打卡 {{streakDays}} 天</view>
+<view class="p-page">
+  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
+    <view class="p-card p-hero-card">
+      <view class="p-hero-top">
+        <view>
+          <view class="p-kicker">HOME</view>
+          <view class="p-title">今天先跑主流程</view>
         </view>
-      </view>
-    </view>
-
-    <view class="hero-card" bindtap="openAIChat" data-id="expert">
-      <image class="hero-image" src="{{heroCard.image}}" mode="aspectFill"></image>
-      <view class="hero-mask"></view>
-      <view class="hero-chip">{{heroCard.tag}}</view>
-      <view class="hero-copy">
-        <view class="hero-title">{{heroCard.titleTop}}</view>
-        <view class="hero-title">{{heroCard.titleBottom}}</view>
-        <view class="hero-desc">{{heroCard.description}}</view>
-      </view>
-    </view>
-
-    <view class="panel">
-      <view class="panel-head">
-        <view class="panel-head-copy">
-          <view class="panel-kicker panel-kicker-ranking">TODAY RANKING</view>
-          <view class="panel-title">今日榜单</view>
-        </view>
-        <view class="panel-hint panel-hint-muted">实时更新</view>
-      </view>
-      <view
-        class="rank-row"
-        wx:for="{{rankingItems}}"
-        wx:key="title"
-        bindtap="handleAction"
-        data-type="{{item.actionType}}"
-        data-target="{{item.actionTarget}}"
-      >
-        <view class="rank-tag">{{item.tag}}</view>
-        <view class="rank-title">{{item.title}}</view>
-        <view class="rank-link">查看</view>
-      </view>
-    </view>
-
-    <view class="panel panel-creation">
-      <view class="panel-head">
-        <view class="panel-head-copy">
-          <view class="panel-kicker panel-kicker-creation panel-kicker-purple">MEDIA CREATION</view>
-          <view class="panel-title">自媒体创作区域</view>
-        </view>
-        <view class="panel-hint panel-hint-purple">常用工具</view>
-      </view>
-
-      <view class="tool-grid">
-        <view
-          class="tool-card {{item.cardClass}}"
-          wx:for="{{creationTools}}"
-          wx:key="title"
-          bindtap="handleAction"
-          data-type="{{item.actionType}}"
-          data-target="{{item.actionTarget}}"
-        >
-          <view class="tool-icon-box {{item.iconBoxClass}}">
-            <view wx:if="{{item.iconType === 'target'}}" class="tool-icon-target">
-              <view class="target-ring target-ring-outer"></view>
-              <view class="target-ring target-ring-inner"></view>
-              <view class="target-dot"></view>
-              <view class="target-line target-line-horizontal"></view>
-              <view class="target-line target-line-vertical"></view>
-            </view>
-            <view wx:elif="{{item.iconType === 'pen'}}" class="tool-icon-pen">
-              <view class="pen-body"></view>
-              <view class="pen-tip"></view>
-              <view class="pen-cut"></view>
-            </view>
-            <view wx:elif="{{item.iconType === 'sparkles'}}" class="tool-icon-sparkles">
-              <view class="sparkle-ray sparkle-ray-vertical"></view>
-              <view class="sparkle-ray sparkle-ray-horizontal"></view>
-              <view class="sparkle-ray sparkle-ray-diagonal-a"></view>
-              <view class="sparkle-ray sparkle-ray-diagonal-b"></view>
-              <view class="sparkle-core"></view>
-            </view>
-            <view wx:else class="tool-icon-send">
-              <view class="send-outline"></view>
-              <view class="send-tail"></view>
-            </view>
+        <view class="p-member-chip" bindtap="openMembership">
+          <view class="p-member-avatar">{{memberInitial}}</view>
+          <view>
+            <view class="p-member-tier">{{memberTier}}</view>
+            <view class="p-member-meta">连续 {{streakDays}} 天</view>
           </view>
-          <view class="tool-title">{{item.title}}</view>
-          <view class="tool-meta">{{item.meta}}</view>
         </view>
+      </view>
+      <view class="p-hero-tag">{{heroCard.tag}}</view>
+      <view class="p-hero-copy">{{heroCard.titleTop}}{{heroCard.titleBottom}}</view>
+      <view class="p-subtitle">{{heroCard.description}}</view>
+      <view class="p-primary-action" bindtap="openCopywriterStart">进入文案流程</view>
+    </view>
+
+    <view class="p-card">
+      <view class="p-section-head">
+        <view class="p-section-title">今日榜单</view>
+        <view class="p-section-meta">正式详情入口</view>
+      </view>
+      <view class="p-link-row" bindtap="openRankingDetail">
+        <view>
+          <view class="p-link-title">查看榜单详情</view>
+          <view class="p-link-desc">热点、低粉爆款和涨粉榜统一进入榜单详情。</view>
+        </view>
+        <view class="p-link-arrow">></view>
       </view>
     </view>
 
-    <view class="panel">
-      <view class="panel-head">
-        <view class="panel-head-copy">
-          <view class="panel-kicker panel-kicker-collection">CREATOR COLLECTION</view>
-          <view class="panel-title">自媒体前沿创作集</view>
-        </view>
-        <view class="panel-hint panel-hint-muted">精选文章</view>
+    <view class="p-card">
+      <view class="p-section-head">
+        <view class="p-section-title">创作精选</view>
+        <view class="p-section-meta">Pencil 正式入口</view>
       </view>
-      <view
-        class="collection-row"
-        wx:for="{{collectionItems}}"
-        wx:key="index"
-        bindtap="handleAction"
-        data-type="{{item.actionType}}"
-        data-target="{{item.actionTarget}}"
-      >
-        <view class="collection-tag">{{item.index}}</view>
-        <view class="collection-title">{{item.title}}</view>
-        <view class="collection-link">查看</view>
+      <view class="p-link-row" bindtap="openReadingDetail">
+        <view>
+          <view class="p-link-title">查看前沿创作集</view>
+          <view class="p-link-desc">首页只保留精选内容入口，不再回到旧文章列表。</view>
+        </view>
+        <view class="p-link-arrow">></view>
       </view>
     </view>
-
   </view>
 
-  <!-- 隐私协议弹窗（微信审核要求）-->
   <view class="privacy-mask" wx:if="{{showPrivacy}}" catchtap="disagreePrivacy"></view>
   <view class="privacy-modal" wx:if="{{showPrivacy}}">
     <view class="privacy-title">用户隐私保护提示</view>

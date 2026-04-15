@@ -18,11 +18,14 @@ global.wx = {
   getStorage: jest.fn(({ success } = {}) => success && success({ data: null })),
   setStorage: jest.fn(({ success } = {}) => success && success()),
   removeStorage: jest.fn(({ success } = {}) => success && success()),
+  clearStorageSync: jest.fn(),
   showToast: jest.fn(),
   showModal: jest.fn(({ success } = {}) => success && success({ confirm: true })),
   navigateTo: jest.fn(),
   navigateBack: jest.fn(),
+  switchTab: jest.fn(),
   redirectTo: jest.fn(),
+  updateShareMenu: jest.fn(({ success } = {}) => success && success()),
   setNavigationBarTitle: jest.fn(),
   stopPullDownRefresh: jest.fn(),
   previewImage: jest.fn(),
@@ -42,6 +45,7 @@ global.Page = function (config) {
 }
 global.__getLastPage = () => _lastPage
 global.__resetPage = () => { _lastPage = null }
+global.getCurrentPages = jest.fn(() => ([{}]))
 
 global.Component = function (config) {
   return config

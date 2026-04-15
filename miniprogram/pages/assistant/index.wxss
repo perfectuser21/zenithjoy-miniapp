@@ -1,184 +1,67 @@
-.page {
-  height: 100vh;
+@import "/styles/pencil-theme.wxss";
+
+.p-page {
+  min-height: 100vh;
   background:
     radial-gradient(circle at 15% 8%, rgba(122, 109, 255, 0.12), transparent 28%),
     linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
+}
+
+.p-shell {
   padding: 0 32rpx calc(132rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
-.page-inner {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+.p-card {
+  margin-top: 16rpx;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 32rpx;
+  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
 }
 
-.top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20rpx;
-  margin-bottom: 16rpx;
+.p-hero-card {
+  background: linear-gradient(180deg, rgba(108, 99, 255, 0.14) 0%, rgba(255, 255, 255, 0.96) 100%);
 }
 
-.eyebrow {
+.p-kicker,
+.p-action-label {
   font-size: 19rpx;
   color: #6d63ff;
-  margin-bottom: 6rpx;
+  letter-spacing: 1.4rpx;
 }
 
-.title {
+.p-title {
+  margin-top: 8rpx;
   font-size: 58rpx;
   line-height: 1.04;
   font-weight: 700;
   color: #111827;
 }
 
-.status-box {
-  min-width: 172rpx;
-  padding: 16rpx 20rpx;
-  background: #eef0ff;
-  border-radius: 24rpx;
-  text-align: right;
-  flex-shrink: 0;
+.p-subtitle,
+.p-action-desc {
+  margin-top: 16rpx;
+  font-size: 23rpx;
+  line-height: 1.4;
+  color: #707998;
 }
 
-.status-title {
-  font-size: 21rpx;
-  color: #5a52d6;
-  font-weight: 600;
-}
-
-.status-meta {
-  margin-top: 4rpx;
-  font-size: 19rpx;
-  color: #7a7e9a;
-}
-
-.content-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.assistant-panel {
-  flex: 1;
-  padding: 24rpx;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 36rpx;
-  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
-}
-
-.assistant-name {
-  font-size: 25rpx;
-  color: #27304e;
+.p-action-title,
+.p-mini-title {
+  margin-top: 10rpx;
+  font-size: 30rpx;
+  line-height: 1.2;
+  color: #1d2340;
   font-weight: 700;
-  margin-bottom: 18rpx;
 }
 
-.starter-row {
+.p-grid {
   display: flex;
-  align-items: flex-start;
   gap: 16rpx;
 }
 
-.starter-badge {
-  min-width: 48rpx;
-  height: 48rpx;
-  line-height: 48rpx;
-  text-align: center;
-  border-radius: 999rpx;
-  background: linear-gradient(135deg, #7b71ff 0%, #9e82ff 100%);
-  color: #ffffff;
-  font-size: 17rpx;
-  font-weight: 700;
-}
-
-.starter-bubble {
-  flex: 1;
-  padding: 18rpx 20rpx;
-  border-radius: 24rpx;
-  background: #f1f3ff;
-  color: #2d3553;
-  font-size: 23rpx;
-  line-height: 1.35;
-  font-weight: 600;
-}
-
-.starter-action {
-  width: 520rpx;
-  max-width: 100%;
-  margin: 20rpx 0 0 auto;
-  height: 76rpx;
-  line-height: 76rpx;
-  text-align: center;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  color: #ffffff;
-  font-size: 23rpx;
-  font-weight: 600;
-}
-
-.prompt-bar {
-  display: flex;
-  justify-content: space-between;
-  gap: 12rpx;
-  margin-top: 16rpx;
-}
-
-.prompt-chip {
-  width: calc((100% - 24rpx) / 3);
-  min-height: 60rpx;
-  padding: 0 12rpx;
+.p-mini-card {
+  width: calc((100% - 16rpx) / 2);
   box-sizing: border-box;
-  text-align: center;
-  border-radius: 20rpx;
-  background: rgba(235, 238, 255, 0.9);
-  color: #6c63ff;
-  font-size: 19rpx;
-  line-height: 1.3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.prompt-chip-1 {
-  background: rgba(243, 238, 255, 0.95);
-  color: #7a4edc;
-}
-
-.prompt-chip-2 {
-  background: rgba(238, 244, 255, 0.95);
-  color: #4565c7;
-}
-
-.input-bar {
-  margin-top: 16rpx;
-  padding: 14rpx 16rpx 14rpx 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 24rpx;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1rpx solid #d5dbee;
-}
-
-.input-placeholder {
-  color: #96a0b8;
-  font-size: 23rpx;
-}
-
-.send-btn {
-  min-width: 128rpx;
-  height: 60rpx;
-  line-height: 60rpx;
-  text-align: center;
-  border-radius: 20rpx;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  color: #ffffff;
-  font-size: 21rpx;
-  font-weight: 700;
 }
