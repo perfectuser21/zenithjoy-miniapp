@@ -1,32 +1,46 @@
 <view class="p-page">
-  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
-    <view class="p-card p-hero-card">
-      <view class="p-hero-top">
-        <view>
-          <view class="p-kicker">WORKFLOW</view>
-          <view class="p-title">沿着正式流程创作</view>
-        </view>
-        <view class="p-points-chip">可用积分 {{points}}</view>
+  <view class="p-shell" style="padding-top: {{statusBarHeight + 8}}px;">
+    <view class="p-head">
+      <view class="p-head-left">
+        <view class="p-brand">{{eyebrow}}</view>
+        <view class="p-page-title">{{pageTitle}}</view>
       </view>
-      <view class="p-subtitle">工作流页只保留已经上线的三条正式路径：文案主流程、标题工作台、朋友圈文案。</view>
     </view>
 
-    <view class="p-card p-action-card" bindtap="openCopywriterStart">
-      <view class="p-action-label">文案主流程</view>
-      <view class="p-action-title">Start → Keywords → Ideas → Profile</view>
-      <view class="p-action-desc">从起点页进入完整 Copywriter 链路。</view>
+    <view class="p-banner-card">
+      <image class="p-banner-image" src="{{heroCard.image}}" mode="aspectFill"></image>
+      <view class="p-banner-overlay"></view>
+      <view class="p-banner-content">
+        <view class="p-kicker">{{heroCard.kicker}}</view>
+        <view class="p-title">{{heroCard.title}}</view>
+        <view class="p-subtitle">{{heroCard.description}}</view>
+      </view>
     </view>
 
-    <view class="p-card p-action-card" bindtap="openTitleStudio">
-      <view class="p-action-label">标题工作台</view>
-      <view class="p-action-title">爆款标题生成</view>
-      <view class="p-action-desc">直接进入标题生成页，不再通过旧中转入口。</view>
-    </view>
-
-    <view class="p-card p-action-card" bindtap="openMomentsStudio">
-      <view class="p-action-label">朋友圈文案</view>
-      <view class="p-action-title">生成并继续精修</view>
-      <view class="p-action-desc">工作流根页保留单一正式生成入口。</view>
+    <view
+      wx:for="{{sections}}"
+      wx:key="title"
+      class="p-card p-process-card p-process-card-{{item.tone}}"
+      bindtap="openSection"
+      data-target="{{item.action}}"
+    >
+      <view class="p-section-head">
+        <view class="p-section-title">{{item.title}}</view>
+        <view class="p-section-meta">{{item.meta}}</view>
+      </view>
+      <view class="p-process-shell p-process-shell-{{item.tone}}">
+        <view class="p-process-track p-process-track-{{item.tone}}">
+          <view class="p-process-steps">
+            <view
+              wx:for="{{item.steps}}"
+              wx:key="*this"
+              class="p-process-step"
+            >{{item}}</view>
+          </view>
+        </view>
+        <view class="p-process-outcome">{{item.outcome}}</view>
+      </view>
+      <view class="p-process-cta p-process-cta-{{item.tone}}">{{item.cta}}</view>
     </view>
   </view>
 </view>

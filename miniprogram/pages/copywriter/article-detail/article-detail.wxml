@@ -1,39 +1,36 @@
-<view class="page">
-  <view class="stack" wx:if="{{article}}">
-    <view class="progress">
-      <view class="progress-main">找方向 / 选题 / 出成稿</view>
-      <view class="progress-step">6 / 6</view>
-    </view>
+<view class="detail-page">
+  <view class="detail-orb"></view>
+  <view class="detail-stack" wx:if="{{article}}">
+    <view class="detail-content">
+      <view class="detail-title-card">
+        <view class="detail-topic-label">选题</view>
+        <view class="detail-title">{{article.title}}</view>
+      </view>
 
-    <view class="card toolbar-card">
-      <view class="toolbar-row">
-        <button class="btn-secondary btn-small" bindtap="goBack">返回文章列表</button>
-        <button class="btn-secondary btn-small" bindtap="exportArticle">导出文本</button>
-        <button class="btn btn-small" bindtap="copyArticle">复制全文</button>
+      <view class="detail-editor-card">
+        <view class="detail-editor-head">
+          <view class="detail-editor-title">正文 · 已自动保存</view>
+          <view class="detail-save-status">{{saveStatus}}</view>
+        </view>
+        <textarea class="detail-editor-input" maxlength="-1" value="{{article.content}}" bindinput="handleContentInput"></textarea>
+      </view>
+
+      <view class="detail-assist-card">
+        <view class="detail-assist-title">AI 辅助操作</view>
+        <view class="detail-assist-row">
+          <view class="detail-assist-chip" bindtap="triggerAssist" data-type="spoken">润色成更口语</view>
+          <view class="detail-assist-chip" bindtap="triggerAssist" data-type="pro">润色成更专业</view>
+        </view>
+        <view class="detail-assist-row">
+          <view class="detail-assist-chip" bindtap="triggerAssist" data-type="titles">生成 10 个标题</view>
+          <view class="detail-assist-chip" bindtap="triggerAssist" data-type="summary">提炼摘要</view>
+        </view>
       </view>
     </view>
 
-    <view class="editor-card">
-      <view class="label">标题</view>
-      <textarea class="input" maxlength="-1" value="{{article.title}}" bindinput="handleTitleInput"></textarea>
-    </view>
-
-    <view class="editor-card">
-      <view class="row" style="justify-content: space-between; align-items: center; margin-bottom: 12rpx;">
-        <view class="label" style="margin-bottom: 0;">正文</view>
-        <view class="muted">{{saveStatus}}</view>
-      </view>
-      <textarea class="textarea" maxlength="-1" value="{{article.content}}" bindinput="handleContentInput" style="min-height: 720rpx;"></textarea>
-    </view>
-
-    <view class="card">
-      <view class="label">AI 辅助操作</view>
-      <view class="card-actions">
-        <view class="card-action" bindtap="triggerAssist" data-type="spoken">润色成更口语</view>
-        <view class="card-action" bindtap="triggerAssist" data-type="pro">润色成更专业</view>
-        <view class="card-action" bindtap="triggerAssist" data-type="titles">生成 10 个标题</view>
-        <view class="card-action" bindtap="triggerAssist" data-type="summary">提炼摘要</view>
-      </view>
+    <view class="footer-row">
+      <button class="btn-secondary" bindtap="goBack">返回文章列表</button>
+      <button class="btn-primary" bindtap="copyArticle">复制全文</button>
     </view>
   </view>
 </view>

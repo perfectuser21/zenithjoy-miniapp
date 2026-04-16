@@ -1,217 +1,186 @@
-.page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #F7F8FF 0%, #EEF3FF 100%);
+.ranking-page {
+  height: 100vh;
+  background: linear-gradient(180deg, #f7f8ff 0%, #eef3ff 100%);
+  overflow: hidden;
 }
 
-.page-shell {
-  position: relative;
-  padding: 0 20rpx calc(32rpx + env(safe-area-inset-bottom));
+.ranking-shell {
+  height: calc(100vh - env(safe-area-inset-bottom));
+  padding: 0 38rpx calc(31rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 19rpx;
 }
 
-.floating-label {
-  position: absolute;
-  top: 10rpx;
-  left: 20rpx;
-  z-index: 2;
-  padding: 8rpx 12rpx;
-  border-radius: 999rpx;
-  background: rgba(17, 24, 39, 0.8);
-  color: #FFFFFF;
-  font-size: 19rpx;
-  font-weight: 700;
+.ranking-hero {
+  border-radius: 46rpx;
+  padding: 35rpx;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #2240d6 0%, #5569ff 62%, #8459f7 100%);
+  box-shadow: 0 18rpx 46rpx rgba(78, 70, 229, 0.28);
 }
 
-.hero-card {
-  margin-top: 48rpx;
-  padding: 18rpx;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #1F3FD8 0%, #5668FF 62%, #8B5CF6 100%);
-  color: #FFFFFF;
-  box-shadow: 0 18rpx 40rpx rgba(79, 70, 229, 0.28);
-}
-
-.hero-eyebrow {
-  font-size: 19rpx;
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 1.4rpx;
-  color: #DBE5FF;
-}
-
-.hero-title {
-  margin-top: 10rpx;
-  font-size: 42rpx;
+.ranking-hero-title {
+  font-size: 38rpx;
   line-height: 1.18;
   font-weight: 700;
+  color: #f3f6ff;
 }
 
-.hero-desc {
-  margin-top: 10rpx;
-  font-size: 25rpx;
+.ranking-hero-desc {
+  margin-top: 15rpx;
+  font-size: 23rpx;
   line-height: 1.42;
-  color: #E9EEFF;
+  color: #e8eeff;
 }
 
-.stat-grid {
+.ranking-metrics {
   display: flex;
-  gap: 8rpx;
-  margin-top: 12rpx;
+  gap: 15rpx;
 }
 
-.stat-card {
+.metric-card {
   flex: 1;
-  padding: 12rpx;
-  border-radius: 18rpx;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.stat-value {
-  font-size: 46rpx;
-  font-weight: 700;
-  color: #0F172A;
-}
-
-.stat-label {
-  margin-top: 4rpx;
-  font-size: 21rpx;
-  font-weight: 600;
-  color: #667085;
-}
-
-.section-card {
-  margin-top: 12rpx;
-  padding: 12rpx;
-  border-radius: 20rpx;
+  border-radius: 35rpx;
   background: rgba(255, 255, 255, 0.92);
+  padding: 19rpx 23rpx;
+  box-sizing: border-box;
 }
 
-.section-card-soft {
-  background: rgba(238, 244, 255, 0.95);
+.metric-value {
+  font-size: 35rpx;
+  line-height: 1;
+  font-weight: 700;
+  color: #1f2937;
 }
 
-.section-head {
+.metric-label {
+  margin-top: 4rpx;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.ranking-card {
+  border-radius: 35rpx;
+  background: #ffffffe8;
+  padding: 23rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.ranking-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12rpx;
 }
 
-.section-title {
-  font-size: 27rpx;
+.ranking-card-title {
+  font-size: 31rpx;
   font-weight: 700;
   color: #111827;
 }
 
-.section-hint {
-  font-size: 21rpx;
+.ranking-card-hint {
+  font-size: 23rpx;
   font-weight: 600;
-  color: #667085;
+  color: #9ca3af;
 }
 
-.filter-row {
+.ranking-filter-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8rpx;
-  margin-top: 12rpx;
+  gap: 15rpx;
 }
 
-.filter-pill {
-  padding: 10rpx 18rpx;
-  border-radius: 999rpx;
-  background: #EEF1FF;
-  color: #667085;
-  font-size: 21rpx;
+.ranking-filter-chip {
+  flex: 1;
+  min-height: 62rpx;
+  border-radius: 27rpx;
+  background: #f4f7fd;
+  border: 1rpx solid #e4ebf5;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27rpx;
   font-weight: 700;
+  color: #4b5563;
 }
 
-.filter-pill-active {
-  background: #5D56EC;
-  color: #FFFFFF;
+.ranking-filter-chip-active {
+  background: linear-gradient(180deg, #635bff 0%, #4f46e5 100%);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.ranking-list-card {
+  height: 963rpx;
+  padding-bottom: 23rpx;
+  overflow: hidden;
+}
+
+.ranking-list-shell {
+  position: relative;
+  height: 778rpx;
+  overflow: hidden;
 }
 
 .ranking-list {
-  margin-top: 12rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
+  max-height: 778rpx;
+  height: 778rpx;
+  box-sizing: border-box;
 }
 
-.ranking-item {
+.ranking-row {
   display: flex;
-  gap: 12rpx;
-  padding: 12rpx;
-  border-radius: 18rpx;
-  background: #F8FAFF;
+  align-items: center;
+  gap: 19rpx;
+  height: 123rpx;
+  padding: 21rpx 23rpx;
+  box-sizing: border-box;
+  border-radius: 31rpx;
+  background: #f8f9fd;
 }
 
-.row-index {
-  width: 28rpx;
-  height: 28rpx;
-  border-radius: 999rpx;
+.ranking-row-active {
+  background: #eef2ff;
+}
+
+.ranking-row + .ranking-row {
+  margin-top: 17rpx;
+}
+
+.ranking-index {
+  width: 54rpx;
+  height: 54rpx;
+  border-radius: 19rpx;
+  background: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 21rpx;
   font-weight: 700;
-}
-
-.row-index-violet {
-  background: #EDE9FE;
-  color: #7C3AED;
-}
-
-.row-index-slate {
-  background: #E5E7EB;
-  color: #64748B;
-}
-
-.row-index-amber {
-  background: #FEF3C7;
-  color: #D97706;
-}
-
-.row-copy {
-  flex: 1;
-}
-
-.row-title {
-  font-size: 25rpx;
-  font-weight: 700;
-  color: #111827;
-}
-
-.row-meta,
-.section-body {
-  margin-top: 6rpx;
-  font-size: 21rpx;
-  line-height: 1.45;
-  font-weight: 600;
   color: #667085;
+  flex: none;
 }
 
-.footer-row {
-  display: flex;
-  gap: 10rpx;
-  margin-top: 12rpx;
+.ranking-index-active {
+  background: #4f46e5;
+  color: #ffffff;
 }
 
-.footer-btn {
+.ranking-copy {
   flex: 1;
-  height: 46rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 23rpx;
+  min-width: 0;
+}
+
+.ranking-row-title {
+  font-size: 25rpx;
+  line-height: 1.2;
   font-weight: 700;
-}
-
-.footer-btn-secondary {
-  border: 1rpx solid #D4DCE8;
-  background: rgba(255, 255, 255, 0.92);
-  color: #344054;
-}
-
-.footer-btn-primary {
-  background: linear-gradient(180deg, #6056FF 0%, #3C4DDF 100%);
-  color: #FFFFFF;
+  color: #454648;
 }

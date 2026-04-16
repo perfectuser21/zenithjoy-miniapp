@@ -54,16 +54,16 @@ function mergeTopicResults(currentTopics, nextTopics) {
 
 Page({
   data: {
-    summaryOpen: false,
-    summaryToggleText: '查看',
+    heroCard: {
+      kicker: 'STEP 4 · 选题生成',
+      title: '先选一个你最想写的方向',
+      description: '已基于你的创作条件生成 5 个候选选题。'
+    },
     summaryRows: [],
     topicCards: [],
     topicsDirty: false,
     articlesDirty: false,
-    generating: false,
-    showTopicScrollbar: false,
-    topicScrollbarThumbTop: 0,
-    topicScrollbarThumbHeight: 0
+    generating: false
   },
 
   async onShow() {
@@ -85,22 +85,17 @@ Page({
 
     this.setData(
       {
+        heroCard: {
+          kicker: 'STEP 4 · 选题生成',
+          title: '先选一个你最想写的方向',
+          description: `已基于你的创作条件生成 ${(session.topics || []).length || 5} 个候选选题。`
+        },
         summaryRows: buildSummaryRows(session.stepData || {}),
         topicCards: buildTopicCards(session.topics || []),
         topicsDirty: !!session.topicsDirty,
-        articlesDirty: !!session.articlesDirty,
-        summaryToggleText: this.data.summaryOpen ? '收起' : '查看'
-      },
-      () => this.syncTopicScrollbar()
+        articlesDirty: !!session.articlesDirty
+      }
     );
-  },
-
-  toggleSummary() {
-    const summaryOpen = !this.data.summaryOpen;
-    this.setData({
-      summaryOpen,
-      summaryToggleText: summaryOpen ? '收起' : '查看'
-    });
   },
 
   async generateWithAI(useLoading = true) {
@@ -198,56 +193,5 @@ Page({
       currentArticleId: ''
     });
     wx.redirectTo({ url: route });
-  },
-
-  handleTopicScroll(e) {
-    const { scrollTop = 0, scrollHeight = 0 } = e.detail || {};
-    this.updateTopicScrollbar(scrollTop, scrollHeight);
-  },
-
-  syncTopicScrollbar() {
-    wx.nextTick(() => {
-      const query = wx.createSelectorQuery().in(this);
-      query.select('.topic-scroll').boundingClientRect();
-      query.select('.topic-list-inner').boundingClientRect();
-      query.exec((res) => {
-        const scrollRect = res && res[0];
-        const contentRect = res && res[1];
-        if (!scrollRect || !contentRect) {
-          return;
-        }
-
-        this.updateTopicScrollbar(0, contentRect.height, scrollRect.height);
-      });
-    });
-  },
-
-  updateTopicScrollbar(scrollTop, scrollHeight, viewportHeight) {
-    const currentViewportHeight = viewportHeight || this.topicViewportHeight || 0;
-    if (!currentViewportHeight || !scrollHeight || scrollHeight <= currentViewportHeight) {
-      this.topicViewportHeight = currentViewportHeight;
-      this.setData({
-        showTopicScrollbar: false,
-        topicScrollbarThumbTop: 0,
-        topicScrollbarThumbHeight: 0
-      });
-      return;
-    }
-
-    this.topicViewportHeight = currentViewportHeight;
-    const minThumbHeight = 36;
-    const thumbHeight = Math.max(
-      minThumbHeight,
-      (currentViewportHeight * currentViewportHeight) / scrollHeight
-    );
-    const maxScrollTop = Math.max(scrollHeight - currentViewportHeight, 1);
-    const maxThumbTop = currentViewportHeight - thumbHeight;
-    const thumbTop = Math.min(maxThumbTop, (scrollTop / maxScrollTop) * maxThumbTop);
-
-    this.setData({
-      showTopicScrollbar: true,
-      topicScrollbarThumbTop: thumbTop,
-      topicScrollbarThumbHeight: thumbHeight
-    });
   }
 });

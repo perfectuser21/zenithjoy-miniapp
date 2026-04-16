@@ -27,7 +27,6 @@ const FRONTSTAGE_TABS = [
 
 const RETIRED_FRONTSTAGE_PAGES = [
   '/pages/article-list/article-list',
-  '/pages/article-detail/article-detail',
   '/pages/article/preview'
 ]
 

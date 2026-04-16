@@ -55,10 +55,11 @@ describe('article-detail 页面', () => {
       )
     })
 
-    it('无 id 无 url 时设置 error', () => {
+    it('无 id 无 url 时进入默认预览内容', () => {
       page.onLoad.call(page, {})
-      expect(page.data.error).toBeTruthy()
+      expect(page.data.error).toBeNull()
       expect(page.data.isLoading).toBe(false)
+      expect(page.data.article).toBeTruthy()
     })
   })
 })

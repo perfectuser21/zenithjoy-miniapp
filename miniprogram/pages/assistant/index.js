@@ -24,12 +24,14 @@ const AI_BOTS = {
 Page({
   data: {
     statusBarHeight: 20,
-    quickActions: [
-      '常见问题',
-      '徐先生课程',
-      '联系我们'
-    ],
-    previewMessage: '我可以先帮你拆 3 条低粉爆款，再给你可用标题。'
+    pageTitle: 'AI 助理',
+    onlineState: '在线服务中',
+    onlineMeta: '平均响应 2s',
+    previewTitle: 'AI 对话区',
+    previewMessage: '我可以先帮你拆 3 条低粉爆款，再给你可用标题。',
+    ctaText: '帮我先出今天的抖音选题方向',
+    serviceChips: [],
+    inputPlaceholder: '输入你的问题...'
   },
 
   onLoad() {
@@ -40,6 +42,16 @@ Page({
       });
     } catch (e) {
       console.error('获取系统信息失败', e);
+    }
+  },
+
+  onShow() {
+    const tabBar = this.getTabBar && this.getTabBar();
+    if (tabBar && tabBar.setData) {
+      tabBar.setData({ hidden: false, selected: 2 });
+      if (typeof tabBar.updateSelected === 'function') {
+        tabBar.updateSelected('/pages/assistant/index');
+      }
     }
   },
 

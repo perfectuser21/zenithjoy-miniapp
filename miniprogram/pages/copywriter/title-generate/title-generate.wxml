@@ -1,67 +1,70 @@
-<view class="studio-page">
-  <view class="studio-stack">
-    <view class="studio-toolbar">
-      <view class="toolbar-btn" bindtap="goBack">返回</view>
-      <view class="toolbar-tag">标题创作</view>
-    </view>
-
-    <view class="studio-hero">
-      <view class="studio-hero-kicker">标题创作</view>
-      <view class="studio-hero-title">围绕现有内容，快速筛出更想点开的标题</view>
-      <view class="studio-hero-desc">支持切换风格、重生成、锁定候选版本。</view>
-    </view>
-
-    <view class="studio-card">
-      <view class="section-label">正文</view>
-      <view class="section-text">{{sourceContext.articleContent}}</view>
-    </view>
-
-    <view class="studio-card">
-      <view class="section-head">
-        <view class="section-title">标题风格</view>
-        <view class="section-meta">可多次切换</view>
+<view class="title-page">
+  <view class="title-orb"></view>
+  <view class="title-stack">
+    <view class="title-content">
+      <view class="title-hero">
+        <view class="title-hero-kicker">{{heroCard.kicker}}</view>
+        <view class="title-hero-title">{{heroCard.title}}</view>
+        <view class="title-hero-desc">{{heroCard.description}}</view>
       </view>
-      <view class="chip-grid" wx:for="{{titleStyles}}" wx:key="index">
-        <view
-          class="chip {{index === 0 && itemIndex === 0 ? 'chip-active' : ''}}"
-          wx:for="{{item}}"
-          wx:key="*this"
-          wx:for-item="label"
-          wx:for-index="itemIndex"
-        >
-          {{label}}
+
+      <view class="title-card title-source-card">
+        <view class="section-label">正文</view>
+        <view class="section-text">{{sourceContext.articleContent}}</view>
+      </view>
+
+      <view class="title-card">
+        <view class="section-head">
+          <view class="section-title">标题风格</view>
+          <view class="section-meta">可多次切换</view>
+        </view>
+        <view class="style-row" wx:for="{{titleStyles}}" wx:key="index">
+          <view
+            class="style-chip {{activeStyle === label ? 'style-chip-active' : ''}}"
+            wx:for="{{item}}"
+            wx:key="*this"
+            wx:for-item="label"
+            data-style="{{label}}"
+            bindtap="handleStyleSelect"
+          >
+            {{label}}
+          </view>
         </view>
       </view>
-    </view>
 
-    <view class="studio-card studio-card-results">
-      <view class="section-head">
-        <view class="section-title">本轮标题结果</view>
-        <view class="section-meta">冲突型 · {{results.length}} 条</view>
-      </view>
-      <view class="result-list">
-        <view
-          class="result-card {{index === 0 ? 'result-card-active' : ''}}"
-          wx:for="{{results}}"
-          wx:key="id"
-        >
-          <view class="result-title">{{item.text}}</view>
-          <view class="result-note">{{item.note}}</view>
-          <view class="result-tag">{{item.tag}}</view>
+      <view class="title-card title-results-card">
+        <view class="section-head">
+          <view class="section-title">本轮标题结果</view>
+          <view class="section-meta">{{activeStyle}} · {{results.length}} 条</view>
         </view>
-      </view>
-      <view class="fake-scrollbar">
-        <view class="fake-scrollbar-thumb"></view>
-      </view>
-      <view class="footer-actions">
-        <view class="ghost-action" bindtap="regenerateBatch">换一批</view>
-        <view class="ghost-action ghost-action-primary" bindtap="openLibrary">添加到标题备选库</view>
+
+        <view class="result-list">
+          <view
+            class="result-card {{item.id === activeResultId ? 'result-card-active' : ''}}"
+            wx:for="{{visibleResults}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="selectResult"
+          >
+            <view class="result-title">{{item.text}}</view>
+            <view class="result-note">{{item.note}}</view>
+          </view>
+        </view>
+
+        <view class="result-track">
+          <view class="result-thumb"></view>
+        </view>
+
+        <view class="inline-actions">
+          <view class="inline-action" bindtap="regenerateBatch">换一批</view>
+          <view class="inline-action inline-action-primary" bindtap="openLibrary">添加到标题备选库</view>
+        </view>
       </view>
     </view>
 
     <view class="bottom-actions">
       <button class="btn-secondary" bindtap="goBack">返回创作页</button>
-      <button class="btn" bindtap="confirmTitle" data-text="{{results[0].text}}">复制该标题</button>
+      <button class="btn-primary" bindtap="confirmTitle">复制该标题</button>
     </view>
   </view>
 </view>
