@@ -1,32 +1,30 @@
 <view class="p-page">
   <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
-    <view class="p-card p-hero-card">
-      <view class="p-kicker">AI CHAT HOME</view>
-      <view class="p-title">今天需要哪位助理</view>
-      <view class="p-subtitle">{{previewMessage}}</view>
-    </view>
-
-    <view class="p-card p-action-card" bindtap="openBusinessAdvisor">
-      <view class="p-action-label">经营顾问</view>
-      <view class="p-action-title">先梳理今天的经营优先级</view>
-      <view class="p-action-desc">适合先判断该做什么、先做哪条链路。</view>
-    </view>
-
-    <view class="p-card p-action-card" bindtap="openTopicPlanner">
-      <view class="p-action-label">选题策划师</view>
-      <view class="p-action-title">生成今天的内容方向</view>
-      <view class="p-action-desc">直接进入正式 AI 对话页，不在 Tab 根页停留输入框假象。</view>
-    </view>
-
-    <view class="p-grid">
-      <view class="p-card p-mini-card" bindtap="openBenchmarkAnalysis">
-        <view class="p-action-label">对标分析</view>
-        <view class="p-mini-title">拆解参考账号</view>
+    <view class="assistant-head">
+      <view class="assistant-head-left">
+        <view class="assistant-kicker">AI CHAT HOME</view>
+        <view class="assistant-title">{{pageTitle}}</view>
       </view>
-      <view class="p-card p-mini-card" bindtap="openScriptGenerator">
-        <view class="p-action-label">脚本生成</view>
-        <view class="p-mini-title">推进内容产出</view>
+      <view class="assistant-state">
+        <view class="assistant-state-label">{{onlineState}}</view>
+        <view class="assistant-state-meta">{{onlineMeta}}</view>
       </view>
+    </view>
+
+    <view class="assistant-panel">
+      <view class="assistant-panel-title">{{previewTitle}}</view>
+      <view class="assistant-bubble-row">
+        <view class="assistant-avatar">AI</view>
+        <view class="assistant-bubble">{{previewMessage}}</view>
+      </view>
+      <view class="assistant-cta-row">
+        <view class="assistant-cta" bindtap="openTopicPlanner">{{ctaText}}</view>
+      </view>
+    </view>
+
+    <view class="assistant-input-row">
+      <view class="assistant-input-placeholder">{{inputPlaceholder}}</view>
+      <view class="assistant-send" bindtap="openBusinessAdvisor">发送</view>
     </view>
   </view>
 </view>

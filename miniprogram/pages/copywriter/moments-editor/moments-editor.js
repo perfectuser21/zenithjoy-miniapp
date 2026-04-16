@@ -5,6 +5,13 @@ const {
   saveMomentsDrafts
 } = require('../../../utils/creator-studio');
 
+const FALLBACK_DRAFT = {
+  id: 'fallback-moments',
+  content:
+    '很多人不是不够努力，而是努力的方向从一开始就拧了。内容也一样，如果结构没先理顺，写得越多，反而越容易把自己绕进去。\n\n真正有用的方式，不是逼自己更勤奋，而是先把表达路径和重点抓出来。这样你发出去的每一句，才会更像你，也更容易被看懂。',
+  meta: '首选中 · 优势：节奏顺、口语感自然、收口明确'
+};
+
 function getFallbackRecommendations(sourceContext) {
   const topic = (sourceContext && sourceContext.topicTitle) || '这件事';
   return [
@@ -16,13 +23,19 @@ function getFallbackRecommendations(sourceContext) {
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'editor',
+      title: '把语气、节奏和结尾动作再修到更自然',
+      description: '保留原意思，但把朋友圈的阅读感、口语感和信任感做出来。'
+    },
     sourceContext: null,
     drafts: [],
-    featuredDrafts: [],
-    restDrafts: [],
+    rankedDrafts: [],
     selectedDraftId: '',
     activeContent: '',
-    recommendations: []
+    recommendations: [],
+    guideChips: ['共鸣强', '结构清晰', '转化友好'],
+    editActions: ['去 AI 味', '更口语', '补结尾动作', '更像朋友圈']
   },
 
   onLoad(options) {
@@ -30,10 +43,10 @@ Page({
   },
 
   onShow() {
-    const sourceContext = getSourceContext();
+    const sourceContext = getSourceContext() || {};
     const drafts = getLastMomentsDrafts().length
       ? getLastMomentsDrafts()
-      : buildMomentsDrafts(sourceContext);
+      : (buildMomentsDrafts(sourceContext).length ? buildMomentsDrafts(sourceContext) : [FALLBACK_DRAFT]);
 
     const selectedDraftId = this.resolveSelectedDraftId(drafts);
     const activeDraft = drafts.find((item) => item.id === selectedDraftId) || drafts[0] || null;
@@ -41,8 +54,7 @@ Page({
     this.setData({
       sourceContext,
       drafts,
-      featuredDrafts: drafts.slice(0, 3),
-      restDrafts: drafts.slice(3),
+      rankedDrafts: drafts.slice(0, 6),
       selectedDraftId,
       activeContent: activeDraft ? activeDraft.content : '',
       recommendations: this.buildRecommendations(drafts, selectedDraftId, sourceContext)
@@ -179,8 +191,7 @@ Page({
     saveMomentsDrafts(updatedDrafts);
     this.setData({
       drafts: updatedDrafts,
-      featuredDrafts: updatedDrafts.slice(0, 3),
-      restDrafts: updatedDrafts.slice(3),
+      rankedDrafts: updatedDrafts.slice(0, 6),
       recommendations: this.buildRecommendations(updatedDrafts, selectedDraftId, this.data.sourceContext)
     });
     return updatedDrafts;

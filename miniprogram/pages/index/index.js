@@ -1,26 +1,3 @@
-const AI_BOTS = {
-  writer: {
-    botId: "7481212266399449139",
-    title: "脚本生成器",
-    prompt: "我是脚本生成器，可以帮你把一个模糊想法整理成可直接拍摄或发布的内容脚本。告诉我主题、受众和风格要求。"
-  },
-  content: {
-    botId: "7481213430658433034",
-    title: "选题策划师",
-    prompt: "我是选题策划师，可以围绕你的账号定位、近期趋势和目标用户，生成一组可执行的内容选题。"
-  },
-  imagine: {
-    botId: "7481213488808099874",
-    title: "对标账号分析",
-    prompt: "我是对标账号分析助手，可以帮你拆解参考账号的定位、内容结构、更新策略和商业动作。"
-  },
-  expert: {
-    botId: "7481213361658036235",
-    title: "经营顾问",
-    prompt: "我是你的经营顾问，可以帮你规划一人公司的内容、增长、商业化和每日行动优先级。"
-  }
-};
-
 Page({
   data: {
     userInfo: {},
@@ -31,31 +8,43 @@ Page({
     showPrivacy: false,        // 控制隐私协议弹窗显示
     statusBarHeight: 20,
     memberInitial: "X",
-    memberTier: "成长会员",
-    streakDays: 6,
+    homeTitle: "今天先做什么",
     heroCard: {
       tag: "今日创作提示",
-      titleTop: "今日建议：",
-      titleBottom: "先做低粉爆款研究",
+      titleTop: "今日建议：先做低粉爆款研究",
+      titleBottom: "",
       description: "先研究 3 个低粉爆款，再进入脚本生成。这样今天的选题判断会更稳。",
       image: "/images/home-banner.png"
     },
     rankingItems: [
-      { tag: "热点", title: "抖音热点榜", actionType: "page", actionTarget: "rankingDetail" },
-      { tag: "低粉", title: "低粉爆款榜", actionType: "page", actionTarget: "rankingDetail" },
-      { tag: "涨粉", title: "高涨粉榜", actionType: "page", actionTarget: "rankingDetail" }
+      { tag: "热点", title: "抖音热点榜", emphasis: "equal" },
+      { tag: "低粉", title: "低粉爆款榜", emphasis: "equal" },
+      { tag: "涨粉", title: "高涨粉榜", emphasis: "equal" }
     ],
-    creationTools: [
-      { title: "智能选题", meta: "先定方向", iconType: "target", cardClass: "tool-card-gradient", iconBoxClass: "tool-icon-box-gradient", actionType: "chat", actionTarget: "content" },
-      { title: "文案创作", meta: "生成文案", iconType: "pen", cardClass: "tool-card-blue", iconBoxClass: "tool-icon-box-blue", actionType: "page", actionTarget: "copywriter" },
-      { title: "爆款标题", meta: "强化点击", iconType: "sparkles", cardClass: "tool-card-purple", iconBoxClass: "tool-icon-box-purple", actionType: "chat", actionTarget: "content" },
-      { title: "朋友圈文案", meta: "轻量输出", iconType: "send", cardClass: "tool-card-indigo", iconBoxClass: "tool-icon-box-indigo", actionType: "chat", actionTarget: "expert" }
+    creationCards: [
+      { icon: "✍", title: "文案创作", description: "生成文案", tone: "blue", layout: "full" },
+      { icon: "★", title: "爆款标题", description: "强化点击", tone: "violet", layout: "full" },
+      { icon: "✉", title: "朋友圈文案", description: "轻量输出", tone: "indigo", layout: "full" }
     ],
+    creationEntry: {
+      title: "自媒体创作区域",
+      description: "常用工具",
+      primaryAction: "进入工作流"
+    },
     collectionItems: [
-      { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", actionType: "page", actionTarget: "readingDetail" },
-      { index: "02", title: "拆解百万博主Dan Koe爆文创作系统", actionType: "page", actionTarget: "readingDetail" },
-      { index: "03", title: "如何用AI做出百万价值的内容", actionType: "page", actionTarget: "readingDetail" }
+      { index: "01", title: "油管大神Dan Koe: 最快建立一人公司", emphasis: "equal" },
+      { index: "02", title: "拆解百万博主Dan Koe爆文创作系统", emphasis: "equal" }
     ]
+  },
+
+  onShow() {
+    const tabBar = this.getTabBar && this.getTabBar()
+    if (tabBar && tabBar.setData) {
+      tabBar.setData({ hidden: false, selected: 0 })
+      if (typeof tabBar.updateSelected === 'function') {
+        tabBar.updateSelected('/pages/index/index')
+      }
+    }
   },
 
   onLoad() {
@@ -217,10 +206,10 @@ Page({
           const card = res.data[0];
           this.setData({
             heroCard: {
-              tag: card.tag || '今日创作提示',
-              titleTop: card.title_top || '',
-              titleBottom: card.title_bottom || '',
-              description: card.description || '',
+              tag: card.tag || 'HOME',
+              titleTop: `${card.title_top || '今日建议：'}${card.title_bottom || '先做低粉爆款研究'}`,
+              titleBottom: '',
+              description: card.description || '先研究 3 个低粉爆款，再进入脚本生成。这样今天的选题判断会更稳。',
               image: card.image || '/images/home-banner.png'
             }
           });
@@ -232,15 +221,10 @@ Page({
   },
 
   handleAction(e) {
-    const { type, target } = e.currentTarget.dataset;
-
-    if (type === "chat") {
-      this.openAIChat({ currentTarget: { dataset: { id: target } } });
-      return;
-    }
+    const { target } = e.currentTarget.dataset;
 
     if (target === "studio") {
-      this.openStudio();
+      this.openWorkflowHub();
       return;
     }
 
@@ -250,7 +234,7 @@ Page({
     }
 
     if (target === "copywriter") {
-      this.openCopywriter();
+      this.openWorkflowHub();
       return;
     }
 
@@ -267,36 +251,14 @@ Page({
     wx.showToast({ title: "该功能暂未开放", icon: "none" });
   },
 
-  openAIChat(e) {
-    const { id } = e.currentTarget.dataset;
-    const aiBot = AI_BOTS[id];
-
-    if (!aiBot) {
-      wx.showToast({ title: "该功能暂未开放", icon: "none" });
-      return;
-    }
-
-    wx.navigateTo({
-      url: `/pages/ai-chat/ai-chat?botId=${aiBot.botId}&title=${encodeURIComponent(aiBot.title)}&prompt=${encodeURIComponent(aiBot.prompt)}`
-    });
-  },
-
-  openStudio() {
+  openWorkflowHub() {
     wx.switchTab({
       url: "/pages/ai-features/index"
     });
   },
 
-  openAssistantTab() {
-    wx.switchTab({
-      url: "/pages/assistant/index"
-    });
-  },
-
-  openUserTab() {
-    wx.switchTab({
-      url: "/pages/user/user"
-    });
+  openCreationHub() {
+    this.openWorkflowHub();
   },
 
   openMembership() {
@@ -306,18 +268,25 @@ Page({
   },
 
   openCopywriterStart() {
-    wx.navigateTo({
-      url: "/pages/copywriter/start/start"
-    });
+    this.openWorkflowHub();
   },
 
   openCopywriter() {
-    this.openCopywriterStart();
+    this.openWorkflowHub();
   },
 
   openRankingDetail() {
+    const targetUrl = "/pages/ranking/detail/detail";
     wx.navigateTo({
-      url: "/pages/ranking/detail/detail"
+      url: targetUrl,
+      fail: () => {
+        wx.redirectTo({
+          url: targetUrl,
+          fail: () => {
+            wx.reLaunch({ url: targetUrl });
+          }
+        });
+      }
     });
   },
 

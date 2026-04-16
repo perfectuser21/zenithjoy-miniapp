@@ -2,6 +2,11 @@ const { generateTopics, loadSession, updateStepData } = require('../../../utils/
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'STEP 3 · 写给谁 / 有价值 / 你是谁',
+      title: '把知识库里的核心约束补全',
+      description: '目标人群、价值和 IP 背书，会直接决定后面的选题质量。'
+    },
     audienceText: '',
     valueText: '',
     ipText: ''

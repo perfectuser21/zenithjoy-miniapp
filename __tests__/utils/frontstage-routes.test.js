@@ -36,7 +36,6 @@ test('exports the four Pencil tabs in order', () => {
 test('marks retired public pages as retired', () => {
   expect(RETIRED_FRONTSTAGE_PAGES).toEqual([
     '/pages/article-list/article-list',
-    '/pages/article-detail/article-detail',
     '/pages/article/preview'
   ])
 })
@@ -62,4 +61,25 @@ test('custom tab bar consumes the frontstage manifest directly', () => {
   global.Component = originalComponent
 
   expect(customTabBarConfig.data.list).toEqual(FRONTSTAGE_TABS)
+})
+
+test('custom tab bar resolves workflow route to the create tab', () => {
+  let customTabBarConfig
+  const originalComponent = global.Component
+
+  global.Component = function (config) {
+    customTabBarConfig = config
+    return config
+  }
+
+  jest.isolateModules(() => {
+    require('../../miniprogram/custom-tab-bar/index')
+  })
+
+  global.Component = originalComponent
+
+  const setData = jest.fn()
+  customTabBarConfig.methods.updateSelected.call({ setData, data: { selected: 0 } }, '/pages/ai-features/index')
+
+  expect(setData).toHaveBeenCalledWith({ selected: 1 })
 })

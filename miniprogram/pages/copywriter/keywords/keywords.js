@@ -2,6 +2,11 @@ const { loadSession, updateStepData } = require('../../../utils/copywriter-sessi
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'STEP 1 · 关键词 / 热点',
+      title: '把你眼前最想写的内容先丢进来',
+      description: '支持逗号、换行、热词、标题碎片。先输入，再慢慢整理。'
+    },
     keywordsText: ''
   },
 

@@ -12,7 +12,7 @@
       <view class="nickname" wx:if="{{hasUserInfo}}">{{userInfo.nickName}}</view>
       <view class="nickname" wx:else>未登录</view>
       <view class="member-tag {{membership.level === 'premium' ? 'vip' : (membership.level === 'standard' ? 'standard' : '')}}">
-        {{membership.name || '普通会员'}}
+        {{membership.name || '成长会员'}}
       </view>
     </view>
   </view>
@@ -20,7 +20,7 @@
   <!-- 会员卡片区 -->
   <view class="member-card {{membership.level === 'premium' ? 'premium-card' : (membership.level === 'standard' ? 'standard-card' : 'free-card')}}">
     <view class="member-card-header">
-      <view class="member-title">{{membership.name || '普通会员'}}</view>
+      <view class="member-title">{{membership.name || '成长会员'}}</view>
     </view>
     <view class="member-card-body">
       <view class="member-info-item">
@@ -109,4 +109,4 @@
   <view class="loading-container" wx:if="{{isLoading}}">
     <view class="loading"></view>
   </view>
-</view> 
+</view>

@@ -24,6 +24,8 @@ Page({
     canIUseGetUserProfile: false,
     isAdmin: false,
     statusBarHeight: 20,
+    pageTitle: '我的',
+    pageEyebrow: 'MY CENTER',
     phoneNumber: '', // 添加用户手机号
     profileName: 'Jin · 创作者',
     avatarInitials: 'JY',
@@ -37,11 +39,6 @@ Page({
       { label: '今日可用积分', value: '1280' },
       { label: '连续打卡', value: '8 天' },
       { label: '最近任务', value: '3 条' }
-    ],
-    assetMenus: [
-      { id: 'membership', title: '积分明细', desc: '查看权益、额度和升级入口', icon: '积分' },
-      { id: 'history', title: '任务中心', desc: '继续查看对话、任务和历史产出', icon: '记录' },
-      { id: 'membership', title: '会员管理', desc: '查看权益状态', icon: '会员' }
     ],
     supportMenus: [
       { id: 'clear', title: '清除缓存', desc: '重置本地登录信息与历史缓存', icon: '清理' }
@@ -99,6 +96,14 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    const tabBar = this.getTabBar && this.getTabBar()
+    if (tabBar && tabBar.setData) {
+      tabBar.setData({ hidden: false, selected: 3 })
+      if (typeof tabBar.updateSelected === 'function') {
+        tabBar.updateSelected('/pages/user/user')
+      }
+    }
+
     // 每次页面显示时检查会员状态
     if (this.data.hasUserInfo) {
       this.checkMembershipStatus()
@@ -291,7 +296,7 @@ Page({
               updatedAt: db.serverDate(),
               membership: {
                 level: 'free',
-                name: '普通会员',
+                name: '成长会员',
                 expireDate: null
               }
             }
@@ -337,61 +342,27 @@ Page({
   // 检查会员状态
   checkMembershipStatus() {
     return new Promise((resolve, reject) => {
-      fetchOpenId().then(openid => {
-        db.collection('users').where({
-          _openid: openid
-        }).get().then(res => {
-          if (res.data.length > 0 && res.data[0].membership) {
-            const membership = res.data[0].membership
-            
-            if (membership.level !== 'free' && membership.expireDate) {
-              const expireDate = new Date(membership.expireDate)
-              const now = new Date()
-              
-              if (now > expireDate) {
-                this.setData({
-                  membership: {
-                    level: 'free',
-                    name: '普通会员',
-                    expireDate: null
-                  }
-                })
-                
-                db.collection('users').doc(res.data[0]._id).update({
-                  data: {
-                    membership: {
-                      level: 'free',
-                      name: '普通会员',
-                      expireDate: null
-                    }
-                  }
-                })
-              } else {
-                this.setData({
-                  membership: membership
-                })
-              }
-            } else {
-              this.setData({
-                membership: membership
-              })
-            }
-          } else {
-            this.setData({
-              membership: {
-                level: 'free',
-                name: '普通会员',
-                expireDate: null
-              }
-            })
+      wx.cloud.callFunction({
+        name: 'checkMembership'
+      }).then((res) => {
+        const membership = res.result && res.result.success && res.result.data && res.result.data.membership
+        this.setData({
+          membership: membership || {
+            level: 'free',
+            name: '成长会员',
+            expireDate: null
           }
-          resolve()
-        }).catch(err => {
-          console.error('获取会员信息失败', err)
-          resolve()
         })
+        resolve()
       }).catch(err => {
-        console.error('登录失败', err)
+        console.error('获取会员信息失败', err)
+        this.setData({
+          membership: {
+            level: 'free',
+            name: '成长会员',
+            expireDate: null
+          }
+        })
         resolve()
       })
     })
@@ -419,7 +390,7 @@ Page({
   handleAssetAction(e) {
     const { id } = e.currentTarget.dataset;
 
-    if (id === 'membership') {
+    if (id === 'points' || id === 'membership') {
       this.navigateToMembership();
       return;
     }
@@ -434,6 +405,15 @@ Page({
     if (id === 'clear') {
       this.clearCache();
     }
+  },
+
+  handleEditProfile() {
+    if (!this.data.hasUserInfo) {
+      this.startLogin()
+      return
+    }
+
+    this.navigateToMembership()
   },
   
   // 导航到管理员页面
@@ -483,7 +463,7 @@ Page({
             phoneNumber: '',
             membership: {
               level: 'free',
-              name: '普通会员',
+              name: '成长会员',
               expireDate: null
             }
           })

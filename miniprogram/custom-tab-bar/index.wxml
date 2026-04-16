@@ -1,4 +1,4 @@
-<view class="tabbar-shell">
+<view class="tabbar-shell" wx:if="{{!hidden}}">
   <view class="tabbar-pill">
     <view
       wx:for="{{list}}"
@@ -10,11 +10,6 @@
       data-path="{{item.pagePath}}"
       data-index="{{index}}"
     >
-      <image
-        class="tab-icon"
-        src="{{selected === index ? item.selectedIconPath : item.iconPath}}"
-        mode="aspectFit"
-      />
       <text class="tab-text">{{item.text}}</text>
     </view>
   </view>
