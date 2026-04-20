@@ -1,54 +1,66 @@
 <view class="studio-page">
   <view class="studio-stack">
-    <view class="page-badge">14 朋友圈文案生成</view>
-
     <view class="studio-hero">
       <view class="studio-hero-kicker">{{heroCard.kicker}}</view>
       <view class="studio-hero-title">{{heroCard.title}}</view>
       <view class="studio-hero-desc">{{heroCard.description}}</view>
     </view>
 
-    <view class="studio-card">
+    <view class="studio-card source-card">
       <view class="section-head">
-        <view class="section-title">原始内容</view>
-        <view class="section-meta">source</view>
+        <view class="section-title">{{sourceTitle}}</view>
+        <view class="section-meta">{{sourceMeta}}</view>
       </view>
-      <view class="section-text">{{sourceContext.articleContent}}</view>
+      <textarea
+        class="source-input"
+        value="{{sourceContext.articleContent}}"
+        maxlength="-1"
+        cursor-spacing="24"
+        auto-height="{{false}}"
+        bindinput="handleSourceInput"
+      ></textarea>
     </view>
 
-    <view class="studio-card">
+    <view class="studio-card variant-card">
       <view class="section-head">
-        <view class="section-title">表达版本</view>
-        <view class="section-meta">优先挑选 2-3 种</view>
+        <view class="section-title">{{variantTitle}}</view>
       </view>
-      <view class="chip-row" wx:for="{{variantRows}}" wx:for-item="row" wx:key="index">
-        <view class="chip chip-{{chipItem.tone}}" wx:for="{{row}}" wx:for-item="chipItem" wx:key="text">{{chipItem.text}}</view>
+      <view class="chip-row chip-row-triple" wx:for="{{variantRows}}" wx:for-item="row" wx:key="index">
+        <view
+          class="{{chipItem.className}}"
+          wx:for="{{row}}"
+          wx:for-item="chipItem"
+          wx:key="id"
+          bindtap="selectVariant"
+          data-id="{{chipItem.id}}"
+          data-value="{{chipItem.text}}"
+        >
+          {{chipItem.text}}
+        </view>
       </view>
     </view>
 
-    <view class="studio-card studio-card-cyan">
+    <view class="studio-card studio-card-cyan angle-card">
       <view class="section-head">
-        <view class="section-title section-title-cyan">表达角度</view>
-        <view class="section-meta">angle</view>
+        <view class="section-title section-title-cyan">{{angleTitle}}</view>
       </view>
       <view class="chip-row chip-row-double" wx:for="{{angleRows}}" wx:for-item="row" wx:key="index">
-        <view class="chip chip-{{chipItem.tone}}" wx:for="{{row}}" wx:for-item="chipItem" wx:key="text">{{chipItem.text}}</view>
+        <view
+          class="{{chipItem.className}}"
+          wx:for="{{row}}"
+          wx:for-item="chipItem"
+          wx:key="id"
+          bindtap="selectAngle"
+          data-id="{{chipItem.id}}"
+          data-value="{{chipItem.text}}"
+        >
+          {{chipItem.text}}
+        </view>
       </view>
     </view>
-
-    <view class="studio-card">
-      <view class="section-head">
-        <view class="section-title">策略建议</view>
-        <view class="section-meta">strategy</view>
-      </view>
-      <view class="chip-row chip-row-double">
-        <view class="chip chip-{{choice.tone}}" wx:for="{{strategyChoices}}" wx:for-item="choice" wx:key="text">{{choice.text}}</view>
-      </view>
-    </view>
-
     <view class="bottom-actions">
-      <button class="btn-secondary" bindtap="goBack">返回工作流</button>
-      <button class="btn" bindtap="openPreviewPage">进入精修页</button>
+      <button class="btn-secondary" bindtap="goBack">返回创作页</button>
+      <button class="btn" bindtap="openPreviewPage">生成文案</button>
     </view>
   </view>
 </view>

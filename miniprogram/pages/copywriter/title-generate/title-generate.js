@@ -20,7 +20,9 @@ Page({
     results: [],
     visibleResults: [],
     activeStyle: '冲突型',
-    activeResultId: ''
+    activeResultId: '',
+    resultScrollTop: 0,
+    resultThumbTop: 0
   },
 
   onShow() {
@@ -34,8 +36,9 @@ Page({
     this.setData({
       sourceContext,
       results,
-      visibleResults: results.slice(0, 3),
-      activeResultId: results[0] ? results[0].id : ''
+      visibleResults: results,
+      activeResultId: results[0] ? results[0].id : '',
+      resultScrollTop: 0
     });
   },
 
@@ -57,8 +60,24 @@ Page({
     this.setData({ activeResultId: id });
   },
 
+  handleSourceInput(e) {
+    const value = e.detail && typeof e.detail.value === 'string' ? e.detail.value : '';
+    this.setData({
+      sourceContext: {
+        ...(this.data.sourceContext || {}),
+        articleContent: value
+      }
+    });
+  },
+
   regenerateBatch() {
     this.refreshResults();
+  },
+
+  handleResultScroll(e) {
+    this.setData({
+      resultScrollTop: e.detail && typeof e.detail.scrollTop === 'number' ? e.detail.scrollTop : 0
+    });
   },
 
   openLibrary() {

@@ -1,7 +1,6 @@
 <view class="editor-page">
+  <view class="editor-orb"></view>
   <view class="editor-stack">
-    <view class="page-badge">15 朋友圈文案精修</view>
-
     <view class="hero-card">
       <view class="hero-kicker">{{heroCard.kicker}}</view>
       <view class="hero-title">{{heroCard.title}}</view>
@@ -10,43 +9,54 @@
 
     <view class="panel-card panel-card-flex">
       <view class="section-head">
-        <view class="section-title">预览文案</view>
-        <view class="section-meta">preview</view>
+        <view class="section-title">{{previewTitle}}</view>
+        <view class="section-meta">{{previewMeta}}</view>
       </view>
-      <scroll-view class="draft-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
-        <view
-          class="draft-card {{item.id === selectedDraftId ? 'draft-card-active' : ''}}"
-          wx:for="{{rankedDrafts}}"
-          wx:key="id"
-          bindtap="selectDraft"
-          data-id="{{item.id}}"
-        >
-          <view class="draft-content">{{item.content}}</view>
-          <view class="draft-meta">{{item.meta || '当首选中 · 优势：开头抓人 + 结构完整 + 生活化表达'}}</view>
+      <view class="preview-scroll-wrap">
+        <view class="draft-list">
+          <view class="draft-track" style="{{draftListStyle}}">
+            <view
+              class="draft-card {{item.id === selectedDraftId ? 'draft-card-active' : ''}}"
+              wx:for="{{rankedDrafts}}"
+              wx:key="id"
+              bindtap="selectDraft"
+              data-id="{{item.id}}"
+            >
+              <view class="draft-content">{{item.content}}</view>
+              <view class="draft-meta">{{item.meta || '首选中 · 优势：开头抓人 + 结构完整 + 生活化表达'}}</view>
+            </view>
+          </view>
         </view>
-      </scroll-view>
+        <view class="scroll-rail" bindtap="handleScrollRailTap">
+          <view
+            class="scroll-thumb"
+            style="{{scrollThumbStyle}}"
+            catchtouchstart="handleScrollThumbStart"
+            catchtouchmove="handleScrollThumbMove"
+          ></view>
+        </view>
+      </view>
     </view>
 
-    <view class="panel-card">
+    <view class="panel-card editor-panel">
       <view class="section-head">
-        <view class="section-title">编辑动作</view>
-        <view class="section-meta">editor</view>
+        <view class="section-title">{{editorTitle}}</view>
+        <view class="section-meta">{{editorMeta}}</view>
       </view>
-      <view class="guide-row">
-        <view class="guide-chip {{index === 0 ? 'guide-chip-active' : ''}}" wx:for="{{editActions}}" wx:key="*this">{{item}}</view>
+      <view class="textarea-shell">
+        <textarea
+          class="editor-input"
+          maxlength="-1"
+          value="{{activeContent}}"
+          bindinput="handleContentInput"
+          placeholder="在这里改语气、结构和结尾动作。"
+        ></textarea>
       </view>
-      <textarea
-        class="editor-input"
-        maxlength="-1"
-        value="{{activeContent}}"
-        bindinput="handleContentInput"
-        placeholder="在这里改语气、结构和结尾动作。"
-      />
     </view>
 
     <view class="bottom-actions">
-      <button class="btn-secondary" bindtap="goBackToGenerate">返回生成页</button>
-      <button class="btn" bindtap="copyCurrent">完成并复制</button>
+      <button class="btn-secondary" bindtap="goBackToGenerate">返回上一层重新生成</button>
+      <button class="btn" bindtap="copyCurrent">复制定稿</button>
     </view>
   </view>
 </view>

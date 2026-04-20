@@ -124,12 +124,17 @@
 
 .library-list-card {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: 0;
+  overflow: hidden;
+  height: 359rpx;
   padding-right: 28rpx;
 }
 
 .library-scroll {
-  height: 380rpx;
+  flex: 1;
+  min-height: 0;
   margin-top: 14rpx;
   padding-right: 10rpx;
   box-sizing: border-box;
@@ -181,8 +186,7 @@
   font-weight: 700;
 }
 
-.status-locked,
-.status-confirmed {
+.status-locked {
   background: #dde6ff;
   color: #3151d7;
 }
@@ -230,7 +234,7 @@
   top: 88rpx;
   right: 18rpx;
   width: 6rpx;
-  height: 472rpx;
+  height: 246rpx;
   border-radius: 999rpx;
   background: #eef2ff;
 }
@@ -268,41 +272,11 @@
   color: #667085;
 }
 
-.final-tags {
-  display: flex;
-  gap: 16rpx;
-  margin-top: 12rpx;
-}
-
-.mini-tag {
-  padding: 8rpx 19rpx;
-  border-radius: 999rpx;
-  font-size: 21rpx;
-  font-weight: 700;
-}
-
-.mini-tag-blue {
-  background: #dde6ff;
-  color: #3151d7;
-}
-
-.mini-tag-purple {
-  background: #f4eeff;
-  color: #7a4edc;
-}
-
-.mini-tag-sky {
-  background: #eef6ff;
-  color: #4b6fcf;
-}
-
-.copy-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12rpx;
-}
-
 .copy-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10rpx 19rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.8);

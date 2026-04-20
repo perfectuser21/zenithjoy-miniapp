@@ -38,8 +38,11 @@ describe('title pages pencil sync', () => {
 
     expect(page.data.heroCard.title).toBe('围绕现有内容，快速筛出更想点开的标题');
     expect(page.data.results).toHaveLength(6);
-    expect(page.data.visibleResults).toHaveLength(3);
+    expect(page.data.visibleResults).toHaveLength(6);
     expect(page.data.activeResultId).toBe('t1');
+    expect(page.data.results[1].note).toBe('说明2');
+    page.handleSourceInput({ detail: { value: '新的正文内容' } });
+    expect(page.data.sourceContext.articleContent).toBe('新的正文内容');
   });
 
   test('title library computes filter stats from items', () => {
@@ -63,9 +66,15 @@ describe('title pages pencil sync', () => {
     page.onShow();
 
     expect(page.data.stats).toEqual({ all: 4, locked: 2, compare: 1 });
+    expect(page.data.items[1].label).toBe('待比较');
+    expect(page.data.items[1].actionText).toBe('确定');
   });
 
-  test('title page styles use fixed bottom bars and centered labels', () => {
+  test('title generate page keeps fixed footer and lets source text expand inside the card', () => {
+    const generateWxml = fs.readFileSync(
+      path.resolve(__dirname, '../../miniprogram/pages/copywriter/title-generate/title-generate.wxml'),
+      'utf8'
+    );
     const generateWxss = fs.readFileSync(
       path.resolve(__dirname, '../../miniprogram/pages/copywriter/title-generate/title-generate.wxss'),
       'utf8'
@@ -74,14 +83,47 @@ describe('title pages pencil sync', () => {
       path.resolve(__dirname, '../../miniprogram/pages/copywriter/title-library/title-library.wxss'),
       'utf8'
     );
+    const libraryWxml = fs.readFileSync(
+      path.resolve(__dirname, '../../miniprogram/pages/copywriter/title-library/title-library.wxml'),
+      'utf8'
+    );
 
-    expect(generateWxss).toContain('.bottom-actions {\n  position: fixed;');
-    expect(generateWxss).toContain('line-height: 81rpx;');
-    expect(generateWxss).toContain('text-align: center;');
-    expect(generateWxss).toContain('.result-track {');
-    expect(generateWxss).not.toContain('.result-scroll');
+    expect(generateWxss).toContain('.title-page {\n  position: relative;\n  height: 100vh;');
+    expect(generateWxss).toContain('.title-stack {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  height: 100vh;');
+    expect(generateWxss).toContain('.title-source-card {\n  display: flex;\n  flex-direction: column;\n  gap: 12rpx;\n  min-height: 213rpx;');
+    expect(generateWxss).toContain('.section-text,\n.source-input {\n  margin-top: 0;\n  font-size: 27rpx;');
+    expect(generateWxss).toContain('height: 148rpx;');
+    expect(generateWxss).toContain('.inline-actions {\n  display: flex;');
+    expect(generateWxss).toContain('.title-style-card {\n  display: flex;\n  flex-direction: column;\n  gap: 15rpx;');
+    expect(generateWxss).toContain('.title-results-card {\n  min-height: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 16rpx;\n  height: 504rpx;');
+    expect(generateWxss).toContain('.result-scroll {\n  height: 286rpx;');
+    expect(generateWxss).toContain('.title-content {\n  display: flex;\n  flex: 1;');
+    expect(generateWxss).toContain('.bottom-actions {\n  display: flex;');
+    expect(generateWxss).not.toContain('.bottom-actions {\n  position: fixed;');
+    expect(generateWxss).toContain('.inline-action {\n  flex: 1;\n  height: 69rpx;');
+    expect(generateWxss).toContain('.btn-secondary,\n.btn-primary {\n  flex: 1;\n  height: 81rpx;');
+    expect(generateWxml).toContain('<scroll-view class="result-scroll" scroll-y="true" show-scrollbar="false" scroll-top="{{resultScrollTop}}" bindscroll="handleResultScroll">');
+    expect(generateWxml).toContain('<textarea');
+    expect(generateWxml).toContain('bindinput="handleSourceInput"');
+    expect(generateWxml).not.toContain('class="result-track"');
+    expect(generateWxss).not.toContain('.result-track {');
+    expect(generateWxss).not.toContain('.result-thumb {');
     expect(libraryWxss).toContain('.bottom-actions {\n  position: fixed;');
     expect(libraryWxss).toContain('line-height: 81rpx;');
     expect(libraryWxss).toContain('text-align: center;');
+    expect(libraryWxss).toContain('.library-list-card {\n  flex: 1;');
+    expect(libraryWxss).toContain('.library-list-card {\n  flex: 1;\n  display: flex;');
+    expect(libraryWxss).toContain('flex-direction: column;');
+    expect(libraryWxss).toContain('overflow: hidden;');
+    expect(libraryWxss).toContain('height: 359rpx;');
+    expect(libraryWxss).toContain('.library-scroll {\n  flex: 1;');
+    expect(libraryWxss).toContain('min-height: 0;');
+    expect(libraryWxss).not.toContain('.library-scroll {\n  height: 246rpx;');
+    expect(libraryWxss).toContain('.library-track {\n  position: absolute;\n  top: 88rpx;\n  right: 18rpx;\n  width: 6rpx;\n  height: 246rpx;');
+    expect(libraryWxml).not.toContain('待比较 {{stats.compare}}');
+    expect(libraryWxml).not.toContain('已确认 1 条');
+    expect(libraryWxml).not.toContain('final-tags');
+    expect(libraryWxml).toContain('<view class="section-head">\n          <view class="section-title">最终选题</view>\n          <view class="copy-btn" bindtap="copyFinalTitle">复制标题</view>\n        </view>');
+    expect(libraryWxml).not.toContain('copy-row');
   });
 });

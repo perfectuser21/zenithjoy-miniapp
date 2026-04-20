@@ -10,7 +10,7 @@ function mapStatus(status) {
     return { label: '已锁定', className: 'status-locked', actionText: '取消锁定' };
   }
   if (status === 'compare') {
-    return { label: '待比较', className: 'status-compare', actionText: '锁定' };
+    return { label: '待比较', className: 'status-compare', actionText: '确定' };
   }
 
   return { label: '备选中', className: 'status-saved', actionText: '锁定' };

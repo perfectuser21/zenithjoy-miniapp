@@ -1,41 +1,65 @@
 const {
-  buildMomentsDrafts,
-  getLastMomentsDrafts,
   getSourceContext,
   saveMomentsDrafts
 } = require('../../../utils/creator-studio');
 
-const FALLBACK_DRAFT = {
-  id: 'fallback-moments',
-  content:
-    '很多人不是不够努力，而是努力的方向从一开始就拧了。内容也一样，如果结构没先理顺，写得越多，反而越容易把自己绕进去。\n\n真正有用的方式，不是逼自己更勤奋，而是先把表达路径和重点抓出来。这样你发出去的每一句，才会更像你，也更容易被看懂。',
-  meta: '首选中 · 优势：节奏顺、口语感自然、收口明确'
-};
+const FALLBACK_DRAFTS = [
+  {
+    id: 'fallback-moments-1',
+    content:
+      '最近把内容方向重新梳理了一遍，发现很多卡点都不是努力不够，而是方向和结构没先调顺。先把主线定清楚，再去写具体表达，整条文案会顺很多。',
+    meta: '当前选中 · 优势：开头抓人 + 结构完整 + 生活化表达'
+  },
+  {
+    id: 'fallback-moments-2',
+    content:
+      '不是你没有素材，而是表达顺序容易乱。先说结论，再补原因，最后给一个可执行动作，读者会更容易跟上你的节奏。',
+    meta: '优势：观点先行，逻辑递进清楚，适合建立专业感'
+  },
+  {
+    id: 'fallback-moments-3',
+    content:
+      '方向清晰之后，发布频率自然会稳定。你不用每次都从零开始，只要沿着同一主题持续输出，内容就会越来越有辨识度。',
+    meta: '优势：节奏稳定，长期连载友好，易形成内容系列'
+  },
+  {
+    id: 'fallback-moments-4',
+    content:
+      '很多时候写不出来，不是没想法，而是还没把要表达的重点捋清楚。先把一句核心观点写出来，再往下展开会轻松很多。',
+    meta: '优势：口语自然，亲近感强，评论互动门槛低'
+  }
+];
 
-function getFallbackRecommendations(sourceContext) {
-  const topic = (sourceContext && sourceContext.topicTitle) || '这件事';
-  return [
-    `最近把${topic}这件事重新梳理了一遍，很多卡点其实都能拆开解决。`,
-    '先把方向调顺，再追求频率，输出质量会稳定很多。',
-    '如果你也在同样阶段，欢迎留言，我把这套思路拆给你。'
-  ];
+function buildRankedDrafts(drafts) {
+  return (Array.isArray(drafts) ? drafts : []).map((item) => ({
+    ...item
+  }));
 }
 
 Page({
   data: {
     heroCard: {
-      kicker: 'editor',
-      title: '把语气、节奏和结尾动作再修到更自然',
-      description: '保留原意思，但把朋友圈的阅读感、口语感和信任感做出来。'
+      kicker: '下一步：定稿',
+      title: '选文案，再精修定稿',
+      description: '点击列表切换，编辑区即时改写。'
     },
+    previewTitle: '文案列表',
+    previewMeta: '点击卡片切换，查看每条优势',
+    editorTitle: '选中文案（可编辑）',
+    editorMeta: '支持粘贴、保存与复制',
     sourceContext: null,
     drafts: [],
     rankedDrafts: [],
     selectedDraftId: '',
     activeContent: '',
-    recommendations: [],
-    guideChips: ['共鸣强', '结构清晰', '转化友好'],
-    editActions: ['去 AI 味', '更口语', '补结尾动作', '更像朋友圈']
+    scrollTop: 0,
+    scrollOffset: 0,
+    maxScrollOffset: 0,
+    railTravel: 0,
+    thumbTop: 0,
+    draftListStyle: '',
+    scrollThumbStyle: '',
+    guideChips: []
   },
 
   onLoad(options) {
@@ -44,21 +68,38 @@ Page({
 
   onShow() {
     const sourceContext = getSourceContext() || {};
-    const drafts = getLastMomentsDrafts().length
-      ? getLastMomentsDrafts()
-      : (buildMomentsDrafts(sourceContext).length ? buildMomentsDrafts(sourceContext) : [FALLBACK_DRAFT]);
+    const normalizedDrafts = this.normalizeDrafts(FALLBACK_DRAFTS);
 
-    const selectedDraftId = this.resolveSelectedDraftId(drafts);
-    const activeDraft = drafts.find((item) => item.id === selectedDraftId) || drafts[0] || null;
+    const selectedDraftId = this.resolveSelectedDraftId(normalizedDrafts);
+    const activeDraft = normalizedDrafts.find((item) => item.id === selectedDraftId) || normalizedDrafts[0] || null;
 
+    saveMomentsDrafts(normalizedDrafts);
     this.setData({
       sourceContext,
-      drafts,
-      rankedDrafts: drafts.slice(0, 6),
+      drafts: normalizedDrafts,
+      rankedDrafts: buildRankedDrafts(normalizedDrafts),
       selectedDraftId,
       activeContent: activeDraft ? activeDraft.content : '',
-      recommendations: this.buildRecommendations(drafts, selectedDraftId, sourceContext)
+      scrollTop: 0,
+      scrollOffset: 0,
+      maxScrollOffset: 0,
+      railTravel: 0,
+      thumbTop: 0,
+      draftListStyle: this.buildDraftListStyle(0),
+      scrollThumbStyle: this.buildScrollThumbStyle(0)
     });
+    this.measureDraftViewport();
+  },
+
+  normalizeDrafts(drafts) {
+    const existing = Array.isArray(drafts) ? drafts.slice() : [];
+    if (existing.length >= 4) {
+      return existing;
+    }
+
+    const usedIds = new Set(existing.map((item) => item.id));
+    const fillers = FALLBACK_DRAFTS.filter((item) => !usedIds.has(item.id));
+    return [...existing, ...fillers].slice(0, 4);
   },
 
   resolveSelectedDraftId(drafts) {
@@ -77,25 +118,6 @@ Page({
     return drafts[0].id;
   },
 
-  buildRecommendations(drafts, selectedDraftId, sourceContext) {
-    const alternatives = drafts
-      .filter((item) => item.id !== selectedDraftId)
-      .slice(0, 4)
-      .map((item) => ({
-        id: item.id,
-        text: item.content,
-        tag: item.meta || '备选推荐'
-      }));
-
-    const staticRows = getFallbackRecommendations(sourceContext).map((text, index) => ({
-      id: `fallback-${index + 1}`,
-      text,
-      tag: '推荐补句'
-    }));
-
-    return [...alternatives, ...staticRows].slice(0, 6);
-  },
-
   selectDraft(e) {
     const draftId = e.currentTarget.dataset.id;
     if (!draftId || draftId === this.data.selectedDraftId) {
@@ -107,8 +129,7 @@ Page({
     const nextDraft = this.data.drafts.find((item) => item.id === draftId);
     this.setData({
       selectedDraftId: draftId,
-      activeContent: nextDraft ? nextDraft.content : '',
-      recommendations: this.buildRecommendations(this.data.drafts, draftId, this.data.sourceContext)
+      activeContent: nextDraft ? nextDraft.content : ''
     });
   },
 
@@ -116,25 +137,25 @@ Page({
     this.setData({ activeContent: e.detail.value || '' });
   },
 
-  pasteFromClipboard() {
-    wx.getClipboardData({
-      success: (res) => {
-        const text = (res.data || '').trim();
-        if (!text) {
-          wx.showToast({ title: '剪贴板为空', icon: 'none' });
-          return;
-        }
+  handleScrollThumbStart(e) {
+    const touch = e.touches && e.touches[0];
+    this.dragStartY = touch ? touch.clientY : 0;
+    this.dragStartThumbTop = this.data.thumbTop || 0;
+  },
 
-        const nextContent = this.data.activeContent
-          ? `${this.data.activeContent}\n${text}`
-          : text;
-        this.setData({ activeContent: nextContent });
-        wx.showToast({ title: '已粘贴到编辑区', icon: 'none' });
-      },
-      fail: () => {
-        wx.showToast({ title: '读取剪贴板失败', icon: 'none' });
-      }
-    });
+  handleScrollThumbMove(e) {
+    const touch = e.touches && e.touches[0];
+    if (!touch) {
+      return;
+    }
+
+    const deltaY = touch.clientY - (this.dragStartY || 0);
+    this.syncThumbTop((this.dragStartThumbTop || 0) + deltaY);
+  },
+
+  handleScrollRailTap(e) {
+    const localY = e && e.detail && typeof e.detail.y === 'number' ? e.detail.y : 0;
+    this.syncThumbTop(localY - 24);
   },
 
   copyCurrent() {
@@ -150,26 +171,6 @@ Page({
         wx.showToast({ title: '当前文案已复制', icon: 'none' });
       }
     });
-  },
-
-  applyRecommendation(e) {
-    const text = e.currentTarget.dataset.text;
-    const mode = e.currentTarget.dataset.mode;
-    if (!text) {
-      return;
-    }
-
-    const nextContent = mode === 'replace' ? text : `${this.data.activeContent || ''}\n${text}`.trim();
-    this.setData({ activeContent: nextContent });
-  },
-
-  saveCurrentVersion() {
-    const updatedDrafts = this.persistActiveContent();
-    if (!updatedDrafts.length) {
-      wx.showToast({ title: '暂无可保存文案', icon: 'none' });
-      return;
-    }
-    wx.showToast({ title: '已保存当前修改', icon: 'none' });
   },
 
   persistActiveContent() {
@@ -191,22 +192,91 @@ Page({
     saveMomentsDrafts(updatedDrafts);
     this.setData({
       drafts: updatedDrafts,
-      rankedDrafts: updatedDrafts.slice(0, 6),
-      recommendations: this.buildRecommendations(updatedDrafts, selectedDraftId, this.data.sourceContext)
+      rankedDrafts: buildRankedDrafts(updatedDrafts),
+      draftListStyle: this.buildDraftListStyle(this.data.scrollOffset || 0),
+      scrollThumbStyle: this.buildScrollThumbStyle(this.data.thumbTop || 0)
     });
+    this.measureDraftViewport();
     return updatedDrafts;
   },
 
-  goBackToPreview() {
-    this.persistActiveContent();
-    wx.navigateBack({ delta: 1 });
+  measureDraftViewport() {
+    if (!wx.createSelectorQuery) {
+      return;
+    }
+
+    const query = wx.createSelectorQuery();
+    query.select('.draft-list').boundingClientRect();
+    query.select('.draft-track').boundingClientRect();
+    query.select('.scroll-rail').boundingClientRect();
+    query.select('.scroll-thumb').boundingClientRect();
+    query.exec((res) => {
+      const listRect = res && res[0];
+      const trackRect = res && res[1];
+      const railRect = res && res[2];
+      const thumbRect = res && res[3];
+
+      if (!listRect || !trackRect || !railRect || !thumbRect) {
+        return;
+      }
+
+      const maxScrollOffset = Math.max(trackRect.height - listRect.height, 0);
+      const railTravel = Math.max(railRect.height - thumbRect.height, 0);
+      const scrollOffset = Math.max(0, Math.min(this.data.scrollOffset || 0, maxScrollOffset));
+      const thumbTop = this.mapOffsetToThumb(scrollOffset, maxScrollOffset, railTravel);
+
+      this.setData({
+        maxScrollOffset,
+        railTravel,
+        scrollOffset,
+        thumbTop,
+        draftListStyle: this.buildDraftListStyle(scrollOffset),
+        scrollThumbStyle: this.buildScrollThumbStyle(thumbTop)
+      });
+    });
+  },
+
+  mapOffsetToThumb(offset, maxScrollOffset = this.data.maxScrollOffset || 0, railTravel = this.data.railTravel || 0) {
+    if (!maxScrollOffset || !railTravel) {
+      return 0;
+    }
+
+    return (Math.max(0, Math.min(offset, maxScrollOffset)) / maxScrollOffset) * railTravel;
+  },
+
+  mapThumbToOffset(thumbTop) {
+    const { maxScrollOffset, railTravel } = this.data;
+    if (!maxScrollOffset || !railTravel) {
+      return 0;
+    }
+
+    return (Math.max(0, Math.min(thumbTop, railTravel)) / railTravel) * maxScrollOffset;
+  },
+
+  buildDraftListStyle(offset) {
+    return `transform: translateY(-${Math.max(0, offset || 0)}px);`;
+  },
+
+  buildScrollThumbStyle(top) {
+    return `transform: translateY(${Math.max(0, top || 0)}px);`;
+  },
+
+  syncThumbTop(top) {
+    const safeTop = Math.max(0, Math.min(top, this.data.railTravel || 0));
+    const scrollOffset = this.mapThumbToOffset(safeTop);
+    this.setData({
+      thumbTop: safeTop,
+      scrollOffset,
+      draftListStyle: this.buildDraftListStyle(scrollOffset),
+      scrollThumbStyle: this.buildScrollThumbStyle(safeTop)
+    });
   },
 
   goBackToGenerate() {
     this.persistActiveContent();
     const pages = getCurrentPages();
-    if (pages.length >= 3) {
-      wx.navigateBack({ delta: 2 });
+    if (pages.length > 1) {
+      wx.navigateBack({ delta: 1 });
       return;
     }
 

@@ -10,10 +10,15 @@
 
       <view class="title-card title-source-card">
         <view class="section-label">正文</view>
-        <view class="section-text">{{sourceContext.articleContent}}</view>
+        <textarea
+          class="source-input"
+          maxlength="-1"
+          value="{{sourceContext.articleContent}}"
+          bindinput="handleSourceInput"
+        ></textarea>
       </view>
 
-      <view class="title-card">
+      <view class="title-card title-style-card">
         <view class="section-head">
           <view class="section-title">标题风格</view>
           <view class="section-meta">可多次切换</view>
@@ -38,22 +43,20 @@
           <view class="section-meta">{{activeStyle}} · {{results.length}} 条</view>
         </view>
 
-        <view class="result-list">
-          <view
-            class="result-card {{item.id === activeResultId ? 'result-card-active' : ''}}"
-            wx:for="{{visibleResults}}"
-            wx:key="id"
-            data-id="{{item.id}}"
-            bindtap="selectResult"
-          >
-            <view class="result-title">{{item.text}}</view>
-            <view class="result-note">{{item.note}}</view>
+        <scroll-view class="result-scroll" scroll-y="true" show-scrollbar="false" scroll-top="{{resultScrollTop}}" bindscroll="handleResultScroll">
+          <view class="result-list">
+            <view
+              class="result-card {{item.id === activeResultId ? 'result-card-active' : ''}}"
+              wx:for="{{visibleResults}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="selectResult"
+            >
+              <view class="result-title">{{item.text}}</view>
+              <view class="result-note">{{item.note}}</view>
+            </view>
           </view>
-        </view>
-
-        <view class="result-track">
-          <view class="result-thumb"></view>
-        </view>
+        </scroll-view>
 
         <view class="inline-actions">
           <view class="inline-action" bindtap="regenerateBatch">换一批</view>

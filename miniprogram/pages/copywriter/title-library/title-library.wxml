@@ -16,7 +16,6 @@
         <view class="filter-row">
           <view class="filter-chip filter-chip-active">全部 {{stats.all}}</view>
           <view class="filter-chip">已锁定 {{stats.locked}}</view>
-          <view class="filter-chip">待比较 {{stats.compare}}</view>
         </view>
       </view>
 
@@ -54,19 +53,11 @@
       <view class="library-card final-card" wx:if="{{finalTitle}}">
         <view class="section-head">
           <view class="section-title">最终选题</view>
-          <view class="status-pill status-confirmed">已确认 1 条</view>
+          <view class="copy-btn" bindtap="copyFinalTitle">复制标题</view>
         </view>
         <view class="final-panel">
           <view class="final-title">{{finalTitle.text}}</view>
           <view class="final-note">适合作为本轮主标题，冲突感强，点击意图明确。</view>
-          <view class="final-tags">
-            <view class="mini-tag mini-tag-blue">主标题</view>
-            <view class="mini-tag mini-tag-purple">冲突型</view>
-            <view class="mini-tag mini-tag-sky">优先发布</view>
-          </view>
-          <view class="copy-row">
-            <view class="copy-btn" bindtap="copyFinalTitle">复制标题</view>
-          </view>
         </view>
       </view>
     </view>

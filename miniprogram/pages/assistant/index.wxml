@@ -13,18 +13,30 @@
 
     <view class="assistant-panel">
       <view class="assistant-panel-title">{{previewTitle}}</view>
-      <view class="assistant-bubble-row">
-        <view class="assistant-avatar">AI</view>
-        <view class="assistant-bubble">{{previewMessage}}</view>
+      <view class="assistant-message-list">
+        <block wx:for="{{messages}}" wx:key="id">
+          <view class="assistant-bubble-row assistant-bubble-row-{{item.role}}">
+            <view wx:if="{{item.role === 'ai'}}" class="assistant-avatar">AI</view>
+            <view class="assistant-bubble assistant-bubble-{{item.role}}">{{item.text}}</view>
+          </view>
+        </block>
       </view>
-      <view class="assistant-cta-row">
+      <view wx:if="{{showStarterCta}}" class="assistant-cta-row">
         <view class="assistant-cta" bindtap="openTopicPlanner">{{ctaText}}</view>
       </view>
     </view>
 
     <view class="assistant-input-row">
-      <view class="assistant-input-placeholder">{{inputPlaceholder}}</view>
-      <view class="assistant-send" bindtap="openBusinessAdvisor">发送</view>
+      <input
+        class="assistant-input"
+        type="text"
+        placeholder="{{inputPlaceholder}}"
+        value="{{draftMessage}}"
+        bindinput="handleDraftInput"
+        confirm-type="send"
+        bindconfirm="handleSend"
+      />
+      <view class="assistant-send{{draftMessage ? '' : ' assistant-send-disabled'}}" bindtap="handleSend">发送</view>
     </view>
   </view>
 </view>

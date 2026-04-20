@@ -84,7 +84,7 @@ function buildTitleResults(context) {
     {
       id: createId('title'),
       text: `为什么越努力做内容的人，反而越容易写废`,
-      note: '更适合做观点型封面标题',
+      note: '适合观点表达和反常识切入',
       tag: '待比较',
       status: 'compare'
     },

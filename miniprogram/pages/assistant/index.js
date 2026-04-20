@@ -29,9 +29,19 @@ Page({
     onlineMeta: '平均响应 2s',
     previewTitle: 'AI 对话区',
     previewMessage: '我可以先帮你拆 3 条低粉爆款，再给你可用标题。',
+    autoReplyMessage: '收到，我会基于你的问题继续整理下一步思路。',
     ctaText: '帮我先出今天的抖音选题方向',
+    showStarterCta: true,
     serviceChips: [],
-    inputPlaceholder: '输入你的问题...'
+    inputPlaceholder: '输入你的问题...',
+    draftMessage: '',
+    messages: [
+      {
+        id: 'ai-welcome',
+        role: 'ai',
+        text: '我可以先帮你拆 3 条低粉爆款，再给你可用标题。'
+      }
+    ]
   },
 
   onLoad() {
@@ -65,6 +75,30 @@ Page({
 
   openBusinessAdvisor() {
     this.openAssistantChat('expert');
+  },
+
+  handleDraftInput(e) {
+    const value = e.detail && typeof e.detail.value === 'string' ? e.detail.value : '';
+    this.setData({
+      draftMessage: value
+    });
+  },
+
+  handleSend() {
+    const message = (this.data.draftMessage || '').trim();
+    if (!message) {
+      return;
+    }
+
+    this.setData({
+      messages: [
+        ...(this.data.messages || []),
+        { id: `user-${Date.now()}`, role: 'user', text: message },
+        { id: `ai-${Date.now() + 1}`, role: 'ai', text: this.data.autoReplyMessage }
+      ],
+      showStarterCta: false,
+      draftMessage: ''
+    });
   },
 
   openTopicPlanner() {
