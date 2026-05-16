@@ -1,0 +1,37 @@
+name: Upload to WeChat
+
+on:
+  workflow_dispatch:
+    inputs:
+      desc:
+        description: '上传说明'
+        required: false
+        default: 'CI automated upload'
+      robot:
+        description: 'CI 机器人编号（1-30）'
+        required: false
+        default: '1'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Upload miniapp to WeChat platform
+        env:
+          MINIAPP_APPID: ${{ secrets.MINIAPP_APPID }}
+          MINIAPP_PRIVATE_KEY: ${{ secrets.MINIAPP_PRIVATE_KEY }}
+          MINIAPP_CLOUD_ENV: ${{ secrets.MINIAPP_CLOUD_ENV }}
+          MINIAPP_UPLOAD_DESC: ${{ github.event.inputs.desc }}
+          MINIAPP_ROBOT: ${{ github.event.inputs.robot }}
+        run: |
+          if [ -z "$MINIAPP_PRIVATE_KEY" ]; then
+            echo "::error::MINIAPP_PRIVATE_KEY secret not set. Please generate key at mp.weixin.qq.com → 开发设置 → 代码上传密钥"
+            exit 1
+          fi
+          npm run upload
