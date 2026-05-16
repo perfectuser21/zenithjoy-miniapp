@@ -264,7 +264,7 @@ Page({
       return;
     }
 
-    this.openArticleLibrary();
+    wx.showToast({ title: "该功能暂未开放", icon: "none" });
   },
 
   openAIChat(e) {
@@ -305,10 +305,14 @@ Page({
     });
   },
 
-  openCopywriter() {
-    wx.switchTab({
-      url: "/pages/ai-features/index"
+  openCopywriterStart() {
+    wx.navigateTo({
+      url: "/pages/copywriter/start/start"
     });
+  },
+
+  openCopywriter() {
+    this.openCopywriterStart();
   },
 
   openRankingDetail() {
@@ -320,12 +324,6 @@ Page({
   openReadingDetail() {
     wx.navigateTo({
       url: "/pages/reading-list/detail/detail"
-    });
-  },
-
-  openArticleLibrary() {
-    wx.navigateTo({
-      url: "/pages/article-list/article-list"
     });
   }
 });

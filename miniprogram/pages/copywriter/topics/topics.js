@@ -73,7 +73,7 @@ Page({
       return;
     }
 
-    setCurrentStep(4);
+    setCurrentStep(4, { topicId: '', articleId: '' });
   },
 
   refreshPage() {

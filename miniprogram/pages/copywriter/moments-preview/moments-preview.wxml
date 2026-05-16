@@ -1,7 +1,7 @@
 <view class="preview-page">
   <view class="preview-stack">
     <view class="toolbar-row">
-      <view class="toolbar-btn" bindtap="regenerateDrafts">返回</view>
+      <view class="toolbar-btn" bindtap="goBackToGenerate">返回</view>
       <view class="toolbar-tag">文案预览页</view>
     </view>
 

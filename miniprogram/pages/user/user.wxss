@@ -1,56 +1,58 @@
-.page {
+@import "/styles/pencil-theme.wxss";
+
+.p-page {
   min-height: 100vh;
   background:
     radial-gradient(circle at 85% 10%, rgba(122, 109, 255, 0.12), transparent 26%),
     linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
+}
+
+.p-shell {
   padding: 0 32rpx calc(144rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
-.eyebrow {
-  font-size: 19rpx;
-  color: #6d63ff;
-  margin-bottom: 6rpx;
+.p-card {
+  margin-top: 16rpx;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 32rpx;
+  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
 }
 
-.top {
-  margin-bottom: 24rpx;
+.p-hero-card {
+  background: linear-gradient(180deg, rgba(108, 99, 255, 0.14) 0%, rgba(255, 255, 255, 0.96) 100%);
 }
 
-.title-row,
-.section-head,
-.points-top,
-.growth-item,
-.menu-item,
-.activity-item {
+.p-section-head,
+.p-link-row,
+.p-profile-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.title {
+.p-kicker {
+  font-size: 19rpx;
+  color: #6d63ff;
+  letter-spacing: 1.4rpx;
+}
+
+.p-title {
+  margin-top: 8rpx;
   font-size: 58rpx;
   line-height: 1.04;
   font-weight: 700;
   color: #111827;
 }
 
-.profile-card,
-.points-card,
-.section-block {
-  margin-top: 24rpx;
-  padding: 20rpx;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 32rpx;
-  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
+.p-profile-row {
+  justify-content: flex-start;
+  gap: 20rpx;
+  margin-top: 18rpx;
 }
 
-.profile-card {
-  display: flex;
-  align-items: center;
-}
-
-.avatar-badge {
+.p-avatar {
   width: 96rpx;
   height: 96rpx;
   line-height: 96rpx;
@@ -60,163 +62,41 @@
   color: #ffffff;
   font-size: 28rpx;
   font-weight: 700;
-  margin-right: 20rpx;
 }
 
-.profile-main {
+.p-profile-copy {
   flex: 1;
 }
 
-.profile-name {
+.p-profile-name,
+.p-section-title,
+.p-link-title {
   font-size: 27rpx;
-  font-weight: 700;
-  color: #111827;
-}
-
-.profile-subtitle {
-  margin-top: 4rpx;
-  font-size: 21rpx;
-  color: #7a7e9a;
-  font-weight: 600;
-}
-
-.section-title {
-  font-size: 29rpx;
   font-weight: 700;
   color: #1d2340;
 }
 
-.section-link,
-.section-meta {
+.p-subtitle,
+.p-section-meta,
+.p-link-desc {
+  margin-top: 4rpx;
   font-size: 21rpx;
   color: #7a7e9a;
   font-weight: 600;
 }
 
-.section-title-recent {
-  font-size: 27rpx;
-}
-
-.section-meta-week {
-  font-size: 19rpx;
-}
-
-.edit-chip {
-  min-width: 130rpx;
-  height: 50rpx;
-  padding: 0 18rpx;
-  border-radius: 18rpx;
-  background: #eef1ff;
-  color: #5a52d6;
-  font-size: 19rpx;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.points-label {
-  font-size: 21rpx;
-  color: #6b7291;
-  font-weight: 600;
-}
-
-.points-value {
-  font-size: 46rpx;
-  line-height: 1;
-  font-weight: 700;
-  color: #4e46d8;
-  margin-top: 4rpx;
-}
-
-.points-growth {
-  text-align: right;
-}
-
-.points-growth-value {
-  font-size: 20rpx;
-  color: #16a34a;
-  font-weight: 700;
-}
-
-.points-growth-meta {
-  margin-top: 4rpx;
-  font-size: 19rpx;
-  color: #7a7e9a;
-  font-weight: 600;
-}
-
-.points-stats {
-  display: flex;
-  justify-content: space-between;
-  gap: 12rpx;
-  margin-top: 12rpx;
-}
-
-.points-stat {
-  flex: 1;
-  padding: 16rpx 20rpx;
-  background: #eef4ff;
-  border-radius: 20rpx;
-}
-
-.points-stat-title {
-  font-size: 21rpx;
-  color: #4362c4;
-  font-weight: 700;
-}
-
-.points-stat-desc {
-  margin-top: 4rpx;
-  font-size: 19rpx;
-  color: #6e7faf;
-  font-weight: 600;
-}
-
-.growth-list,
-.menu-list,
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-}
-
-.growth-item,
-.menu-item,
-.activity-item {
-  padding: 14rpx 0;
+.p-link-row {
+  gap: 16rpx;
+  padding: 18rpx 0;
   border-bottom: 1rpx solid #eef1f8;
 }
 
-.growth-item:last-child,
-.menu-item:last-child,
-.activity-item:last-child {
+.p-link-row:last-child {
   border-bottom: 0;
 }
 
-.growth-name,
-.menu-text,
-.activity-title {
-  font-size: 23rpx;
-  color: #2d3553;
-  font-weight: 600;
-}
-
-.growth-status {
-  font-size: 19rpx;
-  color: #5a52d6;
-  font-weight: 700;
-}
-
-.menu-arrow {
+.p-link-arrow {
   color: #98a1bd;
   font-size: 23rpx;
-  font-weight: 700;
-}
-
-.activity-value {
-  font-size: 21rpx;
-  color: #16a34a;
   font-weight: 700;
 }

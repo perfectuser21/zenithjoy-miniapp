@@ -33,10 +33,14 @@ Page({
     }
   },
 
-  openCopywriterFlow() {
+  openCopywriterStart() {
     wx.navigateTo({
       url: '/pages/copywriter/start/start'
     });
+  },
+
+  openCopywriterFlow() {
+    this.openCopywriterStart();
   },
 
   openTitleStudio() {

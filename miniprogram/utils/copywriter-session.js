@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'copywriter_current_session';
+let memorySession = null;
 
 const ARTICLE_VARIANTS = [
   { type: 'tutorial', label: '教程型' },
@@ -131,13 +132,19 @@ function getDefaultSession() {
 }
 
 function loadSession() {
-  const stored = wx.getStorageSync(STORAGE_KEY);
+  const stored = typeof wx.getStorageSync === 'function'
+    ? wx.getStorageSync(STORAGE_KEY)
+    : memorySession;
   return stored ? clone(stored) : null;
 }
 
 function saveSession(session) {
   const nextSession = clone({ ...session, lastEditedAt: Date.now() });
-  wx.setStorageSync(STORAGE_KEY, nextSession);
+  if (typeof wx.setStorageSync === 'function') {
+    wx.setStorageSync(STORAGE_KEY, nextSession);
+  } else {
+    memorySession = nextSession;
+  }
   return nextSession;
 }
 
@@ -148,6 +155,18 @@ function patchSession(updater) {
 
 function createSession() {
   return saveSession(getDefaultSession());
+}
+
+function clearSession() {
+  memorySession = null;
+  if (typeof wx.removeStorageSync === 'function') {
+    wx.removeStorageSync(STORAGE_KEY);
+    return;
+  }
+
+  if (typeof wx.clearStorageSync === 'function') {
+    wx.clearStorageSync();
+  }
 }
 
 function updateStepData(patch) {
@@ -180,7 +199,7 @@ function setTopics(topics) {
     session.topicsDirty = false;
     session.articlesDirty = true;
     session.currentStep = 4;
-    session.currentTopicId = session.topics[0] ? session.topics[0].topicId : '';
+    session.currentTopicId = '';
     session.currentArticleId = '';
     return session;
   });
@@ -233,9 +252,7 @@ function setArticles(topicId, articles) {
     session.articlesDirty = false;
     session.currentStep = 5;
     session.currentTopicId = topicId;
-    session.currentArticleId = session.articlesByTopic[topicId][0]
-      ? session.articlesByTopic[topicId][0].articleId
-      : '';
+    session.currentArticleId = '';
     return session;
   });
 }
@@ -251,9 +268,7 @@ function generateArticles(topicId) {
     session.articlesDirty = false;
     session.currentStep = 5;
     session.currentTopicId = topicId;
-    session.currentArticleId = session.articlesByTopic[topicId][0]
-      ? session.articlesByTopic[topicId][0].articleId
-      : '';
+    session.currentArticleId = '';
     return session;
   });
 }
@@ -314,16 +329,16 @@ function setCurrentStep(step, extra = {}) {
   });
 }
 
-function getResumeRoute(session) {
+function getResumeRoute(session = loadSession()) {
   if (!session) {
     return '/pages/copywriter/start/start';
   }
 
-  if (session.currentStep >= 6 && session.currentTopicId && session.currentArticleId) {
+  if (session.currentArticleId && session.currentTopicId) {
     return `/pages/copywriter/article-detail/article-detail?topicId=${session.currentTopicId}&articleId=${session.currentArticleId}`;
   }
 
-  if (session.currentStep >= 5 && session.currentTopicId) {
+  if (session.currentTopicId) {
     return `/pages/copywriter/articles/articles?topicId=${session.currentTopicId}`;
   }
 
@@ -339,7 +354,11 @@ function getResumeRoute(session) {
     return '/pages/copywriter/ideas/ideas';
   }
 
-  return '/pages/copywriter/keywords/keywords';
+  if (session.currentStep >= 1) {
+    return '/pages/copywriter/keywords/keywords';
+  }
+
+  return '/pages/copywriter/start/start';
 }
 
 function getTopic(session, topicId) {
@@ -352,6 +371,7 @@ function getArticle(session, topicId, articleId) {
 
 module.exports = {
   ARTICLE_VARIANTS,
+  clearSession,
   createSession,
   generateArticles,
   generateTopics,

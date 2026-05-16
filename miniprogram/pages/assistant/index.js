@@ -43,11 +43,32 @@ Page({
     }
   },
 
-  openAssistant(e) {
-    const { prompt, bot } = e.currentTarget.dataset;
-    const aiBot = AI_BOTS[bot || 'expert'];
+  openAssistantChat(botKey, prompt) {
+    const aiBot = AI_BOTS[botKey];
+
     wx.navigateTo({
       url: `/pages/ai-chat/ai-chat?botId=${aiBot.botId}&title=${encodeURIComponent(aiBot.title)}&prompt=${encodeURIComponent(prompt || aiBot.prompt)}`
     });
+  },
+
+  openBusinessAdvisor() {
+    this.openAssistantChat('expert');
+  },
+
+  openTopicPlanner() {
+    this.openAssistantChat('content');
+  },
+
+  openBenchmarkAnalysis() {
+    this.openAssistantChat('imagine');
+  },
+
+  openScriptGenerator() {
+    this.openAssistantChat('writer');
+  },
+
+  openAssistant(e) {
+    const { prompt, bot } = e.currentTarget.dataset;
+    this.openAssistantChat(bot || 'expert', prompt);
   }
 });
