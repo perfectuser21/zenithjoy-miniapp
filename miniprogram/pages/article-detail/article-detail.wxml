@@ -1,43 +1,48 @@
-<!--pages/article-detail/article-detail.wxml-->
-<view class="container">
-  <!-- 加载状态 -->
+<view class="reading-page">
   <view class="loading-container" wx:if="{{isLoading}}">
     <view class="loading"></view>
     <text class="loading-text">加载中...</text>
   </view>
 
-  <!-- 错误提示 -->
   <view class="error-container" wx:elif="{{error}}">
     <icon type="warn" size="64" color="#ff4d4f"></icon>
     <text class="error-text">{{error}}</text>
     <button class="back-btn" bindtap="goBack">返回首页</button>
   </view>
 
-  <!-- 文章内容 -->
-  <view class="article-container" wx:elif="{{article}}">
-    <!-- 文章头部 -->
-    <view class="article-header">
-      <text class="article-title">{{article.title}}</text>
-      <view class="article-meta">
-        <text class="article-author">{{article.author}}</text>
-        <text class="article-date">{{article.date}}</text>
-      </view>
-      <view class="article-tags">
-        <text class="tag" wx:for="{{article.tags}}" wx:key="*this">{{item}}</text>
+  <view class="reading-shell" wx:elif="{{article}}" style="padding-top: {{statusBarHeight + 8}}px;">
+    <view class="reading-hero">
+      <view class="reading-hero-eyebrow">{{article.eyebrow}}</view>
+      <view class="reading-hero-title">{{article.title}}</view>
+      <view class="reading-hero-desc">{{article.heroDesc}}</view>
+      <view class="reading-hero-meta-row">
+        <view class="reading-hero-meta-chip"> {{article.heroMetaChips[0]}} </view>
+        <view class="reading-hero-meta-chip reading-hero-meta-chip-dim"> {{article.heroMetaChips[1]}} </view>
       </view>
     </view>
 
-    <!-- 文章封面 -->
-    <image wx:if="{{article.cover}}" class="article-cover" src="{{article.cover}}" mode="widthFix"></image>
+    <view class="reading-summary">
+      <view class="reading-summary-head">
+        <view class="reading-summary-title">{{article.summaryTitle}}</view>
+        <view class="reading-summary-meta">{{article.summaryMeta}}</view>
+      </view>
+      <view class="reading-summary-tag">{{article.summaryTag}}</view>
+      <view class="reading-summary-article-title">{{article.title}}</view>
+      <view class="reading-summary-desc">{{article.summaryDesc}}</view>
+    </view>
 
-    <!-- 文章内容 -->
-    <rich-text class="article-content" nodes="{{article.content}}"></rich-text>
-
-    <!-- 文章底部 -->
-    <view class="article-footer">
-      <button class="share-btn" open-type="share">
-        <text class="share-text">分享给好友</text>
-      </button>
+    <view class="reading-body">
+      <view class="reading-body-head">
+        <view class="reading-body-title">{{article.bodyTitle}}</view>
+        <view class="reading-body-meta">{{article.bodyMeta}}</view>
+      </view>
+      <view
+        wx:for="{{article.bodyBlocks}}"
+        wx:key="index"
+        class="{{item.type === 'h' ? 'reading-body-heading' : 'reading-body-paragraph'}}"
+      >
+        {{item.content}}
+      </view>
     </view>
   </view>
 </view>

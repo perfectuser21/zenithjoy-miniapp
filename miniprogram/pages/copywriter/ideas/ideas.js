@@ -12,6 +12,11 @@ function buildStyleOptions(selectedTags) {
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'STEP 2 · 灵感 / 想法 / 点子',
+      title: '补充你真正想表达的观点和角度',
+      description: '输入你的灵感、你想表达的想法，让后面的选题更像你。'
+    },
     ideasText: '',
     constraintsText: '',
     styleTags: [],

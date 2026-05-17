@@ -89,7 +89,7 @@ exports.main = async (event, context) => {
           data: {
             openid: openid,
             level: 'free',
-            name: '普通会员',
+            name: '成长会员',
             expireDate: new Date(new Date().setFullYear(new Date().getFullYear() + 100)), // 设置很长的过期时间
             createTime: db.serverDate(),
             updateTime: db.serverDate()
@@ -113,7 +113,7 @@ exports.main = async (event, context) => {
       success: true,
       data: {
         userInfo: userInfo.data[0],
-        membership: membership.data.length > 0 ? membership.data[0] : { level: 'free', name: '普通会员' },
+        membership: membership.data.length > 0 ? membership.data[0] : { level: 'free', name: '成长会员' },
         membershipPlan: membershipPlan,
         usageToday: usageToday.total || 0,
         remainingQuota: membershipPlan && membershipPlan.dailyQuota > 0 
@@ -130,4 +130,4 @@ exports.main = async (event, context) => {
       error: error
     }
   }
-} 
+}

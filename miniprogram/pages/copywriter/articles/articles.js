@@ -36,16 +36,18 @@ function buildPreviewCards(articles) {
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'STEP 5 · 文案版本',
+      title: '先看结构，再决定用哪一个版本',
+      description: '已基于当前选题生成多个文案版本，支持滑动预览并确认使用。'
+    },
     topicId: '',
     topic: null,
     articles: [],
     previewCards: [],
     selectedArticleId: '',
     selectedArticle: null,
-    generating: false,
-    showPreviewScrollbar: false,
-    previewScrollbarThumbTop: 0,
-    previewScrollbarThumbHeight: 0
+    generating: false
   },
 
   onLoad(options) {
@@ -84,16 +86,18 @@ Page({
     const selectedArticleId = this.data.selectedArticleId || (previewCards[0] && previewCards[0].articleId) || '';
     const selectedArticle = previewCards.find((item) => item.articleId === selectedArticleId) || previewCards[0] || null;
 
-    this.setData(
-      {
-        topic: getTopic(session, this.data.topicId),
-        articles,
-        previewCards,
-        selectedArticleId: selectedArticle ? selectedArticle.articleId : '',
-        selectedArticle
+    this.setData({
+      heroCard: {
+        kicker: 'STEP 5 · 某个选题下生成 3 篇文章',
+        title: '先看结构，再决定用哪一个版本',
+        description: `已基于当前选题生成${previewCards.length}个文案版本，支持滑动预览并确认使用。`
       },
-      () => this.syncPreviewScrollbar()
-    );
+      topic: getTopic(session, this.data.topicId),
+      articles,
+      previewCards,
+      selectedArticleId: selectedArticle ? selectedArticle.articleId : '',
+      selectedArticle
+    });
   },
 
   async generateWithAI(useLoading = true) {
@@ -145,73 +149,24 @@ Page({
     });
   },
 
-  openSelectedDetail() {
-    if (!this.data.selectedArticleId) {
+  openArticleDetail(e) {
+    const articleId = e?.currentTarget?.dataset?.id || this.data.selectedArticleId;
+    if (!articleId) {
       return;
     }
 
-    setCurrentStep(6, { topicId: this.data.topicId, articleId: this.data.selectedArticleId });
+    this.setData({ selectedArticleId: articleId });
+    setCurrentStep(6, { topicId: this.data.topicId, articleId });
     wx.navigateTo({
-      url: `/pages/copywriter/article-detail/article-detail?topicId=${this.data.topicId}&articleId=${this.data.selectedArticleId}`
+      url: `/pages/copywriter/article-detail/article-detail?topicId=${this.data.topicId}&articleId=${articleId}`
     });
   },
 
   useSelected() {
-    this.openSelectedDetail();
+    this.openArticleDetail();
   },
 
   goBack() {
     wx.redirectTo({ url: '/pages/copywriter/topics/topics' });
-  },
-
-  handlePreviewScroll(e) {
-    const { scrollTop = 0, scrollHeight = 0 } = e.detail || {};
-    this.updatePreviewScrollbar(scrollTop, scrollHeight);
-  },
-
-  syncPreviewScrollbar() {
-    wx.nextTick(() => {
-      const query = wx.createSelectorQuery().in(this);
-      query.select('.preview-scroll').boundingClientRect();
-      query.select('.preview-list-inner').boundingClientRect();
-      query.exec((res) => {
-        const scrollRect = res && res[0];
-        const contentRect = res && res[1];
-        if (!scrollRect || !contentRect) {
-          return;
-        }
-
-        this.updatePreviewScrollbar(0, contentRect.height, scrollRect.height);
-      });
-    });
-  },
-
-  updatePreviewScrollbar(scrollTop, scrollHeight, viewportHeight) {
-    const currentViewportHeight = viewportHeight || this.previewViewportHeight || 0;
-    if (!currentViewportHeight || !scrollHeight || scrollHeight <= currentViewportHeight) {
-      this.previewViewportHeight = currentViewportHeight;
-      this.setData({
-        showPreviewScrollbar: false,
-        previewScrollbarThumbTop: 0,
-        previewScrollbarThumbHeight: 0
-      });
-      return;
-    }
-
-    this.previewViewportHeight = currentViewportHeight;
-    const minThumbHeight = 32;
-    const thumbHeight = Math.max(
-      minThumbHeight,
-      (currentViewportHeight * currentViewportHeight) / scrollHeight
-    );
-    const maxScrollTop = Math.max(scrollHeight - currentViewportHeight, 1);
-    const maxThumbTop = currentViewportHeight - thumbHeight;
-    const thumbTop = Math.min(maxThumbTop, (scrollTop / maxScrollTop) * maxThumbTop);
-
-    this.setData({
-      showPreviewScrollbar: true,
-      previewScrollbarThumbTop: thumbTop,
-      previewScrollbarThumbHeight: thumbHeight
-    });
   }
 });

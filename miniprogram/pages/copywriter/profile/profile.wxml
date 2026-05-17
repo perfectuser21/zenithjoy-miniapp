@@ -1,41 +1,33 @@
-<view class="page">
-  <view class="stack">
-    <view class="progress">
-      <view class="progress-main">找方向 / 选题 / 出成稿</view>
-      <view class="progress-step">3 / 6</view>
-    </view>
+<view class="profile-page">
+  <view class="profile-orb"></view>
+  <view class="profile-stack">
+    <view class="profile-content">
+      <view class="profile-hero">
+        <view class="profile-kicker">{{heroCard.kicker}}</view>
+        <view class="profile-title">{{heroCard.title}}</view>
+        <view class="profile-line"></view>
+        <view class="profile-desc">{{heroCard.description}}</view>
+      </view>
 
-    <view class="hero">
-      <view class="kicker">STEP 3</view>
-      <view class="title">完善创作信息</view>
-      <view class="desc">这些信息会直接影响选题质量和文章可信度。</view>
-    </view>
+      <view class="info-card">
+        <view class="tag tag-audience">目标人群</view>
+        <textarea class="info-input compact" maxlength="-1" value="{{audienceText}}" bindinput="handleInput" data-field="audienceText" placeholder="副业新手、宝妈、职场 3-5 年"></textarea>
+      </view>
 
-    <view class="card">
-      <view class="label">写给谁</view>
-      <textarea class="textarea" maxlength="-1" value="{{audienceText}}" bindinput="handleInput" data-field="audienceText" placeholder="如：副业新手、宝妈、职场 3-5 年"></textarea>
-    </view>
+      <view class="info-card info-card-soft">
+        <view class="tag tag-value">价值</view>
+        <textarea class="info-input tall" maxlength="-1" value="{{valueText}}" bindinput="handleInput" data-field="valueText" placeholder="帮你在更短时间内做到更稳定的结果&#10;避开最容易浪费时间的 3 个坑&#10;用更具体的方法解决卡住行动的问题"></textarea>
+      </view>
 
-    <view class="card">
-      <view class="label">你能提供什么价值</view>
-      <textarea class="textarea" maxlength="-1" value="{{valueText}}" bindinput="handleInput" data-field="valueText" placeholder="如：帮 TA 少走弯路、快速入门、提高转化"></textarea>
-      <view class="card-actions">
-        <view class="card-action" bindtap="fillTemplate" data-value="帮你在更短时间内做到更稳定的结果">帮你在 X 时间内做到 Y</view>
-        <view class="card-action" bindtap="fillTemplate" data-value="避开最容易浪费时间的 3 个坑">避开 X 的 3 个坑</view>
-        <view class="card-action" bindtap="fillTemplate" data-value="用更具体的方法解决卡住行动的关键问题">用 X 方法解决 Y</view>
+      <view class="info-card info-card-soft">
+        <view class="tag tag-ip">IP</view>
+        <textarea class="info-input compact" maxlength="-1" value="{{ipText}}" bindinput="handleInput" data-field="ipText" placeholder="我是做过 3 年内容增长的产品运营，偏理性拆解和实操派风格。"></textarea>
       </view>
     </view>
 
-    <view class="card">
-      <view class="label">你的 IP / 身份</view>
-      <textarea class="textarea" maxlength="-1" value="{{ipText}}" bindinput="handleInput" data-field="ipText" placeholder="如：我是做过 3 年内容增长的产品运营，偏实操拆解风格"></textarea>
-    </view>
-
-    <view class="notice">补充得越具体，选题越贴近你的表达方式。</view>
-
-    <view class="footer">
+    <view class="footer-row">
       <button class="btn-secondary" bindtap="goBack">上一步</button>
-      <button class="btn" bindtap="generateTopicList">生成 5 个选题</button>
+      <button class="btn-primary" bindtap="generateTopicList">生成 5 个选题</button>
     </view>
   </view>
 </view>

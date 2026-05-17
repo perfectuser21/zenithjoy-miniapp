@@ -10,7 +10,7 @@ function mapStatus(status) {
     return { label: '已锁定', className: 'status-locked', actionText: '取消锁定' };
   }
   if (status === 'compare') {
-    return { label: '待比较', className: 'status-compare', actionText: '锁定' };
+    return { label: '待比较', className: 'status-compare', actionText: '确定' };
   }
 
   return { label: '备选中', className: 'status-saved', actionText: '锁定' };
@@ -23,9 +23,27 @@ function formatItems(items) {
   }));
 }
 
+function buildStats(items) {
+  return {
+    all: items.length,
+    locked: items.filter((item) => item.status === 'locked').length,
+    compare: items.filter((item) => item.status === 'compare').length
+  };
+}
+
 Page({
   data: {
+    heroCard: {
+      kicker: '标题备选库',
+      title: '把想保留的标题先收进这里，再集中比较和确认',
+      description: '支持按状态查看、锁定优先标题、删除不需要的版本。'
+    },
     items: [],
+    stats: {
+      all: 0,
+      locked: 0,
+      compare: 0
+    },
     finalTitle: null
   },
 
@@ -36,7 +54,11 @@ Page({
   refreshPage() {
     const items = formatItems(getTitleLibrary());
     const finalTitle = getFinalTitle();
-    this.setData({ items, finalTitle });
+    this.setData({
+      items,
+      stats: buildStats(items),
+      finalTitle
+    });
   },
 
   toggleStatus(e) {

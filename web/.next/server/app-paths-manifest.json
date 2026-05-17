@@ -1,0 +1,20 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/assistant/page": "app/assistant/page.js",
+  "/copywriter/detail/page": "app/copywriter/detail/page.js",
+  "/copywriter/profile/page": "app/copywriter/profile/page.js",
+  "/copywriter/keywords/page": "app/copywriter/keywords/page.js",
+  "/copywriter/articles/page": "app/copywriter/articles/page.js",
+  "/copywriter/ideas/page": "app/copywriter/ideas/page.js",
+  "/copywriter/start/page": "app/copywriter/start/page.js",
+  "/copywriter/topics/page": "app/copywriter/topics/page.js",
+  "/me/page": "app/me/page.js",
+  "/moments/editor/page": "app/moments/editor/page.js",
+  "/moments/generate/page": "app/moments/generate/page.js",
+  "/reading/detail/page": "app/reading/detail/page.js",
+  "/ranking/detail/page": "app/ranking/detail/page.js",
+  "/title/generate/page": "app/title/generate/page.js",
+  "/page": "app/page.js",
+  "/title/library/page": "app/title/library/page.js",
+  "/workflow/page": "app/workflow/page.js"
+}

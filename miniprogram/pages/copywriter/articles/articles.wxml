@@ -1,64 +1,27 @@
-<view class="page preview-page">
-  <view class="preview-stack" wx:if="{{topic}}">
-    <view class="hero-card">
-      <view class="hero-kicker">朋友圈文案生成</view>
-      <view class="hero-title">生成完成，选择一个版本直接发布</view>
-      <view class="hero-desc">已基于原文生成{{previewCards.length}}个版本，支持滑动预览并确认使用。</view>
-    </view>
-
-    <view class="preview-panel">
-      <view class="preview-header">
-        <view class="preview-title">文案预览</view>
-        <view class="preview-subtitle">滑动切换版本</view>
+<view class="articles-page">
+  <view class="articles-orb"></view>
+  <view class="articles-stack" wx:if="{{topic}}">
+    <view class="articles-content">
+      <view class="articles-hero">
+        <view class="articles-kicker">{{heroCard.kicker}}</view>
+        <view class="articles-title">{{topic.title || heroCard.title}}</view>
+        <view class="articles-desc">摘要：{{topic.summary || heroCard.description}}</view>
       </view>
 
-      <view class="preview-shell">
-        <scroll-view
-          class="preview-scroll"
-          scroll-y
-          enhanced
-          show-scrollbar="{{false}}"
-          bindscroll="handlePreviewScroll"
-        >
-          <view class="preview-list-inner">
-            <view class="preview-list">
-              <view
-                wx:for="{{previewCards}}"
-                wx:key="articleId"
-                class="preview-card {{item.articleId === selectedArticleId ? 'preview-card-selected' : ''}}"
-              >
-                <view class="preview-content">{{item.previewText}}</view>
-                <view class="preview-meta">{{item.metaText}}</view>
-                <view
-                  class="preview-action {{item.articleId === selectedArticleId ? 'preview-action-selected' : ''}}"
-                  bindtap="selectArticle"
-                  data-id="{{item.articleId}}"
-                >
-                  {{item.articleId === selectedArticleId ? '已选中此版本' : '设为选中版本'}}
-                </view>
-              </view>
-            </view>
-          </view>
-        </scroll-view>
-        <view class="preview-scrollbar" wx:if="{{showPreviewScrollbar}}">
-          <view
-            class="preview-scrollbar-thumb"
-            style="height: {{previewScrollbarThumbHeight}}px; transform: translateY({{previewScrollbarThumbTop}}px);"
-          ></view>
+      <view class="articles-loading-chip" wx:if="{{generating}}">正在生成第 1/3 篇…… 支持单篇重试</view>
+
+      <scroll-view class="articles-scroll" scroll-y="true" show-scrollbar="true">
+        <view class="article-card" wx:for="{{previewCards}}" wx:key="articleId">
+          <view class="article-title">{{item.versionTag}} · {{item.variantLabel}}</view>
+          <view class="article-desc">{{item.previewText}}</view>
+          <view class="article-action" bindtap="openArticleDetail" data-id="{{item.articleId}}">查看并编辑</view>
         </view>
-      </view>
-
-      <view class="selected-card" wx:if="{{selectedArticle}}">
-        <view class="selected-badge">当前选中</view>
-        <view class="selected-content">{{selectedArticle.previewText}}</view>
-        <view class="selected-meta">{{selectedArticle.metaText}}</view>
-        <view class="selected-action" bindtap="openSelectedDetail">进行修改</view>
-      </view>
+      </scroll-view>
     </view>
 
-    <view class="footer">
+    <view class="footer-row">
       <button class="btn-secondary" bindtap="goBack">返回继续修改</button>
-      <button class="btn" bindtap="useSelected" loading="{{generating}}" disabled="{{generating}}">使用选中文案</button>
+      <button class="btn-primary" bindtap="useSelected" loading="{{generating}}" disabled="{{generating}}">使用此篇并进入精修</button>
     </view>
   </view>
 </view>

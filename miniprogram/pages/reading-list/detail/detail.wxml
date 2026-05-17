@@ -1,60 +1,50 @@
-<view class="page">
-  <view class="page-shell" style="padding-top: {{statusBarHeight + 8}}px;">
-    <view class="floating-label">17 自媒体前沿创作集 / 详情页</view>
-
-    <view class="hero-card">
-      <view class="hero-eyebrow">CREATOR READING LIST</view>
-      <view class="hero-title">自媒体前沿创作集</view>
-      <view class="hero-desc">把值得反复研究的创作方法整理成一份今日精选，方便你判断先看什么、再拆什么、最后怎么模仿。</view>
-      <view class="hero-meta">
-        <view class="hero-chip">6 篇精选</view>
-        <view class="hero-chip hero-chip-ghost">今日已收录</view>
+<view class="reading-page">
+  <view class="reading-shell" style="padding-top: {{statusBarHeight + 8}}px;">
+    <view class="reading-hero">
+      <view class="reading-hero-eyebrow">{{heroEyebrow}}</view>
+      <view class="reading-hero-title">{{heroCard.title}}</view>
+      <view class="reading-hero-desc">{{heroCard.description}}</view>
+      <view class="reading-hero-meta-row">
+        <view class="reading-hero-meta-chip {{item.dim ? 'reading-hero-meta-chip-dim' : ''}}" wx:for="{{heroMetaChips}}" wx:key="text">{{item.text}}</view>
       </view>
     </view>
 
-    <view class="featured-card">
-      <view class="featured-head">
-        <view class="featured-title">本周推荐</view>
-        <view class="featured-meta">建议先读</view>
+    <view class="reading-featured">
+      <view class="reading-featured-head">
+        <view class="reading-featured-title">{{featured.sectionTitle}}</view>
+        <view class="reading-featured-meta">{{featured.sectionMeta}}</view>
       </view>
-      <view class="featured-body">
-        <view class="featured-kicker">创作系统</view>
-        <view class="featured-main">油管大神 Dan Koe：一人公司内容路径</view>
-        <view class="featured-desc">先研究爆文结构和复述方式，再回到自己的主题写一版模仿稿。</view>
+      <view class="reading-featured-card" bindtap="openArticleRead">
+        <view class="reading-featured-tag">{{featured.tag}}</view>
+        <view class="reading-featured-card-title">{{featured.title}}</view>
+        <view class="reading-featured-card-desc">{{featured.description}}</view>
       </view>
     </view>
 
-    <view class="chip-row">
-      <view class="chip">内容模型</view>
-      <view class="chip chip-active">案例拆解</view>
-      <view class="chip">创作方法</view>
-      <view class="chip">一人公司</view>
+    <view class="reading-category-row">
+      <view class="reading-category-chip {{item.active ? 'reading-category-chip-active' : ''}}" wx:for="{{categoryChips}}" wx:key="text">{{item.text}}</view>
     </view>
 
-    <view class="section-card">
-      <view class="section-head">
-        <view class="section-title">继续阅读</view>
-        <view class="section-hint">滑动可看更多</view>
+    <view class="reading-list-card">
+      <view class="reading-list-head">
+        <view class="reading-list-title">继续阅读</view>
+        <view class="reading-list-hint">滑动可看更多</view>
       </view>
-
-      <view class="item-list">
-        <view class="item-card" wx:for="{{items}}" wx:key="index">
-          <view class="item-index {{item.toneClass}}">{{item.index}}</view>
-          <view class="item-copy">
-            <view class="item-title">{{item.title}}</view>
-            <view class="item-desc">{{item.desc}}</view>
-            <view class="item-bottom">
-              <view class="item-meta">{{item.meta}}</view>
-              <view class="item-action">查看</view>
+      <view class="reading-list-wrap">
+        <scroll-view class="reading-list-scroll" scroll-y="true" show-scrollbar="true">
+          <view class="reading-item" wx:for="{{readingItems}}" wx:key="index">
+            <view class="reading-item-index {{item.toneClass}}">{{item.index}}</view>
+            <view class="reading-item-body">
+              <view class="reading-item-title">{{item.title}}</view>
+              <view class="reading-item-desc">{{item.desc}}</view>
+              <view class="reading-item-meta-row">
+                <view class="reading-item-meta {{item.metaClass}}">{{item.meta}}</view>
+                <view class="reading-item-action" bindtap="openArticleRead" data-article-id="{{item.articleId}}">查看</view>
+              </view>
             </view>
           </view>
-        </view>
+        </scroll-view>
       </view>
-    </view>
-
-    <view class="footer-row">
-      <view class="footer-btn footer-btn-secondary" bindtap="goBack">返回首页</view>
-      <view class="footer-btn footer-btn-primary">打开完整合集</view>
     </view>
   </view>
 </view>

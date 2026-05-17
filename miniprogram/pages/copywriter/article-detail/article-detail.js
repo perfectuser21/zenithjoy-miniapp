@@ -2,6 +2,11 @@ const { getArticle, loadSession, setCurrentStep, updateArticle } = require('../.
 
 Page({
   data: {
+    heroCard: {
+      kicker: 'STEP 6 · 文案详情',
+      title: '把这篇文案修到可发布',
+      description: '此页聚焦最终文本和动作按钮。'
+    },
     topicId: '',
     articleId: '',
     article: null,
@@ -34,7 +39,14 @@ Page({
     }
 
     const article = getArticle(session, this.data.topicId, this.data.articleId);
-    this.setData({ article });
+    this.setData({
+      heroCard: {
+        kicker: 'STEP 6 · 文案详情',
+        title: '把这篇文案修到可发布',
+        description: '此页聚焦最终文本和动作按钮。'
+      },
+      article
+    });
     setCurrentStep(6, {
       topicId: this.data.topicId,
       articleId: this.data.articleId

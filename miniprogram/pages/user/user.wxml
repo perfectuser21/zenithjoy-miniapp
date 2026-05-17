@@ -1,49 +1,68 @@
 <view class="p-page">
-  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
-    <view class="p-card p-hero-card" wx:if="{{showProfileCard}}">
-      <view class="p-kicker">MY CENTER</view>
-      <view class="p-title">我的</view>
-      <view class="p-profile-row">
-        <view class="p-avatar">{{avatarInitials}}</view>
-        <view class="p-profile-copy">
-          <view class="p-profile-name">{{profileName}}</view>
-          <view class="p-subtitle">{{profileStage}} · {{membership.name}}</view>
+  <view class="p-shell" style="padding-top: {{statusBarHeight}}px;">
+    <view class="user-head">
+      <view class="user-head-left">
+        <view class="user-kicker">{{pageEyebrow}}</view>
+        <view class="user-title">{{pageTitle}}</view>
+      </view>
+    </view>
+
+    <view class="user-card user-profile-card" wx:if="{{showProfileCard}}">
+      <view class="user-profile-row">
+        <view class="user-avatar">{{avatarInitials}}</view>
+        <view class="user-profile-copy">
+          <view class="user-profile-name">{{profileName}}</view>
+          <view class="user-profile-sub">{{profileStage}} · {{membership.name}}</view>
         </view>
       </view>
     </view>
 
-    <view class="p-card">
-      <view class="p-section-head">
-        <view class="p-section-title">积分与会员</view>
-        <view class="p-section-meta">当前积分 {{points}}</view>
+    <view class="user-card">
+      <view class="user-section-head">
+        <view class="user-section-title">积分中心</view>
+        <view class="user-section-meta">查看明细</view>
       </view>
-      <view class="p-link-row" bindtap="openMembership">
-        <view>
-          <view class="p-link-title">进入会员中心</view>
-          <view class="p-link-desc">查看权益、积分明细与升级状态。</view>
+      <view class="user-points-panel">
+        <view class="user-points-left">
+          <view class="user-points-label">当前积分</view>
+          <view class="user-points-value">{{points}}</view>
         </view>
-        <view class="p-link-arrow">></view>
+        <view class="user-points-right">
+          <view class="user-points-growth">本周 +{{weeklyGrowth}}</view>
+          <view class="user-points-spend">本周消耗 {{monthlySpend}}</view>
+        </view>
       </view>
-      <view class="p-link-row" bindtap="openTaskCenter">
-        <view>
-          <view class="p-link-title">查看任务中心</view>
-          <view class="p-link-desc">继续历史对话与任务产出。</view>
+      <view class="user-points-actions">
+        <view class="user-points-chip">
+          <view class="user-chip-title">积分获取</view>
+          <view class="user-chip-desc">签到 / 推荐 / 问答</view>
         </view>
-        <view class="p-link-arrow">></view>
+        <view class="user-points-chip">
+          <view class="user-chip-title">积分消耗</view>
+          <view class="user-chip-desc">标题 / 文案 / 助理</view>
+        </view>
       </view>
-      <view class="p-link-row" bindtap="clearCache">
-        <view>
-          <view class="p-link-title">清除本地缓存</view>
-          <view class="p-link-desc">重置登录信息与本地历史缓存。</view>
-        </view>
-        <view class="p-link-arrow">></view>
+    </view>
+
+    <view class="user-card">
+      <view class="user-section-head">
+        <view class="user-section-title">会员与成长</view>
+        <view class="user-section-accent">{{membership.name}}</view>
       </view>
-      <view class="p-link-row" wx:if="{{isAdmin}}" bindtap="openAdminCenter">
-        <view>
-          <view class="p-link-title">进入管理中心</view>
-          <view class="p-link-desc">仅管理员可见。</view>
-        </view>
-        <view class="p-link-arrow">></view>
+      <view class="user-benefit-row" wx:for="{{growthBenefits}}" wx:key="title">
+        <view class="user-benefit-title">{{item.title}}</view>
+        <view class="user-benefit-status">{{item.status}}</view>
+      </view>
+    </view>
+
+    <view class="user-card">
+      <view class="user-section-head">
+        <view class="user-section-title user-section-title-small">最近活跃</view>
+        <view class="user-section-meta">本周</view>
+      </view>
+      <view class="user-recent-row" wx:for="{{recentActivities}}" wx:key="title">
+        <view class="user-recent-title">{{item.title}}</view>
+        <view class="user-recent-value">{{item.value}}</view>
       </view>
     </view>
   </view>

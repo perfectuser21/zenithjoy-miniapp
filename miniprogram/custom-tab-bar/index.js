@@ -6,6 +6,7 @@ const {
 Component({
   data: {
     selected: 0,
+    hidden: false,
     color: '#8E90A6',
     selectedColor: '#FFFFFF',
     list: FRONTSTAGE_TABS
@@ -19,10 +20,16 @@ Component({
       wx.switchTab({ url: path });
     },
 
-    updateSelected() {
-      const pages = getCurrentPages();
-      if (!pages.length) return;
-      const currentRoute = `/${pages[pages.length - 1].route}`;
+    updateSelected(routeOverride) {
+      let currentRoute = routeOverride;
+      if (!currentRoute) {
+        const pages = getCurrentPages();
+        if (!pages.length) return;
+        currentRoute = `/${pages[pages.length - 1].route}`;
+      }
+      if (currentRoute.charAt(0) !== '/') {
+        currentRoute = `/${currentRoute}`;
+      }
       const selected = getTabIndexByRoute(currentRoute);
       if (selected >= 0 && selected !== this.data.selected) {
         this.setData({ selected });

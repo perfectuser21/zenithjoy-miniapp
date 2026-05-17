@@ -1,159 +1,226 @@
-/* pages/article-detail/article-detail.wxss */
-
-.container {
-  padding: 32rpx 32rpx calc(64rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-  background:
-    radial-gradient(circle at 84% 10%, rgba(122, 109, 255, 0.12), transparent 24%),
-    linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
+.reading-page {
   min-height: 100vh;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
 }
 
-/* 加载状态 */
+.reading-shell {
+  min-height: calc(100vh - env(safe-area-inset-bottom));
+  padding: 0 40rpx calc(20rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .loading {
   width: 80rpx;
   height: 80rpx;
   border: 6rpx solid #f3f3f3;
-  border-top: 6rpx solid #3498db;
+  border-top: 6rpx solid #3557d8;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
-  margin-top: 30rpx;
-  font-size: 28rpx;
-  color: #6b7280;
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: #667085;
 }
 
-/* 错误提示 */
 .error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  padding: 0 50rpx;
+  min-height: 100vh;
+  padding: 0 48rpx;
 }
 
 .error-text {
-  margin-top: 30rpx;
-  font-size: 32rpx;
-  color: #6b7280;
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #667085;
   text-align: center;
 }
 
 .back-btn {
-  margin-top: 50rpx;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  color: white;
+  margin-top: 32rpx;
+  background: #3557d8;
+  color: #fff;
   font-size: 28rpx;
-  width: 280rpx;
-  height: 84rpx;
-  line-height: 84rpx;
-  padding: 0 24rpx;
-  border-radius: 24rpx;
-}
-
-/* 文章容器 */
-.article-container {
-  background-color: rgba(255, 255, 255, 0.94);
-  border-radius: 30rpx;
-  padding: 32rpx 24rpx;
-  margin: 0;
-  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
-}
-
-/* 文章头部 */
-.article-header {
-  margin-bottom: 24rpx;
-}
-
-.article-title {
-  font-size: 42rpx;
-  font-weight: bold;
-  color: #1f2937;
-  line-height: 1.4;
-  display: block;
-  margin-bottom: 20rpx;
-}
-
-.article-meta {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20rpx;
-  font-size: 26rpx;
-  color: #8f95af;
-}
-
-.article-author {
-  margin-right: 20rpx;
-}
-
-.article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10rpx;
-  margin-bottom: 8rpx;
-}
-
-.tag {
-  font-size: 22rpx;
-  color: #5a4cff;
-  background-color: #eef0ff;
-  padding: 8rpx 16rpx;
+  width: 260rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
   border-radius: 999rpx;
 }
 
-/* 文章封面 */
-.article-cover {
-  width: 100%;
-  border-radius: 28rpx;
-  margin-bottom: 24rpx;
-}
-
-/* 文章内容 */
-.article-content {
-  font-size: 30rpx;
-  line-height: 1.8;
-  color: #1f2937;
-  margin-bottom: 28rpx;
-}
-
-/* 文章底部 */
-.article-footer {
-  border-top: 1rpx solid #eef1f8;
-  padding-top: 24rpx;
+.reading-hero {
+  border-radius: 48rpx;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, #3557d8 0%, #6b6fff 58%, #bfc9ff 100%);
+  box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10rpx;
 }
 
-.share-btn {
-  width: 100%;
-  height: 84rpx;
-  line-height: 84rpx;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  color: white;
-  font-size: 28rpx;
-  padding: 0 24rpx;
-  border-radius: 24rpx;
+.reading-hero-eyebrow {
+  font-size: 20rpx;
+  letter-spacing: 1.2rpx;
+  color: #dce4ff;
+  font-weight: 500;
+}
+
+.reading-hero-title {
+  font-size: 42rpx;
+  line-height: 1.14;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.reading-hero-desc {
+  font-size: 22rpx;
+  line-height: 1.28;
+  color: #e7ebff;
+  font-weight: 400;
+}
+
+.reading-hero-meta-row {
+  display: flex;
+  gap: 12rpx;
+  height: 44rpx;
+}
+
+.reading-hero-meta-chip {
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #ffffff24;
+  color: #ffffff;
+  font-size: 20rpx;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.share-text {
-  color: white;
+.reading-hero-meta-chip-dim {
+  background: #ffffff1c;
+  color: #e1e7ff;
+}
+
+.reading-summary {
+  border-radius: 40rpx;
+  border: 1rpx solid #dce8f5;
+  background: #fffffff2;
+  padding: 20rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.reading-summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reading-summary-title {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #4b54c6;
+}
+
+.reading-summary-meta {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #7e84b6;
+}
+
+.reading-summary-tag {
+  align-self: flex-start;
+  height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #ecebff;
+  color: #5a63e8;
+  font-size: 18rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.reading-summary-article-title {
+  font-size: 32rpx;
+  line-height: 1.2;
+  color: #22345b;
+  font-weight: 700;
+}
+
+.reading-summary-desc {
+  font-size: 24rpx;
+  line-height: 1.35;
+  color: #687798;
+  font-weight: 600;
+}
+
+.reading-body {
+  border-radius: 40rpx;
+  border: 1rpx solid #dce8f5;
+  background: #fffffff2;
+  padding: 20rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.reading-body-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reading-body-title {
+  font-size: 32rpx;
+  color: #18324d;
+  font-weight: 700;
+}
+
+.reading-body-meta {
+  font-size: 24rpx;
+  color: #7b8da5;
+  font-weight: 600;
+}
+
+.reading-body-paragraph {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #475467;
+  font-weight: 600;
+}
+
+.reading-body-heading {
+  font-size: 28rpx;
+  line-height: 1.3;
+  color: #22345b;
+  font-weight: 700;
 }

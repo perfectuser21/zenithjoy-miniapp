@@ -1,31 +1,40 @@
-<view class="page">
-  <view class="stack">
-    <view class="hero">
-      <view class="kicker">COPYWRITER FLOW</view>
-      <view class="title">开始文案创作</view>
-      <view class="desc">从关键词到成稿，6 步完成一轮内容创作。你可以随时返回上一步修改。</view>
-    </view>
+<view class="start-page">
+  <view class="start-orb"></view>
+  <view class="start-stack">
+    <view class="start-content">
+      <view class="start-hero">
+        <view class="start-title">{{heroCard.title}}</view>
+        <view class="start-line"></view>
+        <view class="start-desc">{{heroCard.description}}</view>
+        <view class="start-hint">{{resumeHint}}</view>
+      </view>
 
-    <view class="card">
-      <view class="label">本次流程</view>
-      <view class="list">
-        <view class="notice">1. 输入关键词或热点</view>
-        <view class="notice">2. 补充灵感和角度</view>
-        <view class="notice">3. 完善人群、价值、IP</view>
-        <view class="notice">4. 生成 5 个选题</view>
-        <view class="notice">5. 每个选题生成 3 篇文章</view>
-        <view class="notice">6. 编辑、复制、导出</view>
+      <view class="flow-panel">
+        <view class="panel-head">
+          <view class="panel-title">本次流程</view>
+          <view class="panel-meta">从关键词到定稿</view>
+        </view>
+        <view class="step-list">
+          <view class="step-item tone-{{item.tone}}" wx:for="{{flowSteps}}" wx:key="no">
+            <view class="step-no">{{item.no}}</view>
+            <view class="step-label">{{item.label}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="prep-card">
+        <view class="panel-title panel-title-dark">开始前准备</view>
+        <view class="prep-list">
+          <view class="prep-item" wx:for="{{prepCards}}" wx:key="title">
+            <view class="prep-title">{{item.title}}</view>
+            <view class="prep-desc">{{item.desc}}</view>
+          </view>
+        </view>
       </view>
     </view>
 
-    <view class="card" wx:if="{{hasDraft}}">
-      <view class="label">上次草稿</view>
-      <view class="muted">最近保存时间：{{draftUpdatedAt}}</view>
-    </view>
-
-    <view class="footer">
-      <button class="btn-secondary" bindtap="continueDraft">继续上次草稿</button>
-      <button class="btn" bindtap="startCreation">开始文案创作</button>
+    <view class="start-footer">
+      <button class="primary-cta" bindtap="startCreation">开始文案创作</button>
     </view>
   </view>
 </view>

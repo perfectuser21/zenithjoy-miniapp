@@ -99,7 +99,7 @@ async function initDefaultMembershipPlans() {
   const plans = [
     {
       id: 'free',
-      name: '普通会员',
+      name: '成长会员',
       price: 0,
       originalPrice: 0,
       duration: 0, // 永久
@@ -233,4 +233,4 @@ async function initDefaultAdmin(currentUserOpenid) {
     console.error('初始化管理员失败', err)
     return false
   }
-} 
+}

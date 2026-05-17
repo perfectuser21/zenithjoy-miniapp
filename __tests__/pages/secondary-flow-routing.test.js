@@ -58,4 +58,13 @@ describe('secondary flow routing', () => {
 
     expect(wx.switchTab).toHaveBeenCalledWith({ url: '/pages/index/index' });
   });
+
+  test('reading detail 查看 jumps to page 20 article detail', () => {
+    require('../../miniprogram/pages/reading-list/detail/detail.js');
+    const page = global.__getLastPage();
+
+    page.openArticleRead({ currentTarget: { dataset: { articleId: 'reading-02' } } });
+
+    expect(wx.navigateTo).toHaveBeenCalledWith({ url: '/pages/article-detail/article-detail' });
+  });
 });

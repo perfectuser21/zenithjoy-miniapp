@@ -1,29 +1,74 @@
-// pages/article-detail/article-detail.js
-Page({
+function buildDefaultArticle(id = 'reading-preview') {
+  return {
+    id,
+    title: 'Dan Koe：一人公司内容路径',
+    eyebrow: 'FULL ARTICLE',
+    heroDesc: '把这篇文章直接展开成完整阅读页，方便你一次看完核心观点、结构逻辑和可模仿的表达方式。',
+    heroMetaChips: ['08 min 阅读', '完整文章'],
+    summaryTitle: '文章信息',
+    summaryMeta: '完整阅读',
+    summaryTag: 'Dan Koe / 一人公司',
+    summaryDesc:
+      '这篇文章的核心不是讲工具，而是讲一个人如何把内容、产品和表达方式串成同一条增长路径。先理解框架，再回到自己的主题里模仿，会比直接抄形式更有效。',
+    bodyTitle: '文章正文',
+    bodyMeta: '完整显示',
+    bodyBlocks: [
+      {
+        type: 'p',
+        content:
+          'Dan Koe 认为，一个人的内容系统不该只是为了发作品，而应该成为个人商业路径的一部分。内容负责吸引注意力，产品负责承接需求，表达方式则决定你能否持续被记住。'
+      },
+      { type: 'h', content: '01 先确定你要解决什么问题' },
+      {
+        type: 'p',
+        content:
+          '他强调，不要先问平台喜欢什么，而要先问你到底在替谁解决什么问题。只有问题足够明确，后面的内容、案例和产品才会自然长出来。否则你会一直追热点，却很难沉淀成自己的结构。'
+      },
+      { type: 'h', content: '02 再把观点写成可重复的表达模板' },
+      {
+        type: 'p',
+        content:
+          '一篇内容真正有价值的地方，不是某个金句，而是它背后的表达顺序。Dan Koe 常用的方式是：先抛出问题，再建立认知差，再给出方法路径，最后落到行动建议。这个结构很适合被拆成你的日更模板。'
+      },
+      { type: 'h', content: '03 内容最终要回到产品和长期资产' },
+      {
+        type: 'p',
+        content:
+          '文章最后提醒，内容本身不该只是流量行为。你写下来的观点、案例和方法，最好能不断回流到自己的知识库、产品或服务里。这样内容不是一次性曝光，而是会逐渐形成你自己的复利资产。'
+      }
+    ]
+  };
+}
 
-  /**
-   * Page initial data
-   */
+Page({
   data: {
+    statusBarHeight: 20,
     article: null,
     isLoading: true,
     error: null
   },
 
-  /**
-   * Lifecycle function--Called when page load
-   */
   onLoad(options) {
-    const { id, url } = options;
+    const { id, url } = options || {};
 
     wx.updateShareMenu({
       withShareTicket: false,
       isUpdatableMessage: false,
-      success() { console.log('[share] updateShareMenu ok'); }
+      success() {
+        console.log('[share] updateShareMenu ok');
+      }
     });
 
+    if (typeof wx.getSystemInfoSync === 'function') {
+      try {
+        const systemInfo = wx.getSystemInfoSync();
+        this.setData({ statusBarHeight: systemInfo.statusBarHeight || 20 });
+      } catch (err) {
+        console.error('获取系统信息失败', err);
+      }
+    }
+
     if (url) {
-      // 外部链接用web-view打开
       wx.redirectTo({
         url: `/pages/web-view/web-view?url=${encodeURIComponent(url)}`
       });
@@ -31,56 +76,22 @@ Page({
     }
 
     if (id) {
-      // 获取文章详情
       this.getArticleDetail(id);
-    } else {
-      this.setData({
-        isLoading: false,
-        error: '无效的文章ID'
-      });
+      return;
     }
+
+    this.setMockArticle('reading-preview');
   },
 
-  /**
-   * Lifecycle function--Called when page is initially rendered
-   */
   onReady() {
-    // 设置默认标题
-    wx.setNavigationBarTitle({
-      title: '文章详情'
-    });
+    wx.setNavigationBarTitle({ title: '单篇文章阅读' });
   },
 
-  /**
-   * Lifecycle function--Called when page show
-   */
-  onShow() {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page hide
-   */
-  onHide() {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page unload
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * Page event handler function--Called when user drop down
-   */
   onPullDownRefresh() {
-    // 下拉刷新，重新加载文章
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
-    const options = currentPage.options;
-    
+    const options = currentPage.options || {};
+
     if (options.id) {
       this.setData({
         isLoading: true,
@@ -88,96 +99,76 @@ Page({
         article: null
       });
       this.getArticleDetail(options.id);
+    } else {
+      this.setMockArticle('reading-preview');
     }
-    
+
     wx.stopPullDownRefresh();
   },
 
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom() {
-    // 可以在这里加载相关推荐文章
-  },
-
-  /**
-   * Called when user click on the top right corner to share
-   */
   onShareAppMessage() {
-    const article = this.data.article;
+    const article = this.data.article || buildDefaultArticle();
     return {
-      title: article?.title || 'ZenithJoy 精选内容',
-      path: `/pages/article-detail/article-detail?id=${article?.id || ''}`,
-      imageUrl: article?.cover || '/images/default-cover.png'
+      title: article.title || 'ZenithJoy 精选内容',
+      path: '/pages/article-detail/article-detail',
+      imageUrl: '/images/default-cover.png'
     };
   },
 
   onShareTimeline() {
-    const article = this.data.article;
+    const article = this.data.article || buildDefaultArticle();
     return {
-      title: article?.title || 'ZenithJoy 精选内容',
-      imageUrl: article?.cover || '/images/default-cover.png'
+      title: article.title || 'ZenithJoy 精选内容',
+      imageUrl: '/images/default-cover.png'
     };
   },
 
-  // 返回首页
-  goBack: function() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    });
+  goBack() {
+    wx.switchTab({ url: '/pages/index/index' });
   },
 
-  // 获取文章详情
-  getArticleDetail: function(id) {
-    // 实际项目中应该调用云函数获取文章详情
+  getArticleDetail(id) {
     wx.cloud.callFunction({
       name: 'getArticleDetail',
       data: { id },
-      success: res => {
-        if (res.result && res.result.data) {
-          this.setData({
-            article: res.result.data,
-            isLoading: false
-          });
-          
-          // 设置标题
-          wx.setNavigationBarTitle({
-            title: res.result.data.title || '文章详情'
-          });
-        } else {
-          // 如果云函数调用成功但没有返回数据，使用模拟数据
+      success: (res) => {
+        const data = res?.result?.data;
+        if (!data) {
           this.setMockArticle(id);
+          return;
         }
+        this.setData({
+          article: {
+            ...buildDefaultArticle(id),
+            title: data.title || 'Dan Koe：一人公司内容路径',
+            summaryDesc:
+              data.desc ||
+              '这篇文章的核心不是讲工具，而是讲一个人如何把内容、产品和表达方式串成同一条增长路径。',
+            bodyBlocks: buildDefaultArticle(id).bodyBlocks
+          },
+          isLoading: false,
+          error: null
+        });
+        wx.setNavigationBarTitle({
+          title: data.title || '单篇文章阅读'
+        });
       },
-      fail: err => {
+      fail: (err) => {
         console.error('获取文章详情失败', err);
-        // 如果云函数调用失败，使用模拟数据
         this.setMockArticle(id);
       }
     });
   },
-  
-  // 设置模拟文章数据
-  setMockArticle: function(id) {
-    // 模拟文章数据
-    const mockArticle = {
-      id: id,
-      title: "AI技术在日常生活中的应用",
-      content: "<h1>AI技术在日常生活中的应用</h1><p>随着人工智能技术的快速发展，AI已经深入到我们生活的方方面面。从智能手机到智能家居，从个人助手到自动驾驶汽车，AI正在改变我们的生活方式。</p><h2>智能手机中的AI</h2><p>现代智能手机中集成了各种AI功能，包括语音助手、拍照优化、面部识别等。这些功能依靠机器学习算法分析用户行为，提供个性化的服务。</p><h2>智能家居</h2><p>AI使家居设备变得智能化，可以通过语音控制灯光、温度和安防系统。智能家居系统还可以学习用户习惯，自动调整设置，提高能源效率。</p><h2>个人AI助手</h2><p>Siri、Alexa和Google Assistant等个人助手可以回答问题、设置提醒、播放音乐等。随着技术进步，这些助手变得越来越智能，能够理解复杂的指令和上下文。</p><h2>未来展望</h2><p>随着技术的不断进步，AI在日常生活中的应用将更加广泛。从健康监测到个性化教育，AI将为我们创造更便捷、更高效的生活方式。</p>",
-      cover: "/images/default-cover.png",
-      date: "2024-01-20",
-      author: "AI技术团队",
-      tags: ["AI应用", "生活科技"]
-    };
-    
+
+  setMockArticle(id) {
+    const mockArticle = buildDefaultArticle(id);
     this.setData({
       article: mockArticle,
-      isLoading: false
+      isLoading: false,
+      error: null
     });
-    
-    // 设置标题
     wx.setNavigationBarTitle({
       title: mockArticle.title
     });
   }
-})
+});

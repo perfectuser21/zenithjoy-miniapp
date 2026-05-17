@@ -1,50 +1,84 @@
-<view class="p-page">
-  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
-    <view class="p-card p-hero-card">
-      <view class="p-hero-top">
-        <view>
-          <view class="p-kicker">HOME</view>
-          <view class="p-title">今天先跑主流程</view>
+<view class="home-page">
+  <view class="home-shell" style="padding-top: {{statusBarHeight + 8}}px;">
+    <view class="home-head">
+      <view class="home-head-text">
+        <view class="home-title">{{homeTitle}}</view>
+      </view>
+    </view>
+
+    <view class="home-hero-card" bindtap="openWorkflowHub">
+      <image class="home-hero-image" src="{{heroCard.image}}" mode="aspectFill"></image>
+      <view class="home-hero-overlay"></view>
+      <view class="home-hero-content">
+        <view class="home-hero-kicker">{{heroCard.tag}}</view>
+        <view class="home-hero-copy">{{heroCard.titleTop}}</view>
+        <view class="home-hero-desc">{{heroCard.description}}</view>
+      </view>
+    </view>
+
+    <view class="home-section-card home-ranking-card">
+      <view class="home-section-head">
+          <view class="home-section-head-left">
+              <view class="home-section-kicker home-section-kicker-ranking">TODAY RANKING</view>
+              <view class="home-section-title">今日榜单</view>
+            </view>
+        <view class="home-section-meta">实时更新</view>
+      </view>
+      <view class="home-ranking-list">
+        <view
+          class="home-ranking-row"
+          wx:for="{{rankingItems}}"
+          wx:key="title"
+          bindtap="openRankingDetail"
+        >
+          <view class="home-ranking-pill">{{item.tag}}</view>
+          <view class="home-ranking-name">{{item.title}}</view>
+          <view class="home-row-link">查看</view>
         </view>
-        <view class="p-member-chip" bindtap="openMembership">
-          <view class="p-member-avatar">{{memberInitial}}</view>
-          <view>
-            <view class="p-member-tier">{{memberTier}}</view>
-            <view class="p-member-meta">连续 {{streakDays}} 天</view>
+      </view>
+    </view>
+
+    <view class="home-section-card home-creation-card">
+      <view class="home-section-head">
+          <view class="home-section-head-left">
+              <view class="home-section-kicker home-section-kicker-create">MEDIA CREATION</view>
+              <view class="home-section-title">{{creationEntry.title}}</view>
+            </view>
+        <view class="home-section-meta home-section-meta-create">{{creationEntry.description}}</view>
+      </view>
+      <view class="home-creation-grid">
+        <view
+          class="home-creation-item home-creation-item-{{item.layout}} home-creation-item-{{item.tone}}"
+          wx:for="{{creationCards}}"
+          wx:key="title"
+          bindtap="openCreationHub"
+        >
+          <view class="home-creation-icon">{{item.icon}}</view>
+          <view class="home-creation-item-title">{{item.title}}</view>
+          <view class="home-creation-item-desc">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="home-section-card home-assist-card">
+      <view class="home-section-head">
+          <view class="home-section-head-left">
+              <view class="home-section-kicker home-section-kicker-assist">CREATOR COLLECTION</view>
+              <view class="home-section-title">自媒体前沿创作集</view>
+            </view>
+            <view class="home-section-meta">精选文章</view>
           </view>
+      <view class="home-collection-list">
+        <view
+          class="home-collection-row"
+          wx:for="{{collectionItems}}"
+          wx:key="index"
+          bindtap="openReadingDetail"
+        >
+          <view class="home-collection-index">{{item.index}}</view>
+          <view class="home-collection-title">{{item.title}}</view>
+          <view class="home-row-link">查看</view>
         </view>
-      </view>
-      <view class="p-hero-tag">{{heroCard.tag}}</view>
-      <view class="p-hero-copy">{{heroCard.titleTop}}{{heroCard.titleBottom}}</view>
-      <view class="p-subtitle">{{heroCard.description}}</view>
-      <view class="p-primary-action" bindtap="openCopywriterStart">进入文案流程</view>
-    </view>
-
-    <view class="p-card">
-      <view class="p-section-head">
-        <view class="p-section-title">今日榜单</view>
-        <view class="p-section-meta">正式详情入口</view>
-      </view>
-      <view class="p-link-row" bindtap="openRankingDetail">
-        <view>
-          <view class="p-link-title">查看榜单详情</view>
-          <view class="p-link-desc">热点、低粉爆款和涨粉榜统一进入榜单详情。</view>
-        </view>
-        <view class="p-link-arrow">></view>
-      </view>
-    </view>
-
-    <view class="p-card">
-      <view class="p-section-head">
-        <view class="p-section-title">创作精选</view>
-        <view class="p-section-meta">Pencil 正式入口</view>
-      </view>
-      <view class="p-link-row" bindtap="openReadingDetail">
-        <view>
-          <view class="p-link-title">查看前沿创作集</view>
-          <view class="p-link-desc">首页只保留精选内容入口，不再回到旧文章列表。</view>
-        </view>
-        <view class="p-link-arrow">></view>
       </view>
     </view>
   </view>
