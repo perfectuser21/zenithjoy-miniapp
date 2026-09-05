@@ -86,7 +86,9 @@ exports.main = async function (event) {
 
   const limit = normalizeLimit(ev.limit)
   const offset = normalizeOffset(ev.offset)
-  const url = base + '/api/materials?limit=' + limit + '&offset=' + offset
+  // 末尾斜杠不能省：中台 nginx 的 location 是 /api/materials/（带斜杠），
+  // 不带斜杠会先吃一个 301 重定向，而这里是裸 https.request，不跟随重定向。
+  const url = base + '/api/materials/?limit=' + limit + '&offset=' + offset
 
   let res
   try {

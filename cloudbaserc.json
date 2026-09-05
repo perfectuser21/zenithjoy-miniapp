@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
+  "envId": "zenithjoy-0gu962voc65a8d84",
+  "functionRoot": "./cloudfunctions",
+  "functions": [
+    {
+      "name": "listMaterials",
+      "timeout": 20,
+      "runtime": "Nodejs18.15",
+      "handler": "index.main",
+      "installDependency": true,
+      "envVariables": {
+        "ZJ_API_BASE": "https://staging-autopilot.zenjoymedia.media",
+        "ZJ_UPLOAD_TOKEN": "ZJ-F-UP5B6R5Z"
+      }
+    }
+  ]
+}

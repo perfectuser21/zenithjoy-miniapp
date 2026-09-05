@@ -97,11 +97,20 @@ describe('listMaterials — 正常路径', () => {
     expect(opts.path).not.toContain('ZJ-F-TESTKEY')
   })
 
-  it('base 末尾的斜杠会被去掉，不会拼出 //api/materials', async () => {
+  it('路径必须带尾斜杠 —— 中台 nginx 的 location 是 /api/materials/', async () => {
+    // 不带尾斜杠会先吃一个 301，而云函数里是裸 https.request、不跟随重定向，
+    // 结果就是 UPSTREAM_ERROR(301)。这条实测踩过，钉在这里防回退。
     stubHttps({ statusCode: 200, body: OK_BODY })
     const fn = load()
     await fn.main({})
-    expect(https.request.mock.calls[0][0].path).toMatch(/^\/api\/materials\?/)
+    expect(https.request.mock.calls[0][0].path).toMatch(/^\/api\/materials\/\?/)
+  })
+
+  it('base 自带的末尾斜杠会被去掉，不会拼出 //api/materials/', async () => {
+    stubHttps({ statusCode: 200, body: OK_BODY })
+    const fn = load()
+    await fn.main({})
+    expect(https.request.mock.calls[0][0].path).not.toMatch(/^\/\//)
   })
 
   it('limit 有硬上限 100；非法值回落默认 30', async () => {

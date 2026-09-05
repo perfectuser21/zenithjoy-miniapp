@@ -1,0 +1,7 @@
+dev
+branch: cp-0905230317-miniapp-materials
+session_id: 0648dfe1-4e48-4458-8667-6156bc4f9593
+started: 2026-09-05T23:03:17+08:00
+step_1_spec: pending
+harness_mode: false
+gp_anchor: line01/customer_first_success keep-green

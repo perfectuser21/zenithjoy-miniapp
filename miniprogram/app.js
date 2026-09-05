@@ -6,7 +6,11 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
-        env: 'zenithjoycloud-8g4ca5pbb5b027e8',
+        // 2026-09-05 更正：原来写的 zenithjoycloud-8g4ca5pbb5b027e8 在腾讯云和微信
+        // 两侧都查不到（tcb / miniprogram-ci / 微信 HTTP API 三个角度都是「环境不存在」），
+        // 而云函数从来没部署成功过（docs/launch-checklist.md 第 137 行：待操作）。
+        // 真实可用的环境是下面这个，listMaterials 已部署并实测返回真实素材。
+        env: 'zenithjoy-0gu962voc65a8d84',
         traceUser: true,
       })
     }
