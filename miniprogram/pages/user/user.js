@@ -39,6 +39,7 @@ Page({
       { label: '最近任务', value: '3 条' }
     ],
     assetMenus: [
+      { id: 'materials', title: '素材库', desc: '手机快捷指令、电脑上传的素材', icon: '素材' },
       { id: 'membership', title: '积分明细', desc: '查看权益、额度和升级入口', icon: '积分' },
       { id: 'history', title: '任务中心', desc: '继续查看对话、任务和历史产出', icon: '记录' },
       { id: 'membership', title: '会员管理', desc: '查看权益状态', icon: '会员' }
@@ -414,6 +415,11 @@ Page({
 
   handleAssetAction(e) {
     const { id } = e.currentTarget.dataset;
+
+    if (id === 'materials') {
+      wx.navigateTo({ url: '/pages/materials/materials' });
+      return;
+    }
 
     if (id === 'membership') {
       this.navigateToMembership();
