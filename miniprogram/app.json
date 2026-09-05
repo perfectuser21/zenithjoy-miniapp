@@ -17,6 +17,7 @@
     "pages/copywriter/moments-editor/moments-editor",
     "pages/ai-features/index",
     "pages/assistant/index",
+    "pages/materials/materials",
     "pages/user/user",
     "pages/ai-chat/ai-chat",
     "pages/membership/membership",
