@@ -137,6 +137,26 @@ describe('列素材', () => {
     const api = load()
     await expect(api.listMaterials()).rejects.toMatchObject({ code: 'UNREACHABLE' })
   })
+
+  it('域名没进白名单 → 直接把该加的域名说出来，不能只说「连不上」', async () => {
+    // 后台少配一行域名，微信报的错谁看都以为是网络坏了。这条最容易误诊。
+    stubSeq([{ error: 'url not in domain list' }])
+    const api = load()
+    const e = await api.listMaterials().then(() => null, (x) => x)
+    expect(e.code).toBe('UNREACHABLE')
+    expect(e.message).toContain('staging-autopilot.zenjoymedia.media')
+    expect(e.message).toContain('合法域名')
+  })
+
+  it('COS 域名没进白名单时，说的是 COS 那个域名，不是中台的', async () => {
+    stubSeq([
+      { statusCode: 200, data: { success: true, data: { files: [{ material_id: 'm1', storage_key: 'k', upload_url: COS_URL }] } } },
+      { error: '不在以下 request 合法域名列表中' }
+    ])
+    const api = load()
+    await expect(api.uploadFile({ filePath: '/tmp/a.jpg', fileName: 'a.jpg' }))
+      .rejects.toMatchObject({ message: expect.stringContaining('zenithjoy-materials-1333590468.cos.ap-guangzhou.myqcloud.com') })
+  })
 })
 
 describe('上传三步', () => {

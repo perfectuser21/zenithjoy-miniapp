@@ -54,6 +54,21 @@ function err(code, message) {
   return e
 }
 
+/**
+ * 域名没进微信后台白名单时，wx.request 报的是一句夹着一长串域名列表的话，
+ * 谁看都以为是网络坏了，其实是后台少配一行。这种情况必须直接把该加的域名说出来。
+ */
+function describeFail(e, url) {
+  var msg = (e && e.errMsg) || '未知'
+  if (/域名|not in domain list|domain list/i.test(msg)) {
+    var host = ''
+    try { host = url.split('/')[2] } catch (x) { host = url }
+    return '这个域名还没加进小程序后台的「request 合法域名」：https://' + host +
+      '\n（微信公众平台 → 开发 → 开发管理 → 开发设置 → 服务器域名）'
+  }
+  return '连不上：' + msg
+}
+
 /** wx.request 的 Promise 包装。只负责发出去和收回来，不判断业务成败。 */
 function raw(opts) {
   return new Promise(function (resolve, reject) {
@@ -65,7 +80,7 @@ function raw(opts) {
       timeout: TIMEOUT_MS,
       responseType: opts.responseType,
       success: function (res) { resolve({ statusCode: res.statusCode, data: res.data }) },
-      fail: function (e) { reject(err('UNREACHABLE', '连不上：' + ((e && e.errMsg) || '未知'))) }
+      fail: function (e) { reject(err('UNREACHABLE', describeFail(e, opts.url))) }
     })
   })
 }
