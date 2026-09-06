@@ -96,3 +96,35 @@ describe('长按删素材', () => {
     expect(wx.showModal).not.toHaveBeenCalled()
   })
 })
+
+describe('点开大图后能删 —— 长按是隐藏手势，光有它等于没有', () => {
+  it('点开大图 → 有当前这张的信息，删除按钮才知道删谁', () => {
+    page.onTapItem({ currentTarget: { dataset: { id: 'm1' } } })
+    expect(page.data.preview.id).toBe('m1')
+  })
+
+  it('在大图里点删除 → 确认框写清是哪个文件', async () => {
+    page.onTapItem({ currentTarget: { dataset: { id: 'm1' } } })
+    page.onDeletePreview()
+    await flush()
+    const opts = wx.showModal.mock.calls[0][0]
+    expect(opts.content).toContain('IMG_7757.jpg')
+  })
+
+  it('删成功 → 大图自动关掉，那一格也从列表摘掉', async () => {
+    // 删完还停在已经不存在的东西的大图上，是明显的错
+    page.onTapItem({ currentTarget: { dataset: { id: 'm1' } } })
+    page.onDeletePreview()
+    await flush()
+    await flush()
+    expect(page.data.preview).toBeNull()
+    expect(page.data.items.map((x) => x.id)).toEqual(['m2'])
+  })
+
+  it('没点开大图时点删除 → 什么都不做，不会误删', async () => {
+    page.setData({ preview: null })
+    page.onDeletePreview()
+    await flush()
+    expect(wx.showModal).not.toHaveBeenCalled()
+  })
+})
