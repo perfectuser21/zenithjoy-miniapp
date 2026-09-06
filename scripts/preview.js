@@ -9,7 +9,9 @@ async function main() {
     process.env.MINIAPP_PREVIEW_QRCODE || 'dist/preview-qrcode.png';
   const desc =
     process.env.MINIAPP_PREVIEW_DESC || 'Codex automated preview build';
-  const pagePath = process.env.MINIAPP_PREVIEW_PAGE || 'pages/index/index';
+  // 启动页 = 素材库。pages/index/index 是旧 AI 助理形态的首页，已随那一版
+  // 一起摘掉（保留在 tag ai-assistant-v1），这里写它会扫出来直接白屏。
+  const pagePath = process.env.MINIAPP_PREVIEW_PAGE || 'pages/materials/materials';
   const searchQuery = process.env.MINIAPP_PREVIEW_QUERY || '';
   const robot = Number(process.env.MINIAPP_ROBOT || 1);
   const qrcodeDir = path.dirname(qrcodeOutputDest);
