@@ -5,7 +5,6 @@
     "include": []
   },
   "miniprogramRoot": "miniprogram/",
-  "cloudfunctionRoot": "cloudfunctions/",
   "setting": {
     "bundle": false,
     "userConfirmedBundleSwitch": false,
@@ -55,6 +54,5 @@
     "tabSize": 2
   },
   "srcMiniprogramRoot": "miniprogram/",
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "simulatorPluginLibVersion": {}
 }

@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="header">
+    <text class="title">素材库</text>
+    <text class="subtitle">手机快捷指令、电脑上传的素材都在这里</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state">
+    <text class="state-text">加载中…</text>
+  </view>
+
+  <!-- 失败：把具体原因摆出来，不让人对着空九宫格猜「素材是不是丢了」 -->
+  <view wx:elif="{{errorCode}}" class="error-box">
+    <text class="error-title">读不到素材</text>
+    <text class="error-code">{{errorCode}}</text>
+    <text class="error-msg">{{errorMessage}}</text>
+    <!-- 凭据问题给一个能直接点过去的入口，比让人自己找「我的」强 -->
+    <view wx:if="{{needToken}}" class="retry-btn primary" bindtap="onGoToken">去填凭据</view>
+    <view wx:else class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 空 -->
+  <view wx:elif="{{items.length === 0}}" class="state">
+    <text class="state-text">还没有素材</text>
+    <text class="state-hint">用 iPhone 快捷指令或电脑上传后，会出现在这里</text>
+  </view>
+
+  <!-- 九宫格 -->
+  <view wx:else class="grid">
+    <view
+      wx:for="{{items}}"
+      wx:key="id"
+      class="tile"
+      data-id="{{item.id}}"
+      bindtap="onTapItem"
+      bindlongpress="onLongPressItem"
+    >
+      <image
+        wx:if="{{!item.video && item.previewUrl}}"
+        class="thumb"
+        src="{{item.previewUrl}}"
+        mode="aspectFill"
+        lazy-load="{{true}}"
+      />
+      <view wx:else class="thumb placeholder">
+        <text class="ph-icon">{{item.video ? '▶' : '!'}}</text>
+        <text class="ph-text">{{item.video ? '视频' : '预览不可用'}}</text>
+      </view>
+      <view class="meta">
+        <text class="meta-name">{{item.fileName}}</text>
+        <text class="meta-size">{{item.sizeText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && !errorCode && items.length > 0}}" class="footer">
+    <text class="footer-text">共 {{items.length}} 条 · 长按一张可以删掉</text>
+  </view>
+
+  <!-- 点开看大图 -->
+  <view wx:if="{{preview}}" class="lightbox" bindtap="onClosePreview">
+    <image wx:if="{{previewShowsImage}}" class="lightbox-img" src="{{preview.previewUrl}}" mode="aspectFit" />
+    <!-- 视频、以及预览地址签发失败的那些：看不到图，但按钮照样得能点 -->
+    <view wx:else class="lightbox-img lightbox-ph">
+      <text class="lb-ph-icon">{{preview.video ? '▶' : '!'}}</text>
+      <text class="lb-ph-text">{{preview.video ? '视频暂不支持在手机上预览' : '这条预览地址签发失败'}}</text>
+    </view>
+    <view class="lightbox-meta">
+      <text class="lightbox-name">{{preview.fileName}}</text>
+      <text class="lightbox-size">{{preview.sizeText}}</text>
+    </view>
+    <!-- 删除的主入口。长按是隐藏手势，没人会去猜它存在，
+         catchtap 而不是 bindtap：点按钮不能顺手把大图也关掉 -->
+    <view class="lightbox-actions">
+      <view class="lb-btn lb-danger" catchtap="onDeletePreview">删掉这张</view>
+      <view class="lb-btn" catchtap="onClosePreview">返回</view>
+    </view>
+  </view>
+</view>

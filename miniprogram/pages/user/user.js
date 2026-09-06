@@ -1,572 +1,132 @@
-// 我的页面
-const app = getApp()
-const db = wx.cloud.database()
+// 我的 — 这个小程序只需要一样东西：你自己的上传凭据
+//
+// 凭据 = ZenithJoy 账号的 license key，和 iPhone 快捷指令里配的是同一个。
+// 它只存在这台手机上（wx storage），不上传、不进代码。换手机要重填一次。
+//
+// ── 2026-09-06 真机教训：别让人在手机上敲这串东西 ──────────────────────
+// 第一版只放了一个输入框，真机上「敲进去看不见」——深色模式下微信把原生
+// <input> 的文字渲染成浅色，压在浅灰底上等于隐形。两条修法：
+//   ① 主路径改成「粘贴并验证」。凭据本来就是复制来的，手机上一个字一个字敲
+//      本身就是坏设计，改掉之后连配色问题都不存在了。
+//   ② 手动输入保留，但把输进去的内容用 <text> 明文回显。<text> 是小程序自己
+//      画的，不受原生组件配色影响，一定看得见。
+//
+// ── 为什么填一次就够 ──────────────────────────────────────────────────
+// 中台从凭据反查租户，客户端永远不自报身份。填对了就只看得到自己的素材，
+// 填错了看到的是「中台不认这个凭据」，不会串到别人的库里去。
 
-function fetchOpenId() {
-  return wx.cloud.callFunction({
-    name: 'userLogin'
-  }).then(res => {
-    if (res.result && res.result.openid) {
-      return res.result.openid
-    }
-    throw new Error('无法获取 openid')
-  })
+const api = require('../../utils/zj-api.js')
+
+/** 只显示头尾，中间打码——截图发给别人时不至于把凭据一起发出去 */
+function mask(token) {
+  if (!token) return ''
+  if (token.length <= 8) return token
+  return token.slice(0, 5) + '····' + token.slice(-3)
 }
 
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-    userInfo: {},
-    hasUserInfo: false,
-    canIUseGetUserProfile: false,
-    isAdmin: false,
-    statusBarHeight: 20,
-    phoneNumber: '', // 添加用户手机号
-    profileName: 'Jin · 创作者',
-    avatarInitials: 'JY',
-    showProfileCard: true,
-    points: 1280,
-    streakDays: 6,
-    weeklyGrowth: 160,
-    monthlySpend: 42,
-    profileStage: '连续打卡 6 天',
-    growthStats: [
-      { label: '今日可用积分', value: '1280' },
-      { label: '连续打卡', value: '8 天' },
-      { label: '最近任务', value: '3 条' }
-    ],
-    assetMenus: [
-      { id: 'membership', title: '积分明细', desc: '查看权益、额度和升级入口', icon: '积分' },
-      { id: 'history', title: '任务中心', desc: '继续查看对话、任务和历史产出', icon: '记录' },
-      { id: 'membership', title: '会员管理', desc: '查看权益状态', icon: '会员' }
-    ],
-    supportMenus: [
-      { id: 'clear', title: '清除缓存', desc: '重置本地登录信息与历史缓存', icon: '清理' }
-    ],
-    growthBenefits: [
-      { title: '每周赠送 50 积分', status: '已开启' },
-      { title: '专属 AI 助理高阶提示词', status: '可用' }
-    ],
-    recentActivities: [
-      { title: '完成标题生成 6 次', value: '-24' },
-      { title: '完成朋友圈文案 3 次', value: '-12' },
-      { title: '完成内容创作 2 次', value: '-12' }
-    ],
-    membership: {
-      level: 'free', // 默认是免费会员
-      name: '成长会员',
-      expireDate: null
-    }
+    saved: '',        // 已保存的凭据（打码后）
+    input: '',        // 输入框里的
+    echo: '',         // 明文回显：原生输入框看不见时，靠这一行确认输对了没有
+    apiBase: '',
+    checking: false,
+    checkResult: ''   // 验证结果的人话描述
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-    try {
-      const systemInfo = wx.getSystemInfoSync()
-      this.setData({
-        statusBarHeight: systemInfo.statusBarHeight || 20
-      })
-    } catch (e) {
-      console.error('获取系统信息失败', e)
-    }
-
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true
-      })
-    }
-    
-    // 检查用户登录状态
-    this.checkUserInfo()
-    
-    // 检查管理员状态
-    this.checkAdminStatus()
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow() {
-    // 每次页面显示时检查会员状态
-    if (this.data.hasUserInfo) {
-      this.checkMembershipStatus()
-    }
+    this.setData({
+      saved: mask(api.getToken()),
+      input: '',
+      echo: '',
+      checkResult: '',
+      apiBase: api.apiBase()
+    })
+  },
+
+  onInput(e) {
+    const v = e.detail.value || ''
+    this.setData({ input: v, echo: v })
   },
 
   /**
-   * 生命周期函数--监听页面隐藏
+   * 手机上的主路径：凭据是复制过来的，直接从剪贴板取，一步到位。
+   * 不经过输入框，也就绕开了「敲进去看不见」这件事。
    */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-    // 下拉刷新用户信息和会员状态
-    if (this.data.hasUserInfo) {
-      Promise.all([
-        this.checkUserInfo(),
-        this.checkAdminStatus(),
-        this.checkMembershipStatus()
-      ]).then(() => {
-        wx.stopPullDownRefresh()
-      })
-    } else {
-      wx.stopPullDownRefresh()
-    }
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  },
-
-  // 检查用户信息
-  checkUserInfo() {
-    return new Promise((resolve, reject) => {
-      const userInfo = wx.getStorageSync('userInfo')
-      if (userInfo) {
-        this.setData({
-          userInfo: userInfo,
-          hasUserInfo: true,
-          profileName: userInfo.nickName || 'Jin · 创作者',
-          avatarInitials: (userInfo.nickName || 'JY').slice(0, 2)
-        })
-        
-        // 检查是否有手机号
-        fetchOpenId().then(openid => {
-          db.collection('users').where({
-            _openid: openid
-          }).get().then(userRes => {
-            if (userRes.data.length > 0 && userRes.data[0].phoneNumber) {
-              this.setData({
-                phoneNumber: userRes.data[0].phoneNumber
-              })
-            }
+  onPaste() {
+    return new Promise((resolve) => {
+      wx.getClipboardData({
+        success: (res) => {
+          const v = String((res && res.data) || '').trim()
+          if (!v) {
+            wx.showToast({ title: '剪贴板是空的，先复制你的 license key', icon: 'none' })
             resolve()
-          }).catch(err => {
-            console.error('获取用户手机号失败', err)
-            resolve()
-          })
-        }).catch(err => {
-          console.error('登录失败', err)
-          resolve()
-        })
-      } else {
-        this.setData({
-          hasUserInfo: false,
-          profileName: 'Jin · 创作者',
-          avatarInitials: 'JY'
-        })
-        resolve()
-      }
-    })
-  },
-  
-  // 开始登录流程
-  startLogin() {
-    this.getUserProfile()
-  },
-  
-  // 获取用户信息
-  getUserProfile() {
-    wx.showLoading({
-      title: '正在登录',
-    })
-    
-    wx.getUserProfile({
-      desc: '用于完善用户资料',
-      success: (res) => {
-        // 保存用户信息到本地存储
-        wx.setStorageSync('userInfo', res.userInfo)
-        
-        // 更新数据
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true,
-          profileName: res.userInfo.nickName || 'Jin · 创作者',
-          avatarInitials: (res.userInfo.nickName || 'JY').slice(0, 2)
-        })
-        
-        // 保存用户信息到云数据库
-        this.saveUserProfile(res.userInfo)
-        
-        // 检查会员状态
-        this.checkMembershipStatus().then(() => {
-          // 登录成功后立即触发手机号获取流程
-          wx.hideLoading()
-          
-          // 如果用户已经有手机号，则不再请求
-          if (!this.data.phoneNumber) {
-            setTimeout(() => {
-              this.triggerPhoneNumberRequest()
-            }, 500) // 延迟一下，让页面渲染完成
+            return
           }
-        })
-      },
-      fail: (err) => {
-        console.error('获取用户信息失败', err)
-        wx.hideLoading()
-        wx.showToast({
-          title: '登录已取消',
-          icon: 'none'
-        })
-      }
-    })
-  },
-  
-  // 触发手机号获取请求
-  triggerPhoneNumberRequest() {
-    // 直接触发手机号获取按钮，无需确认对话框
-    setTimeout(() => {
-      const phoneBtn = wx.createSelectorQuery().select('#phoneBtn')
-      phoneBtn.node(res => {
-        if (res && res.node) {
-          try {
-            const tapEvent = {type: 'tap', target: {id: 'phoneBtn'}}
-            res.node.dispatchEvent(tapEvent)
-          } catch (err) {
-            console.error('触发手机号按钮失败:', err)
-            // 如果自动点击失败，使用原生方式模拟点击
-            wx.showToast({
-              title: '请点击授权手机号按钮完成登录',
-              icon: 'none',
-              duration: 3000
-            })
-          }
-        } else {
-          console.log('未找到手机号按钮节点')
-          // 修改提示文案
-          wx.showToast({
-            title: '请尝试重新登录并授权手机号',
-            icon: 'none',
-            duration: 2000
-          })
-        }
-      }).exec()
-    }, 300) // 短暂延迟，确保UI已更新
-  },
-  
-  // 保存用户资料到云数据库
-  saveUserProfile(userInfo) {
-    fetchOpenId().then(openid => {
-      db.collection('users').where({
-        _openid: openid
-      }).get().then(res => {
-        if (res.data.length === 0) {
-          db.collection('users').add({
-            data: {
-              ...userInfo,
-              createdAt: db.serverDate(),
-              updatedAt: db.serverDate(),
-              membership: {
-                level: 'free',
-                name: '普通会员',
-                expireDate: null
-              }
-            }
-          })
-        } else {
-          db.collection('users').doc(res.data[0]._id).update({
-            data: {
-              ...userInfo,
-              updatedAt: db.serverDate()
-            }
-          })
-        }
-      })
-    }).catch(err => {
-      console.error('登录失败', err)
-    })
-  },
-  
-  // 检查管理员状态
-  checkAdminStatus() {
-    return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({
-        name: 'checkAdmin',
-        success: res => {
-          this.setData({
-            isAdmin: res.result && res.result.isAdmin
-          })
-          resolve(res.result && res.result.isAdmin)
+          this.setData({ input: v, echo: v })
+          this.verifyAndSave(v).then(resolve)
         },
-        fail: err => {
-          console.error('检查管理员权限失败', err)
-          // 失败时默认设置为非管理员
-          this.setData({
-            isAdmin: false
-          })
-          // 即使失败也返回resolved状态，不中断程序流程
-          resolve(false)
+        fail: () => {
+          wx.showToast({ title: '读不到剪贴板', icon: 'none' })
+          resolve()
         }
       })
     })
   },
-  
-  // 检查会员状态
-  checkMembershipStatus() {
-    return new Promise((resolve, reject) => {
-      fetchOpenId().then(openid => {
-        db.collection('users').where({
-          _openid: openid
-        }).get().then(res => {
-          if (res.data.length > 0 && res.data[0].membership) {
-            const membership = res.data[0].membership
-            
-            if (membership.level !== 'free' && membership.expireDate) {
-              const expireDate = new Date(membership.expireDate)
-              const now = new Date()
-              
-              if (now > expireDate) {
-                this.setData({
-                  membership: {
-                    level: 'free',
-                    name: '普通会员',
-                    expireDate: null
-                  }
-                })
-                
-                db.collection('users').doc(res.data[0]._id).update({
-                  data: {
-                    membership: {
-                      level: 'free',
-                      name: '普通会员',
-                      expireDate: null
-                    }
-                  }
-                })
-              } else {
-                this.setData({
-                  membership: membership
-                })
-              }
-            } else {
-              this.setData({
-                membership: membership
-              })
-            }
-          } else {
-            this.setData({
-              membership: {
-                level: 'free',
-                name: '普通会员',
-                expireDate: null
-              }
-            })
-          }
-          resolve()
-        }).catch(err => {
-          console.error('获取会员信息失败', err)
-          resolve()
+
+  onSave() {
+    const v = (this.data.input || '').trim()
+    if (!v) {
+      wx.showToast({ title: '先把凭据填进去', icon: 'none' })
+      return Promise.resolve()
+    }
+    return this.verifyAndSave(v)
+  },
+
+  /**
+   * 存之前先验：填完立刻打一次中台，当场告诉他行不行。
+   * 只存不验会让人以为填好了，等到上传时才发现是错的。
+   */
+  verifyAndSave(token) {
+    api.setToken(token)
+    this.setData({ checking: true, checkResult: '' })
+
+    return api.listMaterials({ limit: 1 })
+      .then((r) => {
+        const n = r.total != null ? r.total : (r.items || []).length
+        this.setData({
+          checking: false,
+          saved: mask(api.getToken()),
+          input: '',
+          echo: '',                 // 验过就把明文收起来，别一直摆在屏幕上
+          checkResult: '✅ 凭据有效，素材库里现在有 ' + n + ' 条'
         })
-      }).catch(err => {
-        console.error('登录失败', err)
-        resolve()
       })
-    })
-  },
-  
-  // 导航到会员中心
-  navigateToMembership() {
-    if (!this.data.hasUserInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
+      .catch((e) => {
+        // 验不过就把刚存的清掉，别留一个坏凭据让人以为已经配好了
+        api.clearToken()
+        this.setData({
+          checking: false,
+          saved: '',
+          checkResult: '❌ ' + (e.code || 'FAILED') + '：' + (e.message || '验证失败')
+        })
       })
-      return
-    }
-    
-    wx.navigateTo({
-      url: '/pages/membership/membership'
-    })
   },
 
-  openMembership() {
-    this.navigateToMembership()
-  },
-
-  handleAssetAction(e) {
-    const { id } = e.currentTarget.dataset;
-
-    if (id === 'membership') {
-      this.navigateToMembership();
-      return;
-    }
-
-    if (id === 'history') {
-      this.navigateToChatHistory();
-    }
-  },
-
-  handleSupportAction(e) {
-    const { id } = e.currentTarget.dataset;
-    if (id === 'clear') {
-      this.clearCache();
-    }
-  },
-  
-  // 导航到管理员页面
-  navigateToAdmin() {
-    wx.navigateTo({
-      url: '/pages/admin/article/index'
-    })
-  },
-
-  openAdminCenter() {
-    this.navigateToAdmin()
-  },
-  
-  // 导航到聊天记录
-  navigateToChatHistory() {
-    if (!this.data.hasUserInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
-    }
-    
-    wx.navigateTo({
-      url: '/pages/chatHistory/index'
-    })
-  },
-
-  openTaskCenter() {
-    this.navigateToChatHistory()
-  },
-  
-  // 清除缓存
-  clearCache() {
+  onClear() {
     wx.showModal({
-      title: '提示',
-      content: '确定要清除缓存吗？这将清除本地保存的用户信息和聊天记录',
+      title: '清除凭据',
+      content: '清掉之后就看不到素材了，要重新填才行。',
       success: (res) => {
-        if (res.confirm) {
-          // 清除本地存储
-          wx.clearStorageSync()
-          
-          // 重置数据
-          this.setData({
-            userInfo: {},
-            hasUserInfo: false,
-            phoneNumber: '',
-            membership: {
-              level: 'free',
-              name: '普通会员',
-              expireDate: null
-            }
-          })
-          
-          wx.showToast({
-            title: '缓存已清除',
-            icon: 'success'
-          })
-        }
+        if (!res.confirm) return
+        api.clearToken()
+        this.setData({ saved: '', input: '', echo: '', checkResult: '' })
+        wx.showToast({ title: '已清除', icon: 'none' })
       }
     })
   },
 
-  // 获取用户手机号
-  getPhoneNumber(e) {
-    console.log('获取手机号结果:', e.detail);
-    
-    if (e.detail.errMsg === 'getPhoneNumber:ok') {
-      const cloudID = e.detail.cloudID; // 新版本微信支持cloudID直接获取手机号
-      
-      wx.showLoading({
-        title: '正在验证手机号',
-      });
-      
-      // 调用云函数解析手机号
-      wx.cloud.callFunction({
-        name: 'getPhoneNumber',
-        data: {
-          cloudID: cloudID
-        },
-        success: res => {
-          console.log('手机号获取成功:', res);
-          
-          if (res.result && res.result.success) {
-            // 获取云函数返回的手机号
-            const phoneNumber = res.result.phoneNumber;
-            
-            if (phoneNumber) {
-              this.setData({
-                phoneNumber: phoneNumber
-              });
-              
-              // 完整登录流程成功提示
-              wx.hideLoading();
-              wx.showToast({
-                title: '登录完成',
-                icon: 'success',
-                duration: 2000
-              });
-            } else {
-              wx.hideLoading();
-              wx.showToast({
-                title: '未获取到手机号',
-                icon: 'none',
-                duration: 2000
-              });
-            }
-          } else {
-            wx.hideLoading();
-            wx.showToast({
-              title: res.result && res.result.message || '手机号获取失败',
-              icon: 'none',
-              duration: 2000
-            });
-          }
-        },
-        fail: err => {
-          console.error('调用云函数获取手机号失败', err);
-          wx.hideLoading();
-          wx.showToast({
-            title: '手机号获取失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      });
-    } else {
-      // 用户拒绝授权
-      wx.showToast({
-        title: '您已取消手机号授权',
-        icon: 'none',
-        duration: 2000
-      });
-    }
+  onGoMaterials() {
+    wx.switchTab({ url: '/pages/materials/materials' })
   }
 })

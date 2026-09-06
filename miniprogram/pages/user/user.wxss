@@ -1,102 +1,86 @@
-@import "/styles/pencil-theme.wxss";
-
-.p-page {
+.page {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 85% 10%, rgba(122, 109, 255, 0.12), transparent 26%),
-    linear-gradient(180deg, #f8f8ff 0%, #f4f5ff 62%, #eef1ff 100%);
-}
-
-.p-shell {
-  padding: 0 32rpx calc(144rpx + env(safe-area-inset-bottom));
+  background: #f7f7f9;
+  padding: 24rpx 24rpx 60rpx;
   box-sizing: border-box;
 }
 
-.p-card {
+.header { padding: 8rpx 4rpx 32rpx; }
+.title { display: block; font-size: 40rpx; font-weight: 600; color: #1a1a1a; }
+.subtitle { display: block; margin-top: 8rpx; font-size: 24rpx; color: #8a8a8f; }
+
+.card { background: #fff; border-radius: 20rpx; padding: 28rpx; }
+
+.row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24rpx; }
+.row-label { font-size: 26rpx; color: #8a8a8f; }
+.row-value { font-size: 28rpx; color: #1a1a1a; font-family: monospace; }
+.row-value.empty { color: #c0392b; font-family: inherit; }
+
+.paste-hint { display: block; margin-top: 12rpx; text-align: center; font-size: 22rpx; color: #a0a0a8; }
+
+.divider {
+  display: flex; align-items: center; justify-content: center;
+  margin: 32rpx 0 20rpx;
+}
+.divider-text { font-size: 22rpx; color: #b8b8c0; }
+
+/* 输入框是原生组件，配色不完全归我们管（深色模式下微信会自己改文字颜色）。
+   底色给白 + 描边，文字颜色写死，尽量压住；真正的保险是下面的明文回显。 */
+.input {
+  background: #ffffff;
+  border: 2rpx solid #d8d8de;
+  border-radius: 14rpx;
+  padding: 24rpx 20rpx;
+  height: 88rpx;
+  font-size: 30rpx;
+  color: #1a1a1a;
+}
+.input-ph { color: #b0b0b8; }
+
+.echo {
   margin-top: 16rpx;
-  padding: 24rpx;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 32rpx;
-  box-shadow: 0 12rpx 32rpx rgba(121, 131, 180, 0.08);
+  padding: 18rpx 20rpx;
+  background: #eef5ff;
+  border-radius: 12rpx;
+}
+.echo-label { display: block; font-size: 22rpx; color: #6a86b8; }
+.echo-value {
+  display: block; margin-top: 6rpx;
+  font-size: 30rpx; color: #1a3a6b;
+  font-family: monospace; word-break: break-all;
 }
 
-.p-hero-card {
-  background: linear-gradient(180deg, rgba(108, 99, 255, 0.14) 0%, rgba(255, 255, 255, 0.96) 100%);
-}
-
-.p-section-head,
-.p-link-row,
-.p-profile-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.p-kicker {
-  font-size: 19rpx;
-  color: #6d63ff;
-  letter-spacing: 1.4rpx;
-}
-
-.p-title {
-  margin-top: 8rpx;
-  font-size: 58rpx;
-  line-height: 1.04;
-  font-weight: 700;
-  color: #111827;
-}
-
-.p-profile-row {
-  justify-content: flex-start;
-  gap: 20rpx;
-  margin-top: 18rpx;
-}
-
-.p-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  line-height: 96rpx;
-  text-align: center;
-  border-radius: 999rpx;
-  background: linear-gradient(135deg, #7267ff 0%, #5a4cff 100%);
-  color: #ffffff;
-  font-size: 28rpx;
-  font-weight: 700;
-}
-
-.p-profile-copy {
+.btns { display: flex; gap: 16rpx; margin-top: 24rpx; }
+.btn {
   flex: 1;
+  text-align: center;
+  padding: 26rpx 0;
+  border-radius: 999rpx;
+  background: #f2f2f5;
+  font-size: 30rpx;
+  color: #1a1a1a;
+}
+.btn-primary { background: #1a1a1a; color: #fff; }
+.btn.disabled { opacity: 0.5; }
+
+.check-result {
+  display: block;
+  margin-top: 22rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #555;
+  word-break: break-all;
 }
 
-.p-profile-name,
-.p-section-title,
-.p-link-title {
-  font-size: 27rpx;
-  font-weight: 700;
-  color: #1d2340;
+.go {
+  margin-top: 24rpx; padding: 22rpx 0; text-align: center;
+  background: #f2f2f5; border-radius: 999rpx;
+  font-size: 28rpx; color: #1a1a1a;
 }
 
-.p-subtitle,
-.p-section-meta,
-.p-link-desc {
-  margin-top: 4rpx;
-  font-size: 21rpx;
-  color: #7a7e9a;
-  font-weight: 600;
-}
+.tips { margin-top: 32rpx; padding: 28rpx; background: #fff; border-radius: 20rpx; }
+.tips-title { display: block; font-size: 26rpx; font-weight: 600; color: #1a1a1a; margin-bottom: 14rpx; }
+.tips-line { display: block; font-size: 24rpx; line-height: 1.9; color: #8a8a8f; }
 
-.p-link-row {
-  gap: 16rpx;
-  padding: 18rpx 0;
-  border-bottom: 1rpx solid #eef1f8;
-}
-
-.p-link-row:last-child {
-  border-bottom: 0;
-}
-
-.p-link-arrow {
-  color: #98a1bd;
-  font-size: 23rpx;
-  font-weight: 700;
-}
+.env { margin-top: 28rpx; text-align: center; }
+.env-text { font-size: 20rpx; color: #b8b8c0; }

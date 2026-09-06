@@ -1,50 +1,62 @@
-<view class="p-page">
-  <view class="p-shell" style="padding-top: {{statusBarHeight + 16}}px;">
-    <view class="p-card p-hero-card" wx:if="{{showProfileCard}}">
-      <view class="p-kicker">MY CENTER</view>
-      <view class="p-title">我的</view>
-      <view class="p-profile-row">
-        <view class="p-avatar">{{avatarInitials}}</view>
-        <view class="p-profile-copy">
-          <view class="p-profile-name">{{profileName}}</view>
-          <view class="p-subtitle">{{profileStage}} · {{membership.name}}</view>
-        </view>
-      </view>
+<view class="page">
+  <view class="header">
+    <text class="title">我的</text>
+    <text class="subtitle">填一次上传凭据，之后拍完就能传</text>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="row-label">当前凭据</text>
+      <text class="row-value {{saved ? '' : 'empty'}}">{{saved || '未填写'}}</text>
     </view>
 
-    <view class="p-card">
-      <view class="p-section-head">
-        <view class="p-section-title">积分与会员</view>
-        <view class="p-section-meta">当前积分 {{points}}</view>
-      </view>
-      <view class="p-link-row" bindtap="openMembership">
-        <view>
-          <view class="p-link-title">进入会员中心</view>
-          <view class="p-link-desc">查看权益、积分明细与升级状态。</view>
-        </view>
-        <view class="p-link-arrow">></view>
-      </view>
-      <view class="p-link-row" bindtap="openTaskCenter">
-        <view>
-          <view class="p-link-title">查看任务中心</view>
-          <view class="p-link-desc">继续历史对话与任务产出。</view>
-        </view>
-        <view class="p-link-arrow">></view>
-      </view>
-      <view class="p-link-row" bindtap="clearCache">
-        <view>
-          <view class="p-link-title">清除本地缓存</view>
-          <view class="p-link-desc">重置登录信息与本地历史缓存。</view>
-        </view>
-        <view class="p-link-arrow">></view>
-      </view>
-      <view class="p-link-row" wx:if="{{isAdmin}}" bindtap="openAdminCenter">
-        <view>
-          <view class="p-link-title">进入管理中心</view>
-          <view class="p-link-desc">仅管理员可见。</view>
-        </view>
-        <view class="p-link-arrow">></view>
-      </view>
+    <!-- 主路径：凭据本来就是复制来的，别让人在手机上一个字一个字敲 -->
+    <view class="btn btn-primary {{checking ? 'disabled' : ''}}" bindtap="onPaste">
+      {{checking ? '验证中…' : '粘贴并验证'}}
     </view>
+    <text class="paste-hint">先复制你的 license key，再点上面这个</text>
+
+    <view class="divider">
+      <text class="divider-text">或者手动输入</text>
+    </view>
+
+    <input
+      class="input"
+      type="text"
+      value="{{input}}"
+      placeholder="在这里输入"
+      placeholder-class="input-ph"
+      bindinput="onInput"
+      confirm-type="done"
+      bindconfirm="onSave"
+    />
+
+    <!-- 明文回显：输入框是原生组件，深色模式下文字可能看不见；
+         这一行是小程序自己画的，一定看得见 -->
+    <view wx:if="{{echo}}" class="echo">
+      <text class="echo-label">你输入的是</text>
+      <text class="echo-value">{{echo}}</text>
+    </view>
+
+    <view class="btns">
+      <view class="btn {{checking ? 'disabled' : ''}}" bindtap="onSave">保存并验证</view>
+      <view wx:if="{{saved}}" class="btn" bindtap="onClear">清除</view>
+    </view>
+
+    <!-- 存之前先验：当场说行不行，不让人等到上传时才发现填错了 -->
+    <text wx:if="{{checkResult}}" class="check-result">{{checkResult}}</text>
+
+    <view wx:if="{{saved && !checkResult}}" class="go" bindtap="onGoMaterials">去看素材库</view>
+  </view>
+
+  <view class="tips">
+    <text class="tips-title">凭据是什么</text>
+    <text class="tips-line">· 就是你 ZenithJoy 账号的 license key，和电脑、iPhone 快捷指令用的是同一个</text>
+    <text class="tips-line">· 在网页版工作台的「License」页可以看到</text>
+    <text class="tips-line">· 它只存在这台手机上，不会上传；换手机要重新填一次</text>
+  </view>
+
+  <view class="env">
+    <text class="env-text">当前连接：{{apiBase}}</text>
   </view>
 </view>
