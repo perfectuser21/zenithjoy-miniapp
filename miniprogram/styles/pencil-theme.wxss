@@ -1,0 +1,27 @@
+.page, .p-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f7f9ff 0%, #eef3ff 100%);
+  color: #0f172a;
+}
+
+.page-shell, .p-shell {
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.panel, .p-card {
+  border-radius: 36rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2rpx solid #e3eaf5;
+  box-shadow: 0 18rpx 48rpx rgba(31, 41, 55, 0.08);
+}
+
+.primary-cta, .p-primary-btn {
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #1847d8 0%, #4263eb 58%, #16a3b7 100%);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+}

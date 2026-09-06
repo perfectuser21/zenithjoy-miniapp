@@ -16,19 +16,39 @@ global.wx = {
     }))
   },
   getStorage: jest.fn(({ success } = {}) => success && success({ data: null })),
+  getStorageSync: jest.fn(() => null),
   setStorage: jest.fn(({ success } = {}) => success && success()),
+  setStorageSync: jest.fn(),
   removeStorage: jest.fn(({ success } = {}) => success && success()),
+  clearStorageSync: jest.fn(),
   showToast: jest.fn(),
+  hideLoading: jest.fn(),
+  showLoading: jest.fn(),
   showModal: jest.fn(({ success } = {}) => success && success({ confirm: true })),
   navigateTo: jest.fn(),
   navigateBack: jest.fn(),
+  switchTab: jest.fn(),
   redirectTo: jest.fn(),
+  updateShareMenu: jest.fn(({ success } = {}) => success && success()),
   setNavigationBarTitle: jest.fn(),
   stopPullDownRefresh: jest.fn(),
   previewImage: jest.fn(),
   getUserProfile: jest.fn(),
   login: jest.fn(({ success } = {}) => success && success({ code: 'test-code' })),
-  request: jest.fn(() => Promise.resolve({ data: {} }))
+  request: jest.fn(() => Promise.resolve({ data: {} })),
+  showShareMenu: jest.fn(),
+  getSystemInfoSync: jest.fn(() => ({
+    statusBarHeight: 20,
+    windowHeight: 667,
+    windowWidth: 375,
+    platform: 'devtools'
+  })),
+  createSelectorQuery: jest.fn(() => ({
+    select: jest.fn().mockReturnThis(),
+    boundingClientRect: jest.fn().mockReturnThis(),
+    exec: jest.fn()
+  })),
+  pageScrollTo: jest.fn()
 }
 
 /**
@@ -42,6 +62,7 @@ global.Page = function (config) {
 }
 global.__getLastPage = () => _lastPage
 global.__resetPage = () => { _lastPage = null }
+global.getCurrentPages = jest.fn(() => ([{}]))
 
 global.Component = function (config) {
   return config

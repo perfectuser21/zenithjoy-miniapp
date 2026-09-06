@@ -110,7 +110,12 @@
 - [x] 微信小程序 AppID 已填写（`project.config.json`：`wx98c067e00cce09da`）
 - [x] 云环境 ID 正确（`zenithjoycloud-8g4ca5pbb5b027e8`，`app.js` 中已配置）
 - [ ] **待操作** 管理员 OpenID 配置：在 Dev Tools 调用 `bootstrapAdmin`，**或** 给 `checkAdmin` 设置环境变量 `ADMIN_OPENIDS=o2lLz62X0iyQEYcpnS2ljUvXlHF0`
-- [ ] **待操作** 支付商户号配置（详见 `docs/wechat-pay-setup.md`，需要微信商户平台开户）
+- [x] **商户私钥已就绪** `~/.credentials/apiclient_key.pem` 已存在（PKCS#8，PR #kr3 已转换）
+- [ ] **待填入** 支付商户号 3 项配置（MCHID + V3_KEY + SERIAL_NO）→ 运行 `node scripts/setup-credentials.js` 查看状态
+  - 商户号（MCHID）：微信商户平台 → 账户中心 → 商户信息
+  - APIv3 密钥（V3_KEY）：微信商户平台 → 账户中心 → API安全 → 设置密钥
+  - 证书序列号（SERIAL_NO）：微信商户平台 → API安全 → 查看证书
+  - 填入 `~/.credentials/wechat-pay.env` 后在微信云控制台配置云函数环境变量
 - [x] `sitemap.json` 无索引配置问题（允许全部页面）
 
 ---
@@ -130,9 +135,11 @@
 | # | 问题 | 状态 | 解决方案 |
 |---|------|------|---------|
 | 1 | 云函数未部署到生产环境 | ⏳ 待操作 | 开发者工具逐一上传 9 个云函数 |
-| 2 | 支付沙盒测试未通过 | ⏳ 待操作 | 真机 + 商户号沙盒环境联调 |
-| 3 | 真机兼容性测试 | ⏳ 待操作 | iOS + Android 各 1 台扫码测试 |
-| 4 | 微信平台信息未填写 | ⏳ 待操作 | 公众平台设置名称/图标/分类 |
+| 2 | 支付商户号 3 项配置缺失 | ⏳ 待操作 | 从微信商户平台获取 MCHID/V3_KEY/SERIAL_NO → 填入 `~/.credentials/wechat-pay.env` → 配置云函数环境变量；私钥已就绪 |
+| 3 | 管理员 OpenID 未写入 DB | ⏳ 待操作 | DevTools → bootstrapAdmin 本地调用 `{}`（或设 checkAdmin 环境变量 ADMIN_OPENIDS） |
+| 4 | 支付沙盒测试未通过 | ⏳ 待操作（依赖#2） | 商户号配置完成后，真机 + 沙盒环境联调 |
+| 5 | 真机兼容性测试 | ⏳ 待操作 | iOS + Android 各 1 台扫码测试 |
+| 6 | 微信平台信息未填写 | ⏳ 待操作 | 公众平台设置名称/图标/分类 |
 
 ---
 
