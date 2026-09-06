@@ -1,0 +1,46 @@
+<view class="page">
+  <view class="header">
+    <text class="title">上传素材</text>
+    <text class="subtitle">拍好的照片、视频，选了就传进素材库</text>
+  </view>
+
+  <view class="actions">
+    <view class="btn btn-primary {{busy ? 'disabled' : ''}}" bindtap="onChooseImage">
+      <text class="btn-icon">＋</text>
+      <text class="btn-text">选照片</text>
+      <text class="btn-hint">最多 9 张</text>
+    </view>
+    <view class="btn {{busy ? 'disabled' : ''}}" bindtap="onChooseVideo">
+      <text class="btn-icon">▶</text>
+      <text class="btn-text">选视频</text>
+      <text class="btn-hint">一次 1 个</text>
+    </view>
+  </view>
+
+  <!-- 逐条报结果：传 9 张成 8 张，要看得出是哪一张、为什么 -->
+  <view wx:if="{{jobs.length > 0}}" class="jobs">
+    <view class="jobs-head">
+      <text class="jobs-title">本次上传</text>
+      <text class="jobs-stat">成功 {{doneCount}}<text wx:if="{{failCount > 0}}"> · 失败 {{failCount}}</text></text>
+    </view>
+
+    <view wx:for="{{jobs}}" wx:key="name" class="job job-{{item.status}}">
+      <view class="job-dot"></view>
+      <view class="job-body">
+        <text class="job-name">{{item.name}}</text>
+        <text class="job-msg">{{item.message}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{!busy && doneCount > 0}}" class="go-btn" bindtap="onGoMaterials">
+      去素材库看看
+    </view>
+  </view>
+
+  <view wx:if="{{jobs.length === 0}}" class="tips">
+    <text class="tips-title">说明</text>
+    <text class="tips-line">· 传原图，不压缩——压过的素材做不了作品</text>
+    <text class="tips-line">· 同一个文件重复传没关系，系统会自动认出来</text>
+    <text class="tips-line">· 上传后手机里的照片不会被删</text>
+  </view>
+</view>

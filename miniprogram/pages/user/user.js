@@ -417,7 +417,8 @@ Page({
     const { id } = e.currentTarget.dataset;
 
     if (id === 'materials') {
-      wx.navigateTo({ url: '/pages/materials/materials' });
+      // 素材页现在是 tabBar 页，只能用 switchTab，navigateTo 会静默失败
+      wx.switchTab({ url: '/pages/materials/materials' });
       return;
     }
 

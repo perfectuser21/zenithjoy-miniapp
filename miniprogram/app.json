@@ -1,5 +1,8 @@
 {
   "pages": [
+    "pages/materials/materials",
+    "pages/upload/upload",
+    "pages/user/user",
     "pages/index/index",
     "pages/ranking/detail/detail",
     "pages/reading-list/detail/detail",
@@ -17,8 +20,6 @@
     "pages/copywriter/moments-editor/moments-editor",
     "pages/ai-features/index",
     "pages/assistant/index",
-    "pages/materials/materials",
-    "pages/user/user",
     "pages/ai-chat/ai-chat",
     "pages/membership/membership",
     "pages/web-view/web-view",
@@ -34,39 +35,26 @@
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "AI智能助手",
+    "navigationBarTitleText": "ZenithJoy 素材",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "custom": true,
-    "color": "#999999",
-    "selectedColor": "#3a7fff",
+    "color": "#8a8a8f",
+    "selectedColor": "#1a1a1a",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "images/tab-home.png",
-        "selectedIconPath": "images/tab-home-active.png"
+        "pagePath": "pages/materials/materials",
+        "text": "素材"
       },
       {
-        "pagePath": "pages/ai-features/index",
-        "text": "创作",
-        "iconPath": "images/tab-create.png",
-        "selectedIconPath": "images/tab-create-active.png"
-      },
-      {
-        "pagePath": "pages/assistant/index",
-        "text": "AI助理",
-        "iconPath": "images/tab-ai.png",
-        "selectedIconPath": "images/tab-ai-active.png"
+        "pagePath": "pages/upload/upload",
+        "text": "上传"
       },
       {
         "pagePath": "pages/user/user",
-        "text": "我的",
-        "iconPath": "images/tab-user.png",
-        "selectedIconPath": "images/tab-user-active.png"
+        "text": "我的"
       }
     ]
   },

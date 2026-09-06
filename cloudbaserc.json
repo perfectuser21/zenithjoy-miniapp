@@ -14,6 +14,17 @@
         "ZJ_API_BASE": "https://staging-autopilot.zenjoymedia.media",
         "ZJ_UPLOAD_TOKEN": "ZJ-F-UP5B6R5Z"
       }
+    },
+    {
+      "name": "syncMaterial",
+      "timeout": 60,
+      "runtime": "Nodejs18.15",
+      "handler": "index.main",
+      "installDependency": true,
+      "envVariables": {
+        "ZJ_API_BASE": "https://staging-autopilot.zenjoymedia.media",
+        "ZJ_UPLOAD_TOKEN": "ZJ-F-UP5B6R5Z"
+      }
     }
   ]
 }
