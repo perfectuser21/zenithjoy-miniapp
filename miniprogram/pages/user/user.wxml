@@ -10,25 +10,40 @@
       <text class="row-value {{saved ? '' : 'empty'}}">{{saved || '未填写'}}</text>
     </view>
 
+    <!-- 主路径：凭据本来就是复制来的，别让人在手机上一个字一个字敲 -->
+    <view class="btn btn-primary {{checking ? 'disabled' : ''}}" bindtap="onPaste">
+      {{checking ? '验证中…' : '粘贴并验证'}}
+    </view>
+    <text class="paste-hint">先复制你的 license key，再点上面这个</text>
+
+    <view class="divider">
+      <text class="divider-text">或者手动输入</text>
+    </view>
+
     <input
       class="input"
       type="text"
       value="{{input}}"
-      placeholder="粘贴你的 license key"
+      placeholder="在这里输入"
       placeholder-class="input-ph"
       bindinput="onInput"
       confirm-type="done"
       bindconfirm="onSave"
     />
 
+    <!-- 明文回显：输入框是原生组件，深色模式下文字可能看不见；
+         这一行是小程序自己画的，一定看得见 -->
+    <view wx:if="{{echo}}" class="echo">
+      <text class="echo-label">你输入的是</text>
+      <text class="echo-value">{{echo}}</text>
+    </view>
+
     <view class="btns">
-      <view class="btn btn-primary {{checking ? 'disabled' : ''}}" bindtap="onSave">
-        {{checking ? '验证中…' : '保存并验证'}}
-      </view>
+      <view class="btn {{checking ? 'disabled' : ''}}" bindtap="onSave">保存并验证</view>
       <view wx:if="{{saved}}" class="btn" bindtap="onClear">清除</view>
     </view>
 
-    <!-- 保存即验证：当场说行不行，不让人等到上传时才发现填错了 -->
+    <!-- 存之前先验：当场说行不行，不让人等到上传时才发现填错了 -->
     <text wx:if="{{checkResult}}" class="check-result">{{checkResult}}</text>
 
     <view wx:if="{{saved && !checkResult}}" class="go" bindtap="onGoMaterials">去看素材库</view>
