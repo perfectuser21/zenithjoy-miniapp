@@ -1,0 +1,61 @@
+# 用微信官方的 miniprogram-ci 把代码传到微信平台（开发版本）。
+#
+# 传上去之后还要人去微信后台「版本管理 → 开发版本 → 选为体验版本」点一下，
+# 这一步微信没有开放 API，只能人工。
+#
+# 需要两个 GitHub Secret：
+#   MINIAPP_APPID        wx98c067e00cce09da
+#   MINIAPP_PRIVATE_KEY  代码上传密钥的 PEM 全文
+#                        （mp.weixin.qq.com → 开发管理 → 开发设置 → 代码上传密钥）
+# 两个值的 SSOT 都在 1Password CS vault 的「WeChat 微信小程序」条目里。
+#
+# 注意 robot 编号：微信给每个小程序 30 个 CI 机器人位，同一个 robot 号重复上传
+# 会覆盖上一次。手动本地上传用的也是 1 号，所以 CI 默认给 2 号，两边不打架。
+
+name: Upload to WeChat
+
+on:
+  workflow_dispatch:
+    inputs:
+      desc:
+        description: '上传说明（会显示在微信后台的版本列表里）'
+        required: false
+        default: 'CI automated upload'
+      robot:
+        description: 'CI 机器人编号（1-30；1 号留给本地手动上传）'
+        required: false
+        default: '2'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+
+      # 传之前先跑一遍测试。传上去的东西是要给人扫码看的，
+      # 让一个测试都没过的版本进到微信后台没有意义。
+      - run: npm test
+
+      - name: Upload miniapp to WeChat platform
+        env:
+          MINIAPP_APPID: ${{ secrets.MINIAPP_APPID }}
+          MINIAPP_PRIVATE_KEY: ${{ secrets.MINIAPP_PRIVATE_KEY }}
+          MINIAPP_UPLOAD_DESC: ${{ github.event.inputs.desc }}
+          MINIAPP_ROBOT: ${{ github.event.inputs.robot }}
+        run: |
+          # 缺 secret 就明确报错。静默跳过会让人以为传成功了，
+          # 扫码扫到的还是上一个版本——这种假象比直接失败难查得多。
+          if [ -z "$MINIAPP_APPID" ]; then
+            echo "::error::MINIAPP_APPID secret 没配。值在 1Password CS vault「WeChat 微信小程序」里。"
+            exit 1
+          fi
+          if [ -z "$MINIAPP_PRIVATE_KEY" ]; then
+            echo "::error::MINIAPP_PRIVATE_KEY secret 没配。到 mp.weixin.qq.com → 开发管理 → 开发设置 → 代码上传密钥 生成，或从 1Password CS vault「WeChat 微信小程序」取。"
+            exit 1
+          fi
+          npm run upload
