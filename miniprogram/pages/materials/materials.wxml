@@ -59,10 +59,21 @@
 
   <!-- 点开看大图 -->
   <view wx:if="{{preview}}" class="lightbox" bindtap="onClosePreview">
-    <image class="lightbox-img" src="{{preview.previewUrl}}" mode="aspectFit" />
+    <image wx:if="{{previewShowsImage}}" class="lightbox-img" src="{{preview.previewUrl}}" mode="aspectFit" />
+    <!-- 视频、以及预览地址签发失败的那些：看不到图，但按钮照样得能点 -->
+    <view wx:else class="lightbox-img lightbox-ph">
+      <text class="lb-ph-icon">{{preview.video ? '▶' : '!'}}</text>
+      <text class="lb-ph-text">{{preview.video ? '视频暂不支持在手机上预览' : '这条预览地址签发失败'}}</text>
+    </view>
     <view class="lightbox-meta">
       <text class="lightbox-name">{{preview.fileName}}</text>
       <text class="lightbox-size">{{preview.sizeText}}</text>
+    </view>
+    <!-- 删除的主入口。长按是隐藏手势，没人会去猜它存在，
+         catchtap 而不是 bindtap：点按钮不能顺手把大图也关掉 -->
+    <view class="lightbox-actions">
+      <view class="lb-btn lb-danger" catchtap="onDeletePreview">删掉这张</view>
+      <view class="lb-btn" catchtap="onClosePreview">返回</view>
     </view>
   </view>
 </view>

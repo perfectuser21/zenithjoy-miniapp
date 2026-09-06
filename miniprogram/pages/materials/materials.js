@@ -34,7 +34,8 @@ Page({
     errorCode: '',
     errorMessage: '',
     needToken: false,     // 没填凭据：错误区要显示「去填凭据」按钮
-    preview: null
+    preview: null,
+    previewShowsImage: false
   },
 
   // tabBar 页用 onShow：从「我的」填完凭据切回来要能立刻看到东西
@@ -77,27 +78,40 @@ Page({
     wx.switchTab({ url: '/pages/user/user' })
   },
 
+  /**
+   * 点开。视频和预览签失败的那些**照样要能点开**——原来这两种弹个 toast 就
+   * 打发了，结果它们只能靠长按删，等于删不了。大图里看不看得到图是一回事，
+   * 能不能对它做操作是另一回事。
+   */
   onTapItem(e) {
     const id = e.currentTarget.dataset.id
     const item = this.data.items.filter((x) => x.id === id)[0]
     if (!item) return
-    if (item.video) {
-      wx.showToast({ title: '视频暂不支持预览', icon: 'none' })
-      return
-    }
-    if (!item.previewUrl) {
-      wx.showToast({ title: '这条预览地址签发失败', icon: 'none' })
-      return
-    }
-    this.setData({ preview: item })
+    this.setData({
+      preview: item,
+      // 有可用预览才渲染 image；否则大图区显示占位，但按钮照样在
+      previewShowsImage: Boolean(!item.video && item.previewUrl)
+    })
   },
 
   onClosePreview() {
-    this.setData({ preview: null })
+    this.setData({ preview: null, previewShowsImage: false })
   },
 
   /**
-   * 长按删。删是不可逆的，所以两条：
+   * 点开大图里的删除按钮。
+   *
+   * 长按是隐藏手势——没人会去猜它存在。删除的主入口必须是点开之后看得见的
+   * 一个按钮，长按只是给熟了以后图快的人留的快捷方式。
+   */
+  onDeletePreview() {
+    const item = this.data.preview
+    if (!item) return
+    this.confirmRemove(item)
+  },
+
+  /**
+   * 长按删（快捷方式）。删是不可逆的，所以两条：
    *   ① 必须二次确认，而且确认框里要写清删的是哪一个文件
    *   ② 删完不整页重刷，只把这一格从列表里摘掉——重刷会让人失去位置，
    *      而且要重新签一遍所有预览 URL
@@ -106,7 +120,10 @@ Page({
     const id = e.currentTarget.dataset.id
     const item = this.data.items.filter((x) => x.id === id)[0]
     if (!item) return
+    this.confirmRemove(item)
+  },
 
+  confirmRemove(item) {
     wx.showModal({
       title: '删掉这个素材',
       content: item.fileName + '\n删了就没了，存储里的原文件也会一起删掉。',
@@ -114,7 +131,7 @@ Page({
       confirmColor: '#c0392b',
       success: (res) => {
         if (!res.confirm) return
-        this.remove(id, item.fileName)
+        this.remove(item.id, item.fileName)
       }
     })
   },

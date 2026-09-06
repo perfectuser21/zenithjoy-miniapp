@@ -121,6 +121,20 @@ describe('点开大图后能删 —— 长按是隐藏手势，光有它等于�
     expect(page.data.items.map((x) => x.id)).toEqual(['m2'])
   })
 
+  it('视频照样能点开 —— 否则它只能靠长按删，等于删不了', () => {
+    page.setData({ items: [{ id: 'v1', fileName: 'a.mp4', sizeText: '9 MB', video: true, previewUrl: '' }] })
+    page.onTapItem({ currentTarget: { dataset: { id: 'v1' } } })
+    expect(page.data.preview.id).toBe('v1')
+    expect(page.data.previewShowsImage).toBe(false)   // 看不到图，但按钮在
+  })
+
+  it('预览地址签发失败的照样能点开', () => {
+    page.setData({ items: [{ id: 'x1', fileName: 'b.jpg', sizeText: '1 MB', video: false, previewUrl: '' }] })
+    page.onTapItem({ currentTarget: { dataset: { id: 'x1' } } })
+    expect(page.data.preview.id).toBe('x1')
+    expect(page.data.previewShowsImage).toBe(false)
+  })
+
   it('没点开大图时点删除 → 什么都不做，不会误删', async () => {
     page.setData({ preview: null })
     page.onDeletePreview()
