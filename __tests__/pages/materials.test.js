@@ -37,7 +37,10 @@ beforeEach(() => {
   modalConfirm = true
   global.wx.getStorageSync = jest.fn(() => 'ZJ-F-TESTKEY')
   global.wx.getAccountInfoSync = jest.fn(() => ({ miniProgram: { envVersion: 'trial' } }))
-  global.wx.showModal = jest.fn((opts) => setTimeout(() => opts.success({ confirm: modalConfirm }), 0))
+  // 报错用的那个弹窗只是告知，没有 success 回调——mock 不能假设一定有
+  global.wx.showModal = jest.fn((opts) => setTimeout(() => {
+    if (typeof opts.success === 'function') opts.success({ confirm: modalConfirm })
+  }, 0))
   global.wx.showLoading = jest.fn()
   global.wx.hideLoading = jest.fn()
   global.wx.showToast = jest.fn()

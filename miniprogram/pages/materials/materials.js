@@ -96,6 +96,53 @@ Page({
     this.setData({ preview: null })
   },
 
+  /**
+   * 长按删。删是不可逆的，所以两条：
+   *   ① 必须二次确认，而且确认框里要写清删的是哪一个文件
+   *   ② 删完不整页重刷，只把这一格从列表里摘掉——重刷会让人失去位置，
+   *      而且要重新签一遍所有预览 URL
+   */
+  onLongPressItem(e) {
+    const id = e.currentTarget.dataset.id
+    const item = this.data.items.filter((x) => x.id === id)[0]
+    if (!item) return
+
+    wx.showModal({
+      title: '删掉这个素材',
+      content: item.fileName + '\n删了就没了，存储里的原文件也会一起删掉。',
+      confirmText: '删掉',
+      confirmColor: '#c0392b',
+      success: (res) => {
+        if (!res.confirm) return
+        this.remove(id, item.fileName)
+      }
+    })
+  },
+
+  remove(id, fileName) {
+    wx.showLoading({ title: '删除中…', mask: true })
+    api.deleteMaterial(id)
+      .then(() => {
+        wx.hideLoading()
+        this.setData({
+          items: this.data.items.filter((x) => x.id !== id),
+          preview: null
+        })
+        wx.showToast({ title: '已删掉', icon: 'none' })
+      })
+      .catch((err) => {
+        wx.hideLoading()
+        // 中台已经区分了「被已发布作品用着」「存储没删掉」，原样显示。
+        // 弹窗而不是 toast：toast 一行放不下「被哪个作品挡着」这种话。
+        wx.showModal({
+          title: '没删掉：' + fileName,
+          content: err.message || '删除失败',
+          showCancel: false,
+          confirmText: '知道了'
+        })
+      })
+  },
+
   onRetry() {
     this.load()
   }

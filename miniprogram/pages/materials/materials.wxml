@@ -33,6 +33,7 @@
       class="tile"
       data-id="{{item.id}}"
       bindtap="onTapItem"
+      bindlongpress="onLongPressItem"
     >
       <image
         wx:if="{{!item.video && item.previewUrl}}"
@@ -53,7 +54,7 @@
   </view>
 
   <view wx:if="{{!loading && !errorCode && items.length > 0}}" class="footer">
-    <text class="footer-text">共 {{items.length}} 条</text>
+    <text class="footer-text">共 {{items.length}} 条 · 长按一张可以删掉</text>
   </view>
 
   <!-- 点开看大图 -->

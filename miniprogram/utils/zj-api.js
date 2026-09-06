@@ -123,6 +123,18 @@ function listMaterials(options) {
     })
 }
 
+/**
+ * 删一条素材。中台会一起删掉 COS 里的对象。
+ * 被已发布作品用着时中台回 409 IN_USE，消息里带着是哪个作品挡着——原样往上抛，
+ * 只说「删不掉」等于没说，用户不知道下一步该干嘛。
+ */
+function deleteMaterial(id) {
+  var mid = String(id || '').trim()
+  if (!mid) return Promise.reject(err('BAD_REQUEST', '没有指定要删哪条'))
+  return callApi('DELETE', '/api/materials/' + mid, undefined)
+    .then(function (data) { return { id: data.id || mid } })
+}
+
 /** 把本地临时文件读成 ArrayBuffer。读不出来就别往下走。 */
 function readLocal(filePath) {
   return new Promise(function (resolve, reject) {
@@ -220,5 +232,6 @@ module.exports = {
   clearToken: clearToken,
   apiBase: apiBase,
   listMaterials: listMaterials,
+  deleteMaterial: deleteMaterial,
   uploadFile: uploadFile
 }
