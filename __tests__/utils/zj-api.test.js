@@ -159,6 +159,32 @@ describe('列素材', () => {
   })
 })
 
+describe('删素材', () => {
+  it('删成功 → 返回 id', async () => {
+    stubSeq([{ statusCode: 200, data: { success: true, data: { id: 'm1', deleted: true } } }])
+    const api = load()
+    const r = await api.deleteMaterial('m1')
+    expect(r.id).toBe('m1')
+    const call = wx.request.mock.calls[0][0]
+    expect(call.method).toBe('DELETE')
+    expect(call.url).toContain('/api/materials/m1')
+  })
+
+  it('被已发布作品用着 → IN_USE，原样带出是哪个作品挡着', async () => {
+    // 只说「删不掉」等于没说，用户不知道下一步该干嘛
+    stubSeq([{ statusCode: 409, data: { success: false, error: { code: 'IN_USE', message: '这条素材被「十一月的湖」(published) 用着' } } }])
+    const api = load()
+    const e = await api.deleteMaterial('m1').then(() => null, (x) => x)
+    expect(e.message).toContain('十一月的湖')
+  })
+
+  it('没传 id → 不发请求', async () => {
+    const api = load()
+    await expect(api.deleteMaterial('')).rejects.toMatchObject({ code: 'BAD_REQUEST' })
+    expect(wx.request).not.toHaveBeenCalled()
+  })
+})
+
 describe('上传三步', () => {
   it('走完三步 → 返回 materialId', async () => {
     stubSeq([
