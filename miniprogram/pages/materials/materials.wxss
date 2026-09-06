@@ -76,6 +76,8 @@
   font-size: 26rpx;
   border-radius: 999rpx;
 }
+/* 「去填凭据」不是错误重试，是下一步动作——用中性色，别一片报警红 */
+.retry-btn.primary { background: #1a1a1a; }
 
 /* 九宫格 */
 .grid {

@@ -1,16 +1,19 @@
 // 上传素材 — 客户在手机上最自然的动作：拍完就传
 //
-// 链路：相册/相机 → wx.cloud.uploadFile（微信云存储）→ 云函数 syncMaterial
-//       → 中台 upload-urls → PUT 广州 COS → complete 落库
-//
-// 走微信云存储中转、而不是 wx.uploadFile 直传 COS，是为了不用配「合法域名」
-// （配它要域名 ICP 备案 + 人去微信后台点）。客户装上就能用，零配置。
+// 链路：相册/相机 → 读成 ArrayBuffer → 中台换预签名地址 → PUT 直进广州 COS
+//       → 回中台落库。文件本体不经过中台，也不经过微信云存储（见 utils/zj-api.js）。
 //
 // ── 一条纪律 ──────────────────────────────────────────────────────────
 // 逐个文件报结果，不做「全部成功/全部失败」的粗判。传 9 张成了 8 张，
 // 必须让人看出是哪一张没成、为什么——否则只能整批重来。
 
+const api = require('../../utils/zj-api.js')
+
 const MAX_COUNT = 9
+
+// 小程序把文件整个读进内存再 PUT，太大的视频会把内存吃爆。
+// 卡在选完之后、读之前，比读到一半崩掉体验好得多。大视频走电脑端上传。
+const MAX_BYTES = 200 * 1024 * 1024
 
 /** 从 wx.chooseMedia 的返回里凑出一个像样的文件名。相册给的临时路径没有原名。 */
 function guessFileName(file, index, kind) {
@@ -38,10 +41,20 @@ function guessMime(fileName, kind) {
 Page({
   data: {
     busy: false,
+    hasToken: true,
     // 每条：{ name, status: pending|uploading|done|failed|deduped, message }
     jobs: [],
     doneCount: 0,
     failCount: 0
+  },
+
+  onShow() {
+    // 没填凭据就别让人先选完 9 张照片再报错
+    this.setData({ hasToken: Boolean(api.getToken()) })
+  },
+
+  onGoToken() {
+    wx.switchTab({ url: '/pages/user/user' })
   },
 
   onChooseImage() { this.pick('image') },
@@ -49,6 +62,7 @@ Page({
 
   pick(kind) {
     if (this.data.busy) return
+    if (!this.data.hasToken) { this.onGoToken(); return }
     wx.chooseMedia({
       count: kind === 'video' ? 1 : MAX_COUNT,
       mediaType: [kind],
@@ -65,10 +79,11 @@ Page({
 
   async run(files, kind) {
     if (!files.length) return
-    const jobs = files.map((f, i) => {
-      const name = guessFileName(f, i, kind)
-      return { name: name, status: 'pending', message: '等待上传' }
-    })
+    const jobs = files.map((f, i) => ({
+      name: guessFileName(f, i, kind),
+      status: 'pending',
+      message: '等待上传'
+    }))
     this.setData({ busy: true, jobs: jobs, doneCount: 0, failCount: 0 })
 
     for (let i = 0; i < files.length; i++) {
@@ -83,57 +98,34 @@ Page({
     })
   },
 
-  /** 传一个文件。每一步失败都写进这条 job，不影响别的文件继续。 */
+  /** 传一个文件。失败只影响这一条，别的文件继续。 */
   async one(file, index, kind) {
     const job = this.data.jobs[index]
     const key = 'jobs[' + index + ']'
     const set = (status, message) => this.setData({ [key + '.status']: status, [key + '.message']: message })
+    const markFail = (msg) => {
+      set('failed', msg)
+      this.setData({ failCount: this.data.failCount + 1 })
+    }
+
+    if (file.size && file.size > MAX_BYTES) {
+      markFail('文件太大（' + (file.size / 1024 / 1024).toFixed(0) + 'MB），手机端最多 200MB，大文件用电脑传')
+      return
+    }
 
     set('uploading', '上传中…')
 
-    // ① 先进微信云存储。cloudPath 带时间戳避免同名覆盖。
-    let fileID
-    try {
-      const up = await new Promise((resolve, reject) => {
-        wx.cloud.uploadFile({
-          cloudPath: 'materials/' + Date.now() + '_' + index + '_' + job.name,
-          filePath: file.tempFilePath,
-          success: resolve,
-          fail: reject
-        })
-      })
-      fileID = up.fileID
-    } catch (err) {
-      set('failed', '传到微信云存储失败：' + ((err && err.errMsg) || '未知'))
-      this.setData({ failCount: this.data.failCount + 1 })
-      return
-    }
-
-    set('uploading', '同步到素材库…')
-
-    // ② 云函数搬进中台。它内部再走 换地址 → PUT COS → 落库 三步。
     let r
     try {
-      const res = await new Promise((resolve, reject) => {
-        wx.cloud.callFunction({
-          name: 'syncMaterial',
-          data: { fileID: fileID, fileName: job.name, mimeType: guessMime(job.name, kind) },
-          success: resolve,
-          fail: reject
-        })
+      r = await api.uploadFile({
+        filePath: file.tempFilePath,
+        fileName: job.name,
+        mimeType: guessMime(job.name, kind)
       })
-      r = (res && res.result) || {}
-    } catch (err) {
-      // 云函数没部署时走这里，说人话
-      set('failed', '调不到同步云函数：' + ((err && err.errMsg) || '未知'))
-      this.setData({ failCount: this.data.failCount + 1 })
-      return
-    }
-
-    if (!r.ok) {
-      // 云函数已经区分了「没配置 / 连不上 / 凭据被拒 / 已进存储但没落库」，原样显示
-      set('failed', (r.code || 'FAILED') + '：' + (r.message || '同步失败'))
-      this.setData({ failCount: this.data.failCount + 1 })
+    } catch (e) {
+      // zj-api 已经区分了读不到 / 空文件 / 换地址失败 / 进存储失败 /
+      // 已进存储但没落库，原样显示，不要糊成「上传失败」
+      markFail((e.code || 'FAILED') + '：' + (e.message || '上传失败'))
       return
     }
 

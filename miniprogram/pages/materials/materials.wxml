@@ -14,7 +14,9 @@
     <text class="error-title">读不到素材</text>
     <text class="error-code">{{errorCode}}</text>
     <text class="error-msg">{{errorMessage}}</text>
-    <view class="retry-btn" bindtap="onRetry">重试</view>
+    <!-- 凭据问题给一个能直接点过去的入口，比让人自己找「我的」强 -->
+    <view wx:if="{{needToken}}" class="retry-btn primary" bindtap="onGoToken">去填凭据</view>
+    <view wx:else class="retry-btn" bindtap="onRetry">重试</view>
   </view>
 
   <!-- 空 -->

@@ -1,83 +1,47 @@
 <view class="page">
-  <view class="top" style="padding-top: {{statusBarHeight + 12}}px;">
-    <view class="eyebrow">MY CENTER</view>
-    <view class="title-row">
-      <view class="title">我的</view>
-      <view class="edit-chip">编辑资料</view>
-    </view>
+  <view class="header">
+    <text class="title">我的</text>
+    <text class="subtitle">填一次上传凭据，之后拍完就能传</text>
   </view>
 
-  <view class="profile-card" wx:if="{{showProfileCard}}">
-    <view class="avatar-badge">{{avatarInitials}}</view>
-    <view class="profile-main">
-      <view class="profile-name">{{profileName}}</view>
-      <view class="profile-subtitle">{{profileStage}} · {{membership.name}}</view>
+  <view class="card">
+    <view class="row">
+      <text class="row-label">当前凭据</text>
+      <text class="row-value {{saved ? '' : 'empty'}}">{{saved || '未填写'}}</text>
     </view>
+
+    <input
+      class="input"
+      type="text"
+      value="{{input}}"
+      placeholder="粘贴你的 license key"
+      placeholder-class="input-ph"
+      bindinput="onInput"
+      confirm-type="done"
+      bindconfirm="onSave"
+    />
+
+    <view class="btns">
+      <view class="btn btn-primary {{checking ? 'disabled' : ''}}" bindtap="onSave">
+        {{checking ? '验证中…' : '保存并验证'}}
+      </view>
+      <view wx:if="{{saved}}" class="btn" bindtap="onClear">清除</view>
+    </view>
+
+    <!-- 保存即验证：当场说行不行，不让人等到上传时才发现填错了 -->
+    <text wx:if="{{checkResult}}" class="check-result">{{checkResult}}</text>
+
+    <view wx:if="{{saved && !checkResult}}" class="go" bindtap="onGoMaterials">去看素材库</view>
   </view>
 
-  <view class="points-section">
-    <view class="section-head">
-      <view class="section-title">积分中心</view>
-      <view class="section-link">查看明细</view>
-    </view>
-    <view class="points-card">
-      <view class="points-label">当前积分</view>
-      <view class="points-top">
-        <view class="points-value">{{points}}</view>
-        <view class="points-growth">
-          <view class="points-growth-value">本周 +{{weeklyGrowth}}</view>
-          <view class="points-growth-meta">本周消耗 {{monthlySpend}}</view>
-        </view>
-      </view>
-      <view class="points-stats">
-        <view class="points-stat">
-          <view class="points-stat-title">积分获取</view>
-          <view class="points-stat-desc">签到/推荐/问答</view>
-        </view>
-        <view class="points-stat">
-          <view class="points-stat-title">积分消耗</view>
-          <view class="points-stat-desc">标题/文案/助理</view>
-        </view>
-      </view>
-    </view>
+  <view class="tips">
+    <text class="tips-title">凭据是什么</text>
+    <text class="tips-line">· 就是你 ZenithJoy 账号的 license key，和电脑、iPhone 快捷指令用的是同一个</text>
+    <text class="tips-line">· 在网页版工作台的「License」页可以看到</text>
+    <text class="tips-line">· 它只存在这台手机上，不会上传；换手机要重新填一次</text>
   </view>
 
-  <view class="section-block">
-    <view class="section-head">
-      <view class="section-title">会员与成长</view>
-      <view class="section-link">{{membership.name}}</view>
-    </view>
-    <view class="growth-list">
-      <view class="growth-item" wx:for="{{growthBenefits}}" wx:key="title">
-        <view class="growth-name">{{item.title}}</view>
-        <view class="growth-status">{{item.status}}</view>
-      </view>
-    </view>
-  </view>
-
-  <view class="section-block">
-    <view class="menu-list">
-      <view class="menu-item" wx:for="{{assetMenus}}" wx:key="id" bindtap="handleAssetAction" data-id="{{item.id}}">
-        <view class="menu-text">{{item.title}}</view>
-        <view class="menu-arrow">></view>
-      </view>
-      <view class="menu-item" wx:if="{{isAdmin}}" bindtap="navigateToAdmin">
-        <view class="menu-text">管理中心</view>
-        <view class="menu-arrow">></view>
-      </view>
-    </view>
-  </view>
-
-  <view class="section-block">
-    <view class="section-head">
-      <view class="section-title section-title-recent">最近活跃</view>
-      <view class="section-meta section-meta-week">本周</view>
-    </view>
-    <view class="activity-list">
-      <view class="activity-item" wx:for="{{recentActivities}}" wx:key="title">
-        <view class="activity-title">{{item.title}}</view>
-        <view class="activity-value">{{item.value}}</view>
-      </view>
-    </view>
+  <view class="env">
+    <text class="env-text">当前连接：{{apiBase}}</text>
   </view>
 </view>

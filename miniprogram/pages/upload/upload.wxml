@@ -4,6 +4,12 @@
     <text class="subtitle">拍好的照片、视频，选了就传进素材库</text>
   </view>
 
+  <!-- 没填凭据时先说清楚，别让人选完 9 张照片才发现传不上去 -->
+  <view wx:if="{{!hasToken}}" class="no-token" bindtap="onGoToken">
+    <text class="no-token-title">还没填上传凭据</text>
+    <text class="no-token-hint">点这里去「我的」填一次，之后不用再填</text>
+  </view>
+
   <view class="actions">
     <view class="btn btn-primary {{busy ? 'disabled' : ''}}" bindtap="onChooseImage">
       <text class="btn-icon">＋</text>
