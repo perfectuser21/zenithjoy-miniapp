@@ -103,7 +103,12 @@ function callApi(method, path, body) {
     var d = res.data
     if (res.statusCode !== 200 || !d || d.success !== true) {
       var reason = (d && d.error && d.error.message) || ('HTTP ' + res.statusCode)
-      throw err('API_FAILED', reason)
+      var e = err('API_FAILED', reason)
+      // 上层要按服务端错误码翻译人话（EDIT_LOCKED / NoActiveAgent……），
+      // 靠 grep 消息文本认错误是在赌服务端措辞不变——把码和状态原样带上
+      e.status = res.statusCode
+      e.serverCode = (d && d.error && d.error.code) || ''
+      throw e
     }
     return d.data || {}
   })
@@ -133,6 +138,67 @@ function deleteMaterial(id) {
   if (!mid) return Promise.reject(err('BAD_REQUEST', '没有指定要删哪条'))
   return callApi('DELETE', '/api/materials/' + mid, undefined)
     .then(function (data) { return { id: data.id || mid } })
+}
+
+/**
+ * 列作品（contents）。上传 complete 落库时中台建的就是它，
+ * 发布回执（receipts）也回写在它身上——发布页取缩略图、作品列表看回执都走这里。
+ * 尾斜杠同 listMaterials：中台 nginx 不带斜杠会吃 301，wx.request 不跟随重定向。
+ */
+function listContents(options) {
+  var opts = options || {}
+  var qs = []
+  if (opts.status) qs.push('status=' + encodeURIComponent(opts.status))
+  qs.push('limit=' + (opts.limit || DEFAULT_LIMIT))
+  if (opts.offset) qs.push('offset=' + opts.offset)
+  return callApi('GET', '/api/contents/?' + qs.join('&'), undefined)
+    .then(function (data) {
+      return { items: data.items || [], total: data.total }
+    })
+}
+
+/**
+ * 改作品的标题/文案/平台。只带调用方给了的字段——PATCH 的语义就是只改给了的，
+ * 把没改的字段也发过去会把别的入口（Notion/飞书编排台）刚写的值顶掉。
+ *
+ * 已进发布队列的作品中台锁编辑（409 EDIT_LOCKED）。这里必须翻译成人话：
+ * 把服务端错误码直接怼给客户，客户不知道下一步该干嘛。
+ */
+function patchContent(id, fields) {
+  var cid = String(id || '').trim()
+  if (!cid) return Promise.reject(err('BAD_REQUEST', '没有指定要改哪个作品'))
+  var f = fields || {}
+  var body = {}
+  if (f.title !== undefined) body.title = f.title
+  if (f.body !== undefined) body.body = f.body
+  if (f.platforms !== undefined) body.platforms = f.platforms
+  return callApi('PATCH', '/api/contents/' + cid, body)
+    .catch(function (e) {
+      if (e.code === 'API_FAILED' && (e.serverCode === 'EDIT_LOCKED' || e.status === 409)) {
+        throw err('EDIT_LOCKED', '作品已在发布队列，不能再改。等这单发完，或先在作品列表把它撤下来。')
+      }
+      throw e
+    })
+}
+
+/**
+ * 把作品送进发布队列。不带 body——按作品自己的 platforms 整单发，
+ * 发哪些平台在 patchContent 那一步就定好了，这里不重复传一份让两处打架。
+ *
+ * 撞上发布手机不在线（NoActiveAgent 一类，HTTP 码服务端可能给 409 也可能给 5xx，
+ * 按 error.code 认，409 兜底）必须说清「草稿已保存，稍后可重试」——
+ * 不说这句客户会以为刚填的标题文案全白填了。其余失败按服务端 error/message 透传。
+ */
+function publishContent(id) {
+  var cid = String(id || '').trim()
+  if (!cid) return Promise.reject(err('BAD_REQUEST', '没有指定要发哪个作品'))
+  return callApi('POST', '/api/contents/' + cid + '/publish', undefined)
+    .catch(function (e) {
+      if (e.code === 'API_FAILED' && (/agent/i.test(e.serverCode || '') || e.status === 409)) {
+        throw err('NO_AGENT', '发布手机不在线，作品已存草稿，稍后可重试。（中台说：' + e.message + '）')
+      }
+      throw e
+    })
 }
 
 /** 把本地临时文件读成 ArrayBuffer。读不出来就别往下走。 */
@@ -233,5 +299,8 @@ module.exports = {
   apiBase: apiBase,
   listMaterials: listMaterials,
   deleteMaterial: deleteMaterial,
+  listContents: listContents,
+  patchContent: patchContent,
+  publishContent: publishContent,
   uploadFile: uploadFile
 }

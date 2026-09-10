@@ -38,6 +38,10 @@
       </view>
     </view>
 
+    <!-- 传完别断在半路：编好文案选好平台直接发出去 -->
+    <view wx:if="{{!busy && publishContentId}}" class="go-btn go-btn-primary" bindtap="onGoPublish">
+      去发布
+    </view>
     <view wx:if="{{!busy && doneCount > 0}}" class="go-btn" bindtap="onGoMaterials">
       去素材库看看
     </view>

@@ -45,7 +45,12 @@ Page({
     // 每条：{ name, status: pending|uploading|done|failed|deduped, message }
     jobs: [],
     doneCount: 0,
-    failCount: 0
+    failCount: 0,
+    // 本批第一个传成文件的作品 id，「去发布」入口用。
+    // 现状：zj-api.uploadFile 逐文件调 complete，中台给每个文件各建一个作品、
+    // 各回一个 content_id——一次传多张图不是合成一单，所以这里只带第一个成功的。
+    // 多文件合单要中台侧改 complete 协议，端上不猜。
+    publishContentId: ''
   },
 
   onShow() {
@@ -84,7 +89,7 @@ Page({
       status: 'pending',
       message: '等待上传'
     }))
-    this.setData({ busy: true, jobs: jobs, doneCount: 0, failCount: 0 })
+    this.setData({ busy: true, jobs: jobs, doneCount: 0, failCount: 0, publishContentId: '' })
 
     for (let i = 0; i < files.length; i++) {
       await this.one(files[i], i, kind)
@@ -136,9 +141,18 @@ Page({
       set('done', '已进素材库')
     }
     this.setData({ doneCount: this.data.doneCount + 1 })
+    if (!this.data.publishContentId && r.contentId) {
+      this.setData({ publishContentId: r.contentId })
+    }
   },
 
   onGoMaterials() {
     wx.switchTab({ url: '/pages/materials/materials' })
+  },
+
+  onGoPublish() {
+    const id = this.data.publishContentId
+    if (!id) return
+    wx.navigateTo({ url: '/pages/publish/publish?content_id=' + id })
   }
 })
