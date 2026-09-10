@@ -2,6 +2,7 @@
   "pages": [
     "pages/materials/materials",
     "pages/upload/upload",
+    "pages/publish/publish",
     "pages/user/user"
   ],
   "window": {

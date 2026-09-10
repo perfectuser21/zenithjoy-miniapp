@@ -1,0 +1,51 @@
+<view class="page">
+  <!-- 读不到就说清楚为什么：没凭据 / 找不到作品 / 连不上，三种下一步完全不同 -->
+  <view wx:if="{{loading}}" class="state">
+    <text class="state-text">读取作品中…</text>
+  </view>
+
+  <view wx:elif="{{errorMessage}}" class="state">
+    <text class="state-text error">{{errorMessage}}</text>
+    <view wx:if="{{needToken}}" class="state-btn" bindtap="onGoToken">去「我的」填凭据</view>
+    <view wx:else class="state-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:else>
+    <!-- 素材缩略图：视频/签名失败显示占位，绝不把空串塞进 image src -->
+    <view class="preview">
+      <image wx:if="{{previewUrl && !video}}" class="preview-img" src="{{previewUrl}}" mode="aspectFill" />
+      <view wx:else class="preview-holder">
+        <text class="preview-holder-icon">{{video ? '▶' : '🖼'}}</text>
+        <text class="preview-holder-text">{{video ? '视频素材' : '暂无预览'}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <text class="label">标题</text>
+      <input class="title-input" value="{{title}}" bindinput="onTitleInput"
+             placeholder="给这条作品起个标题" maxlength="60" />
+    </view>
+
+    <view class="card">
+      <text class="label">文案</text>
+      <textarea class="body-input" value="{{body}}" bindinput="onBodyInput"
+                placeholder="正文文案，发到各平台的那段话" maxlength="2000" auto-height />
+    </view>
+
+    <view class="card">
+      <text class="label">发到哪些平台<text class="label-hint">（至少选一个）</text></text>
+      <view class="chips">
+        <view wx:for="{{platforms}}" wx:key="key"
+              class="chip {{item.checked ? 'chip-on' : ''}}"
+              data-key="{{item.key}}" bindtap="onTogglePlatform">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <view class="publish-btn {{(publishing || selectedCount === 0) ? 'disabled' : ''}}" bindtap="onPublish">
+      {{publishing ? '发布中…' : '发布'}}
+    </view>
+    <text class="publish-hint">点发布后进队列，由你的发布手机自动发出，发完在作品列表看回执</text>
+  </block>
+</view>
